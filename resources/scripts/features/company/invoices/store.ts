@@ -13,6 +13,7 @@ import type {
 import type {
   Invoice,
   InvoiceItem,
+  InvoicePaymentQrInput,
   DiscountType,
   CreateCreditNotePayload,
 } from '../../../types/domain/invoice'
@@ -77,6 +78,7 @@ export interface InvoiceFormData {
   discount_type: DiscountType
   discount_val: number
   reference_number: string | null
+  payment_qr: InvoicePaymentQrInput | null
   tax: number
   sub_total: number
   total: number
@@ -110,6 +112,7 @@ function createInvoiceStub(): InvoiceFormData {
     discount_type: 'fixed',
     discount_val: 0,
     reference_number: null,
+    payment_qr: null,
     tax: 0,
     sub_total: 0,
     total: 0,

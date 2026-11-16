@@ -51,6 +51,7 @@ class InvoiceResource extends JsonResource
             'due_date' => $invoice->due_date,
             'invoice_number' => $invoice->invoice_number,
             'reference_number' => $invoice->reference_number,
+            'payment_qr' => $invoice->payment_qr,
             'type' => $invoice->type,
             'related_invoice_id' => $invoice->related_invoice_id,
             'status' => $invoice->status,

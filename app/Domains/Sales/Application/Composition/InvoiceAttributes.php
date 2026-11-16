@@ -45,7 +45,7 @@ final class InvoiceAttributes
             $perItemDiscount
         );
 
-        return array_merge(Arr::except($input, ['items', 'taxes', 'customFields']), [
+        return array_merge(Arr::except($input, ['items', 'taxes', 'customFields', 'payment_qr']), [
             'creator_id' => $creatorId,
             'type' => Invoice::TYPE_INVOICE,
             'related_invoice_id' => null,

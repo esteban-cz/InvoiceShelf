@@ -79,12 +79,22 @@ export interface InvoiceItem {
   fields?: CustomFieldValue[]
 }
 
+export interface InvoicePaymentQr {
+  iban: string
+  variable_symbol: string | null
+}
+
+export interface InvoicePaymentQrInput extends InvoicePaymentQr {
+  save_account?: boolean
+}
+
 export interface Invoice {
   id: number
   invoice_date: string
   due_date: string
   invoice_number: string
   reference_number: string | null
+  payment_qr?: InvoicePaymentQr | null
   type: InvoiceType
   related_invoice_id: number | null
   related_invoice?: RelatedInvoice | null
@@ -147,6 +157,7 @@ export interface CreateInvoicePayload {
   due_date: string
   invoice_number: string
   reference_number?: string | null
+  payment_qr?: InvoicePaymentQrInput | null
   customer_id: number
   template_name?: string | null
   notes?: string | null

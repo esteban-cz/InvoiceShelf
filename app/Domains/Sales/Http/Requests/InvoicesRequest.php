@@ -47,6 +47,10 @@ class InvoicesRequest extends FormRequest
             'total' => 'numeric|max:999999999999|required',
             'tax' => 'required',
             'template_name' => ['required', new PdfTemplateExists('invoice')],
+            'payment_qr' => ['sometimes', 'nullable', 'array:iban,variable_symbol,save_account'],
+            'payment_qr.iban' => ['required_with:payment_qr', 'string', 'max:64'],
+            'payment_qr.variable_symbol' => ['nullable', 'string', 'regex:/\A[0-9]{1,10}\z/'],
+            'payment_qr.save_account' => ['sometimes', 'boolean'],
             'items' => 'required|array',
             'items.*' => 'required|max:255',
             'items.*.description' => 'nullable',
@@ -65,6 +69,14 @@ class InvoicesRequest extends FormRequest
         $this->validateCustomFieldAnswers($validator, 'items.*.custom_fields');
     }
 
+    public function messages(): array
+    {
+        return [
+            'payment_qr.iban.required_with' => __('payment_qr_invalid_account'),
+            'payment_qr.variable_symbol.regex' => __('payment_qr_invalid_variable_symbol'),
+        ];
+    }
+
     /**
      * The stored attributes for a create or an update.
      *
@@ -72,7 +84,13 @@ class InvoicesRequest extends FormRequest
      */
     public function getInvoicePayload(): array
     {
-        return InvoiceAttributes::fromInput($this->all(), $this->header('company'), $this->user()?->id);
+        $attributes = InvoiceAttributes::fromInput($this->all(), $this->header('company'), $this->user()?->id);
+
+        if ($this->has('payment_qr')) {
+            $attributes['payment_qr'] = $this->validated('payment_qr');
+        }
+
+        return $attributes;
     }
 
     /**

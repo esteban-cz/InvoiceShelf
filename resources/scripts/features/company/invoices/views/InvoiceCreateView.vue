@@ -101,6 +101,12 @@
 
         <ExtensionSlot name="entity" entity="invoice" area="formSections" :context="extensionFormContext" />
 
+        <InvoicePaymentQrFields
+          v-if="canAddPaymentQr"
+          v-model="invoiceStore.newInvoice.payment_qr"
+          :errors="paymentQrErrors"
+        />
+
         <!-- Invoice Footer Section -->
         <div
           class="block mt-10 invoice-foot lg:flex lg:justify-between lg:items-start"
@@ -164,6 +170,7 @@ import { useEntityContributions } from '@/scripts/extensions/runtime'
 import { currencyCodeOf, entityFormContext } from '@/scripts/extensions/records'
 import { useEntitySaveHooks } from '@/scripts/composables/use-entity-save-hooks'
 import InvoiceBasicFields from '../components/InvoiceBasicFields.vue'
+import InvoicePaymentQrFields from '../components/InvoicePaymentQrFields.vue'
 import {
   DocumentItemsTable,
   DocumentFormActionBar,
@@ -198,6 +205,11 @@ const invoiceNoteFieldList = ref<string[]>(['customer', 'company', 'invoice'])
 const isLoadingContent = computed<boolean>(
   () => invoiceStore.isFetchingInvoice || invoiceStore.isFetchingInitialSettings,
 )
+const canAddPaymentQr = computed(() =>
+  !isRecurring.value && !isLoadingContent.value
+  && currencyCodeOf(invoiceStore.newInvoice.selectedCurrency) === 'CZK',
+)
+const paymentQrErrors = ref<Record<string, string[]>>({})
 
 const pageTitle = computed<string>(() => {
   if (isRecurringEdit.value) return t('recurring_invoices.edit_invoice')
@@ -392,6 +404,7 @@ watch(
 )
 
 async function submitForm(): Promise<void> {
+  paymentQrErrors.value = {}
   v$.value.$touch()
 
   if (v$.value.$invalid) {
@@ -453,6 +466,7 @@ async function submitForm(): Promise<void> {
     } else {
       const data: Record<string, unknown> = {
         ...cloneDeep(invoiceStore.newInvoice),
+        payment_qr: canAddPaymentQr.value ? cloneDeep(invoiceStore.newInvoice.payment_qr) : null,
         sub_total: Math.round(invoiceStore.getSubTotal),
         total: Math.round(invoiceStore.getTotal),
         tax: Math.round(invoiceStore.getTotalTax),
@@ -490,6 +504,7 @@ async function submitForm(): Promise<void> {
     }
   } catch (err: unknown) {
     const normalized = handleApiError(err)
+    paymentQrErrors.value = normalized.validationErrors
     const translationKey = getErrorTranslationKey(normalized.message)
 
     notificationStore.showNotification({

@@ -15,10 +15,12 @@ use App\Domains\Sales\Http\Resources\InvoiceResource;
 use App\Domains\Sales\Jobs\GenerateInvoicePdfJob;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\Invoice;
+use App\Domains\Sales\Models\InvoiceBankAccount;
 use App\Platform\Http\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Markdown;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -73,12 +75,12 @@ class InvoicesController extends Controller
     {
         $this->authorize('create', Invoice::class);
 
-        $invoice = $this->invoiceService->create(
+        $invoice = DB::transaction(fn () => $this->invoiceService->create(
             attributes: $request->getInvoicePayload(),
             items: $request->input('items'),
             taxes: $request->has('taxes') ? $request->input('taxes') : null,
             customFields: $this->customFields($request),
-        );
+        ));
 
         if ($request->exists('invoiceSend')) {
             $this->invoiceService->send($invoice, $request->only(['subject', 'body']));
@@ -122,17 +124,30 @@ class InvoicesController extends Controller
     {
         $this->authorize('update', $invoice);
 
-        $invoice = $this->invoiceService->update(
+        $invoice = DB::transaction(fn () => $this->invoiceService->update(
             invoice: $invoice,
             attributes: $request->getInvoicePayload(),
             items: $request->input('items'),
             taxes: $request->has('taxes') ? $request->input('taxes') : null,
             customFields: $this->customFields($request),
-        );
+        ));
 
         dispatch(new GenerateInvoicePdfJob($invoice, true));
 
         return InvoiceResource::make($invoice);
+    }
+
+    /**
+     * Bank accounts saved for reuse on this company's invoices.
+     */
+    public function bankAccounts(Request $request): JsonResponse
+    {
+        $this->authorize('viewAny', Invoice::class);
+
+        return response()->json(['data' => InvoiceBankAccount::query()
+            ->where('company_id', $request->header('company'))
+            ->orderBy('iban')
+            ->pluck('iban')]);
     }
 
     /**

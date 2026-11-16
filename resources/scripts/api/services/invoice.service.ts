@@ -138,4 +138,9 @@ export const invoiceService = {
     const { data } = await client.get(API.INVOICE_TEMPLATES)
     return data
   },
+
+  async getBankAccounts(): Promise<string[]> {
+    const { data } = await client.get<ApiResponse<string[]>>(API.INVOICE_BANK_ACCOUNTS)
+    return data.data
+  },
 }

@@ -26,12 +26,12 @@ Route::put('/invoices/{invoice}/reminders', [InvoiceRemindersController::class, 
 Route::get('/company/payment-reminders', [ReminderSettingsController::class, 'show']);
 Route::put('/company/payment-reminders', [ReminderSettingsController::class, 'update']);
 
-// Two collection-level endpoints that are not resource verbs. Both are
-// declared ahead of the resource, so neither literal segment can ever be
-// read as an {invoice} key.
+// Keep collection-level endpoints ahead of the resource so their literal
+// segments cannot be read as an {invoice} key.
 Route::prefix('invoices')->group(function (): void {
     Route::post('delete', [InvoicesController::class, 'delete']);
     Route::get('templates', InvoiceTemplatesController::class);
+    Route::get('bank-accounts', [InvoicesController::class, 'bankAccounts']);
 });
 Route::apiResources(['invoices' => InvoicesController::class]);
 

@@ -52,6 +52,7 @@ export const API = {
   INVOICES: '/api/v1/invoices',
   INVOICES_DELETE: '/api/v1/invoices/delete',
   INVOICE_TEMPLATES: '/api/v1/invoices/templates',
+  INVOICE_BANK_ACCOUNTS: '/api/v1/invoices/bank-accounts',
 
   // Recurring Invoices
   RECURRING_INVOICES: '/api/v1/recurring-invoices',

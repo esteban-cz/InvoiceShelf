@@ -41,6 +41,7 @@ class InvoiceService implements InvoicePdfDataProvider
         private readonly DocumentExchangeRateRecorder $exchangeRateRecorder,
         private readonly InvoiceEmailSender $invoiceEmailSender,
         private readonly InvoicePdfAttachments $pdfAttachments,
+        private readonly InvoicePaymentQr $paymentQr,
     ) {}
 
     /**
@@ -54,6 +55,7 @@ class InvoiceService implements InvoicePdfDataProvider
         ?array $taxes = null,
         ?iterable $customFields = null,
     ): Invoice {
+        $attributes = $this->configurePaymentQr($attributes);
         $invoice = Invoice::create($attributes);
 
         $serial = (new SerialNumberService)
@@ -134,6 +136,7 @@ class InvoiceService implements InvoicePdfDataProvider
         $attributes['due_amount'] = ($invoice->due_amount + $oldTotal);
         $attributes['base_due_amount'] = MoneyConversion::toBaseMinor($attributes['due_amount'], $attributes['exchange_rate']);
         $attributes['customer_sequence_number'] = $serial->nextCustomerSequenceNumber;
+        $attributes = $this->configurePaymentQr($attributes);
 
         $invoice->update($attributes);
 
@@ -170,6 +173,19 @@ class InvoiceService implements InvoicePdfDataProvider
         }
 
         return Invoice::with(self::DETAIL_RELATIONS)->findOrFail($invoice->id);
+    }
+
+    private function configurePaymentQr(array $attributes): array
+    {
+        if (isset($attributes['payment_qr'])) {
+            $attributes['payment_qr'] = $this->paymentQr->configure(
+                $attributes['payment_qr'],
+                $attributes['company_id'],
+                $attributes['currency_id'],
+            );
+        }
+
+        return $attributes;
     }
 
     public function delete(Collection $ids): bool
@@ -332,6 +348,7 @@ class InvoiceService implements InvoicePdfDataProvider
             'notes' => $invoice->getNotes(),
             'logo' => $logo ?? null,
             'taxes' => $taxes,
+            'paymentQrImage' => $this->paymentQr->image($invoice),
         ]);
 
         $templatePath = PdfTemplateUtils::resolveView('invoice', $invoiceTemplate, 'invoice1');

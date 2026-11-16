@@ -570,6 +570,16 @@
   },
   "invoices": {
     "title": "Invoices",
+    "payment_qr": {
+      "enable": "Add payment QR code",
+      "help": "Customers can scan the code on the PDF to pay the outstanding CZK balance.",
+      "saved_accounts": "Saved bank accounts",
+      "account": "Czech bank account",
+      "account_placeholder": "IBAN or account number / bank code",
+      "variable_symbol": "Variable symbol",
+      "save_account": "Save this bank account for future invoices",
+      "accounts_unavailable": "Saved bank accounts could not be loaded. You can enter an account manually."
+    },
     "download": "Download",
     "pay_invoice": "Pay Invoice",
     "invoices_list": "Invoices List",
@@ -2365,6 +2375,11 @@
   "pdf_invoice_number": "Invoice Number",
   "pdf_invoice_date": "Invoice Date",
   "pdf_invoice_due_date": "Due Date",
+  "pdf_qr_payment": "QR Platba",
+  "pdf_qr_variable_symbol": "Variable symbol",
+  "payment_qr_czk_only": "QR Platba is available for invoices in Czech koruna.",
+  "payment_qr_invalid_account": "Enter a valid Czech IBAN or account number with its bank code.",
+  "payment_qr_invalid_variable_symbol": "The variable symbol must contain 1 to 10 digits.",
   "pdf_credit_note_label": "Credit Note",
   "pdf_credit_note_number": "Credit Note Number",
   "pdf_credit_note_date": "Credit Note Date",

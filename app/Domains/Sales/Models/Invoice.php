@@ -157,6 +157,7 @@ class Invoice extends Model implements HasMedia
             'discount_val' => 'integer',
             'exchange_rate' => 'float',
             'reminders_paused' => 'boolean',
+            'payment_qr' => 'array',
         ];
     }
 
@@ -654,7 +655,10 @@ class Invoice extends Model implements HasMedia
      */
     protected function archivedPdfProperties(): array
     {
-        return ['pdf_attachments_applied' => app(InvoicePdfAttachments::class)->applyTo($this->company_id)];
+        return [
+            'pdf_attachments_applied' => app(InvoicePdfAttachments::class)->applyTo($this->company_id),
+            'payment_qr_fingerprint' => $this->paymentQrFingerprint(),
+        ];
     }
 
     /**
@@ -666,7 +670,17 @@ class Invoice extends Model implements HasMedia
      */
     protected function archivedPdfIsCurrent(array $properties): bool
     {
-        return (bool) ($properties['pdf_attachments_applied'] ?? false) === app(InvoicePdfAttachments::class)->applyTo($this->company_id);
+        return (bool) ($properties['pdf_attachments_applied'] ?? false) === app(InvoicePdfAttachments::class)->applyTo($this->company_id)
+            && ($properties['payment_qr_fingerprint'] ?? null) === $this->paymentQrFingerprint();
+    }
+
+    private function paymentQrFingerprint(): ?string
+    {
+        if ($this->payment_qr === null || (int) $this->due_amount <= 0) {
+            return null;
+        }
+
+        return hash('sha256', json_encode([$this->payment_qr, (int) $this->due_amount, (int) $this->currency_id]));
     }
 
     /**

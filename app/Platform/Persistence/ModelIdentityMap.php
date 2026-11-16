@@ -41,6 +41,7 @@ use App\Domains\Receivables\Models\Transaction;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\EstimateItem;
 use App\Domains\Sales\Models\Invoice;
+use App\Domains\Sales\Models\InvoiceBankAccount;
 use App\Domains\Sales\Models\InvoiceItem;
 use App\Domains\Sales\Models\InvoiceReminder;
 use App\Domains\Sales\Models\RecurringInvoice;
@@ -103,6 +104,7 @@ final class ModelIdentityMap
             'file_disk' => FileDisk::class,
             'impersonation_log' => ImpersonationLog::class,
             self::INVOICE_ALIAS => Invoice::class,
+            'invoice_bank_account' => InvoiceBankAccount::class,
             'invoice_item' => InvoiceItem::class,
             'item' => Item::class,
             'marketplace_credential' => MarketplaceCredential::class,

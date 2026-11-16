@@ -15,6 +15,7 @@ use App\Domains\Purchases\Models\SupplierPayment;
 use App\Domains\Purchases\Models\SupplierPaymentAllocation;
 use App\Domains\Purchases\Models\SupplierRefund;
 use App\Domains\Receivables\Models\PaymentAllocation;
+use App\Domains\Sales\Models\InvoiceBankAccount;
 use App\Domains\Sales\Models\InvoiceReminder;
 use App\Platform\Recurrence\Models\RecurrenceOccurrence;
 use Illuminate\Database\Eloquent\Model;
@@ -57,6 +58,7 @@ class EloquentCompanyDataPurger implements CompanyDataPurger
             $invoice->transactions()->delete();
         });
         $company->invoices()->delete();
+        InvoiceBankAccount::query()->where('company_id', $company->id)->delete();
 
         $company->recurringInvoices->each(fn (Model $invoice) => $this->clearDocumentData($invoice));
         $company->recurringInvoices()->delete();
