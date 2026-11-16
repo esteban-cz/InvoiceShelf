@@ -70,6 +70,7 @@ const props = defineProps<{
   errors: Record<string, string[]>
   useDefaultSymbol: boolean
   defaultSymbol: string
+  defaultAccount: string
 }>()
 
 const payment = defineModel<InvoicePaymentQrInput | null>({ required: true })
@@ -98,7 +99,7 @@ onMounted(async () => {
 
 function toggle(enabled: boolean | unknown[]) {
   payment.value = enabled === true ? {
-    iban: '',
+    iban: props.defaultAccount,
     save_account: false,
     ...(props.useDefaultSymbol ? {} : { variable_symbol: null }),
   } : null

@@ -1577,6 +1577,13 @@
           "preview": "Variable symbol preview",
           "no_preview": "A variable symbol needs 1 to 10 digits."
         },
+        "receiving_account": {
+          "title": "Default receiving account for QR Platba",
+          "description": "Prefill this account when you enable QR Platba on a new CZK invoice. You can change it on each invoice.",
+          "none": "Choose on each invoice",
+          "empty": "Save a bank account from a CZK invoice to make it available here.",
+          "unavailable": "Saved bank accounts could not be loaded."
+        },
         "preview_invoice_number": "Preview Invoice Number",
         "due_date": "Due Date",
         "due_date_description": "Specify how due date is automatically set when you create an invoice.",
@@ -2393,6 +2400,7 @@
   "payment_qr_invalid_account": "Enter a valid Czech IBAN or account number with its bank code.",
   "payment_qr_invalid_variable_symbol": "The variable symbol must contain 1 to 10 digits.",
   "payment_qr_default_symbol_unavailable": "The default format could not produce a variable symbol with 1 to 10 digits. Enter one manually or clear the field.",
+  "payment_qr_default_account_invalid": "Choose a bank account saved for this company.",
   "pdf_credit_note_label": "Credit Note",
   "pdf_credit_note_number": "Credit Note Number",
   "pdf_credit_note_date": "Credit Note Date",

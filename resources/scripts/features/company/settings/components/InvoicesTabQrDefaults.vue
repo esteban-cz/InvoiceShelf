@@ -10,6 +10,9 @@ import { invoiceVariableSymbolFormats, previewInvoiceVariableSymbol } from '@/sc
 const { t } = useI18n()
 const companyStore = useCompanyStore()
 const format = ref(companyStore.selectedCompanySettings.invoice_variable_symbol_format || 'manual')
+const receivingAccount = ref(companyStore.selectedCompanySettings.invoice_default_receiving_iban || 'none')
+const savedAccounts = ref<string[] | null>(null)
+const loadingAccounts = ref(true)
 const isSaving = ref(false)
 const nextInvoice = ref<NextNumberResponse | null>(null)
 const error = ref('')
@@ -18,6 +21,10 @@ const options = computed(() => invoiceVariableSymbolFormats.map((id) => ({
   id,
   label: t('settings.customization.invoices.variable_symbol_format.' + id),
 })))
+const accountOptions = computed(() => [
+  { id: 'none', label: t('settings.customization.invoices.receiving_account.none') },
+  ...(savedAccounts.value ?? []).map((iban) => ({ id: iban, label: iban })),
+])
 const preview = computed(() => previewInvoiceVariableSymbol(
   format.value,
   nextInvoice.value?.nextNumber ?? '',
@@ -35,13 +42,30 @@ onMounted(async () => {
   }
 })
 
+onMounted(async () => {
+  try {
+    savedAccounts.value = await invoiceService.getBankAccounts()
+    if (!savedAccounts.value.includes(receivingAccount.value)) receivingAccount.value = 'none'
+  } catch {
+    savedAccounts.value = null
+  } finally {
+    loadingAccounts.value = false
+  }
+})
+
 async function save() {
   isSaving.value = true
   error.value = ''
 
   try {
+    const settings: Record<string, string> = { invoice_variable_symbol_format: format.value }
+    const currentAccount = companyStore.selectedCompanySettings.invoice_default_receiving_iban || 'none'
+    if (savedAccounts.value !== null && receivingAccount.value !== currentAccount) {
+      settings.invoice_default_receiving_iban = receivingAccount.value
+    }
+
     await companyStore.updateCompanySettings({
-      data: { settings: { invoice_variable_symbol_format: format.value } },
+      data: { settings },
       message: 'settings.customization.invoices.invoice_settings_updated',
     })
   } catch (err: unknown) {
@@ -61,7 +85,6 @@ async function save() {
       <BaseInputGrid class="mt-4">
         <BaseInputGroup
           :label="$t('settings.customization.invoices.variable_symbol_format.label')"
-          :error="error"
         >
           <BaseSelectInput v-model="format" :options="options" value-prop="id" />
         </BaseInputGroup>
@@ -75,6 +98,30 @@ async function save() {
           </p>
         </BaseInputGroup>
       </BaseInputGrid>
+    </BaseSettingCard>
+
+    <BaseSettingCard
+      class="mt-4"
+      :title="$t('settings.customization.invoices.receiving_account.title')"
+      :description="$t('settings.customization.invoices.receiving_account.description')"
+    >
+      <BaseInputGrid v-if="loadingAccounts || savedAccounts !== null">
+        <BaseInputGroup :label="$t('invoices.payment_qr.saved_accounts')">
+          <BaseSelectInput
+            v-model="receivingAccount"
+            :options="accountOptions"
+            :content-loading="loadingAccounts"
+            value-prop="id"
+          />
+        </BaseInputGroup>
+      </BaseInputGrid>
+      <p v-if="savedAccounts?.length === 0" class="mt-2 text-sm text-muted">
+        {{ $t('settings.customization.invoices.receiving_account.empty') }}
+      </p>
+      <p v-if="!loadingAccounts && savedAccounts === null" class="text-sm text-muted" role="status">
+        {{ $t('settings.customization.invoices.receiving_account.unavailable') }}
+      </p>
+      <p v-if="error" class="mt-3 text-sm text-danger" role="alert">{{ error }}</p>
       <BaseButton :loading="isSaving" :disabled="isSaving" type="submit" class="mt-4">
         {{ $t('settings.customization.save') }}
       </BaseButton>

@@ -31,6 +31,8 @@ class UpdateSettingsRequest extends FormRequest
      */
     public function rules(): array
     {
+        $receivingAccount = 'settings.invoice_default_receiving_iban';
+
         return [
             'settings' => [
                 'bail',
@@ -46,6 +48,24 @@ class UpdateSettingsRequest extends FormRequest
                 },
             ],
             'settings.'.InvoiceVariableSymbolFormat::SETTING => ['sometimes', 'required', Rule::enum(InvoiceVariableSymbolFormat::class)],
+            $receivingAccount => [
+                'bail',
+                'sometimes',
+                'required',
+                'string',
+                Rule::unless($this->input($receivingAccount) === 'none', [
+                    'regex:/\ACZ[0-9]{22}\z/',
+                    Rule::exists('invoice_bank_accounts', 'iban')->where('company_id', $this->header('company')),
+                ]),
+            ],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'settings.invoice_default_receiving_iban.exists' => __('payment_qr_default_account_invalid'),
+            'settings.invoice_default_receiving_iban.regex' => __('payment_qr_default_account_invalid'),
         ];
     }
 }

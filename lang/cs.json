@@ -1576,6 +1576,13 @@
           "preview": "Náhled variabilního symbolu",
           "no_preview": "Variabilní symbol musí obsahovat 1 až 10 číslic."
         },
+        "receiving_account": {
+          "title": "Výchozí účet pro QR platbu",
+          "description": "Po zapnutí QR platby na nové faktuře v Kč se tento účet předvyplní. Na každé faktuře ho můžete změnit.",
+          "none": "Vybrat účet na každé faktuře",
+          "empty": "Uložte bankovní účet z faktury v Kč, aby se zobrazil v nabídce.",
+          "unavailable": "Uložené bankovní účty se nepodařilo načíst."
+        },
         "preview_invoice_number": "Náhled čísla faktury",
         "due_date": "Datum splatnosti",
         "due_date_description": "Nastavte, jak se při vystavení faktury vypočítá datum splatnosti.",
@@ -2392,6 +2399,7 @@
   "payment_qr_invalid_account": "Zadejte platný český IBAN nebo číslo účtu včetně kódu banky.",
   "payment_qr_invalid_variable_symbol": "Variabilní symbol musí obsahovat 1 až 10 číslic.",
   "payment_qr_default_symbol_unavailable": "Výchozí formát nevytvořil variabilní symbol o délce 1 až 10 číslic. Zadejte symbol ručně nebo ponechte pole prázdné.",
+  "payment_qr_default_account_invalid": "Vyberte bankovní účet uložený pro tuto firmu.",
   "pdf_credit_note_label": "Dobropis",
   "pdf_credit_note_number": "Číslo dobropisu",
   "pdf_credit_note_date": "Datum vystavení dobropisu",

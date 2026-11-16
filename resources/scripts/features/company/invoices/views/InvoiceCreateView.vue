@@ -107,6 +107,7 @@
           :errors="paymentQrErrors"
           :use-default-symbol="useDefaultVariableSymbol"
           :default-symbol="defaultVariableSymbol"
+          :default-account="defaultReceivingAccount"
         />
 
         <!-- Invoice Footer Section -->
@@ -228,6 +229,10 @@ const isRecurringEdit = computed<boolean>(() =>
   route.name === 'recurring-invoices.edit',
 )
 const variableSymbolFormat = computed(() => companyStore.selectedCompanySettings.invoice_variable_symbol_format)
+const defaultReceivingAccount = computed(() => {
+  const iban = companyStore.selectedCompanySettings.invoice_default_receiving_iban
+  return !isEdit.value && iban && iban !== 'none' ? iban : ''
+})
 const useDefaultVariableSymbol = computed(() => !isEdit.value && !!variableSymbolFormat.value && variableSymbolFormat.value !== 'manual')
 const defaultVariableSymbol = computed(() => previewInvoiceVariableSymbol(
   variableSymbolFormat.value,

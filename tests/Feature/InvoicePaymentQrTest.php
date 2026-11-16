@@ -81,6 +81,37 @@ test('invalid payment details fail validation', function (array $payment, string
     'numeric JSON drops leading zeroes' => [['iban' => '123457/0710', 'variable_symbol' => 123], 'payment_qr.variable_symbol'],
 ]);
 
+test('the receiving account default can be set or cleared without changing accounts on existing invoices', function () {
+    $iban = 'CZ4907100000000000123457';
+    $override = 'CZ9106000000000000000123';
+    InvoiceBankAccount::create(['company_id' => $this->company->id, 'iban' => $iban]);
+
+    postJson('/api/v1/company/settings', ['settings' => ['invoice_default_receiving_iban' => $iban]])
+        ->assertOk()->assertJsonPath('success', true);
+    getJson('/api/v1/company/settings?settings[]=invoice_default_receiving_iban')
+        ->assertOk()->assertJsonPath('invoice_default_receiving_iban', $iban);
+
+    $invoice = postJson('/api/v1/invoices', qrInvoiceInput($this->customer, [
+        'payment_qr' => ['iban' => $override],
+    ]))->assertOk()->assertJsonPath('data.payment_qr.iban', $override)->json('data.id');
+
+    postJson('/api/v1/company/settings', ['settings' => ['invoice_default_receiving_iban' => 'none']])
+        ->assertOk()->assertJsonPath('success', true);
+    getJson('/api/v1/company/settings?settings[]=invoice_default_receiving_iban')
+        ->assertOk()->assertJsonPath('invoice_default_receiving_iban', 'none');
+    getJson("/api/v1/invoices/{$invoice}")->assertOk()->assertJsonPath('data.payment_qr.iban', $override);
+});
+
+test('the default receiving account must be saved by the active company', function () {
+    $otherIban = 'CZ9106000000000000000123';
+    InvoiceBankAccount::create(['company_id' => Company::factory()->create()->id, 'iban' => $otherIban]);
+
+    foreach ([$otherIban, 'CZ4907100000000000123457'] as $iban) {
+        postJson('/api/v1/company/settings', ['settings' => ['invoice_default_receiving_iban' => $iban]])
+            ->assertUnprocessable()->assertJsonValidationErrors('settings.invoice_default_receiving_iban');
+    }
+});
+
 test('QR is limited to Czech koruna invoices', function () {
     $customer = Customer::factory()->create(['currency_id' => Currency::where('code', 'EUR')->value('id')]);
     postJson('/api/v1/invoices', qrInvoiceInput($customer, ['payment_qr' => ['iban' => '123457/0710']]))
