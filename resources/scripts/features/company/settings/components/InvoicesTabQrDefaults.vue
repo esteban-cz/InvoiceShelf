@@ -117,6 +117,12 @@ async function save() {
       </BaseInputGrid>
       <p v-if="savedAccounts?.length === 0" class="mt-2 text-sm text-muted">
         {{ $t('settings.customization.invoices.receiving_account.empty') }}
+        <RouterLink
+          :to="{ name: 'settings.payment-modes' }"
+          class="font-medium text-primary-600 underline underline-offset-4"
+        >
+          {{ $t('settings.payment_modes.receiving_accounts.add') }}
+        </RouterLink>
       </p>
       <p v-if="!loadingAccounts && savedAccounts === null" class="text-sm text-muted" role="status">
         {{ $t('settings.customization.invoices.receiving_account.unavailable') }}

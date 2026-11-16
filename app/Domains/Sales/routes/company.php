@@ -32,6 +32,7 @@ Route::prefix('invoices')->group(function (): void {
     Route::post('delete', [InvoicesController::class, 'delete']);
     Route::get('templates', InvoiceTemplatesController::class);
     Route::get('bank-accounts', [InvoicesController::class, 'bankAccounts']);
+    Route::post('bank-accounts', [InvoicesController::class, 'storeBankAccount']);
 });
 Route::apiResources(['invoices' => InvoicesController::class]);
 

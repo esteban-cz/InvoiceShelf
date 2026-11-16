@@ -3,6 +3,7 @@
     width-class="w-64"
     :position="position"
     :wrapper-class="wrapperClass"
+    :fill-trigger="fillTrigger"
     :label="$t('navigation.account_menu', { name: userStore.currentUser?.name ?? '' })"
   >
     <template #activator>
@@ -21,35 +22,34 @@
       </div>
     </div>
 
-    <!-- Theme: three menu items in a row, so the arrow keys reach them -->
     <div class="px-2 pb-2">
-      <div
+      <DropdownMenuRadioGroup
         class="grid grid-cols-3 gap-1 p-1 rounded-lg bg-surface-muted/60"
-        role="group"
+        :model-value="currentTheme"
         :aria-label="$t('general.theme')"
       >
-        <DropdownMenuItem
+        <DropdownMenuRadioItem
           v-for="opt in themeOptions"
           :key="opt.value"
+          :value="opt.value"
           as-child
-          @click="setTheme(opt.value)"
+          @select="setTheme(opt.value)"
         >
           <button
             type="button"
-            :class="[
-              'flex items-center justify-center gap-1.5 rounded-md h-7 text-xs font-medium transition-colors',
-              'outline-hidden data-highlighted:ring-2 data-highlighted:ring-focus',
-              currentTheme === opt.value
-                ? 'bg-surface text-heading shadow-xs'
-                : 'text-muted hover:text-body',
-            ]"
+            :aria-label="$t(opt.label)"
+            :title="$t(opt.label)"
+            class="
+              flex items-center justify-center h-10 md:h-8 cursor-pointer rounded-md
+              text-muted hover:text-body transition-colors outline-hidden
+              data-highlighted:ring-2 data-highlighted:ring-focus
+              data-[state=checked]:bg-surface data-[state=checked]:text-heading data-[state=checked]:shadow-xs
+            "
           >
-            <BaseIcon :name="opt.icon" class="w-3.5 h-3.5" aria-hidden="true" />
-            {{ $t(opt.label) }}
-            <span v-if="currentTheme === opt.value" class="sr-only">{{ $t('general.current') }}</span>
+            <BaseIcon :name="opt.icon" class="w-4.5 h-4.5" aria-hidden="true" />
           </button>
-        </DropdownMenuItem>
-      </div>
+        </DropdownMenuRadioItem>
+      </DropdownMenuRadioGroup>
     </div>
 
     <BaseDropdownItem to="/admin/settings/account-settings">
@@ -79,7 +79,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { DropdownMenuItem } from 'reka-ui'
+import { DropdownMenuRadioGroup, DropdownMenuRadioItem } from 'reka-ui'
 import type { Placement } from '@popperjs/core'
 import { useAuthStore } from '@/scripts/stores/auth.store'
 import { useUserStore } from '@/scripts/stores/user.store'
@@ -98,6 +98,7 @@ import type { Theme } from '@/scripts/config/constants'
 interface Props {
   position?: Placement
   wrapperClass?: string
+  fillTrigger?: boolean
 }
 
 withDefaults(defineProps<Props>(), {

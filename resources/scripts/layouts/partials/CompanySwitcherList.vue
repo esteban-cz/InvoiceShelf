@@ -49,7 +49,7 @@
           rounded-lg shrink-0 bg-surface-muted text-body
         "
       >
-        {{ initial(company.name) }}
+        <CompanySwitcherLogo :logo="company.logo" :name="company.name" />
       </span>
       <span class="flex flex-col flex-1 min-w-0 text-start">
         <span class="text-sm font-medium truncate">{{ company.name }}</span>
@@ -84,6 +84,7 @@
 import { useCompanyStore } from '@/scripts/stores/company.store'
 import { useUserStore } from '@/scripts/stores/user.store'
 import type { Company } from '@/scripts/types/domain/company'
+import CompanySwitcherLogo from './CompanySwitcherLogo.vue'
 
 const emit = defineEmits<{
   (e: 'select', company: Company): void
@@ -107,9 +108,5 @@ function rowClass(active: boolean): string {
     'flex items-center w-full gap-3 px-3 py-2 rounded-lg text-start transition-colors',
     active ? 'bg-primary-50 text-heading' : 'text-body hover:bg-hover',
   ].join(' ')
-}
-
-function initial(name: string): string {
-  return name ? name.trim().charAt(0).toUpperCase() : ''
 }
 </script>

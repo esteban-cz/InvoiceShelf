@@ -1580,7 +1580,7 @@
           "title": "Výchozí účet pro QR platbu",
           "description": "Po zapnutí QR platby na nové faktuře v Kč se tento účet předvyplní. Na každé faktuře ho můžete změnit.",
           "none": "Vybrat účet na každé faktuře",
-          "empty": "Uložte bankovní účet z faktury v Kč, aby se zobrazil v nabídce.",
+          "empty": "Zatím nemáte žádné uložené bankovní účty.",
           "unavailable": "Uložené bankovní účty se nepodařilo načíst."
         },
         "preview_invoice_number": "Náhled čísla faktury",
@@ -1733,7 +1733,7 @@
       "general_description": "Update your name, email and language preference.",
       "security": "Security",
       "security_description": "Change your password.",
-      "profile_picture_description": "Upload or remove your profile photo.",
+      "profile_picture_description": "Nahrajte nebo odeberte svou profilovou fotku.",
       "save": "Uložit",
       "section_description": "Své jméno, e-mail a heslo můžete aktualizovat pomocí formuláře níže.",
       "updated_message": "Nastavení účtu bylo úspěšně aktualizováno",
@@ -1883,7 +1883,14 @@
       "payment_mode_confirm_delete": "Nebudete moci obnovit tuto platební metodu",
       "payments_attached": "Tento způsob platby je již připojen k platbám. Chcete-li pokračovat v odstranění, odstraňte připojené platby.",
       "expenses_attached": "Tento způsob platby je již připojen k výdajům. Chcete-li pokračovat v odstranění, odstraňte připojené výdaje.",
-      "deleted_message": "Platební metoda byla úspěšně odstraněna"
+      "deleted_message": "Platební metoda byla úspěšně odstraněna",
+      "receiving_accounts": {
+        "title": "Bankovní účty pro QR platby",
+        "description": "Uložte české bankovní účty, na které přijímáte úhrady faktur.",
+        "add": "Přidat bankovní účet",
+        "saved": "Bankovní účet byl uložen.",
+        "choose_default": "Vybrat výchozí účet"
+      }
     },
     "expense_category": {
       "title": "Kategorie výdajů",

@@ -4,9 +4,11 @@ import { useI18n } from 'vue-i18n'
 import { useModalStore } from '../../../../stores/modal.store'
 import { paymentService } from '../../../../api/services/payment.service'
 import { useUserStore } from '@/scripts/stores/user.store'
+import { useCompanyStore } from '@/scripts/stores/company.store'
 import { ABILITIES } from '@/scripts/config/abilities'
 import PaymentModeModal from '@/scripts/features/company/settings/components/PaymentModeModal.vue'
 import PaymentModeDropdown from '@/scripts/features/company/settings/components/PaymentModeDropdown.vue'
+import ReceivingAccountsCard from '@/scripts/features/company/settings/components/ReceivingAccountsCard.vue'
 
 interface TableColumn {
   key: string
@@ -34,6 +36,10 @@ interface FetchResult {
 
 const modalStore = useModalStore()
 const userStore = useUserStore()
+const companyStore = useCompanyStore()
+const canManageAccounts = computed(() =>
+  !!userStore.currentUser && companyStore.selectedCompany?.owner_id === userStore.currentUser.id
+)
 // Adding takes create or edit, changing edit; seeing the list only view.
 const canEdit = computed<boolean>(() => userStore.hasAbilities(ABILITIES.EDIT_PAYMENT))
 const canAdd = computed<boolean>(
@@ -128,4 +134,6 @@ function addPaymentMode(): void {
       </template>
     </BaseTable>
   </BaseSettingCard>
+
+  <ReceivingAccountsCard v-if="canManageAccounts" :key="companyStore.selectedCompany?.id" class="mt-5" />
 </template>

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { bootstrapService } from '@/scripts/api/services/bootstrap.service'
 import { companyService } from '@/scripts/api/services/company.service'
 import type {
   UpdateCompanyPayload,
@@ -100,9 +101,17 @@ export const useCompanyStore = defineStore('company', () => {
     }
   }
 
-  async function updateCompanyLogo(data: FormData): Promise<ApiResponse<Company>> {
+  async function updateCompanyLogo(data: FormData): Promise<void> {
     try {
-      return await companyService.uploadLogo(data)
+      const companyId = selectedCompany.value?.id
+      await companyService.uploadLogo(data)
+      if (selectedCompany.value?.id !== companyId) return
+
+      const { data: company } = await bootstrapService.getCurrentCompany()
+      const logos = { logo: company.logo, logo_path: company.logo_path }
+      const membership = companies.value.find(({ id }) => id === company.id)
+      if (membership) Object.assign(membership, logos)
+      if (selectedCompany.value?.id === company.id) Object.assign(selectedCompany.value, logos)
     } catch (err: unknown) {
       handleApiError(err)
       throw err

@@ -11,11 +11,11 @@
       />
     </BaseContentPlaceholders>
     <DropdownMenuRoot v-else v-model:open="open" :modal="false">
-      <span ref="trigger" :class="inActionBar ? 'flex w-full' : 'inline-flex'">
+      <span ref="trigger" :class="inActionBar || fillTrigger ? 'flex w-full min-w-0' : 'inline-flex'">
         <DropdownMenuTrigger as-child>
           <button
             type="button"
-            :class="inActionBar ? 'w-full' : ''"
+            :class="inActionBar || fillTrigger ? 'w-full min-w-0' : ''"
             :aria-label="triggerLabel"
             class="rounded-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
           >
@@ -97,6 +97,7 @@ interface Props {
   position?: Placement
   wrapperClass?: string
   contentLoading?: boolean
+  fillTrigger?: boolean
   /** The trigger's accessible name, for activators that show only an icon */
   label?: string
 }

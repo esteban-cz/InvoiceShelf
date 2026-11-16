@@ -1581,7 +1581,7 @@
           "title": "Default receiving account for QR Platba",
           "description": "Prefill this account when you enable QR Platba on a new CZK invoice. You can change it on each invoice.",
           "none": "Choose on each invoice",
-          "empty": "Save a bank account from a CZK invoice to make it available here.",
+          "empty": "There are no saved bank accounts yet.",
           "unavailable": "Saved bank accounts could not be loaded."
         },
         "preview_invoice_number": "Preview Invoice Number",
@@ -1884,7 +1884,14 @@
       "payment_mode_confirm_delete": "You will not be able to recover this Payment Mode",
       "payments_attached": "This payment method is already attached to payments. Please delete the attached payments to proceed with deletion.",
       "expenses_attached": "This payment method is already attached to expenses. Please delete the attached expenses to proceed with deletion.",
-      "deleted_message": "Payment Mode deleted successfully"
+      "deleted_message": "Payment Mode deleted successfully",
+      "receiving_accounts": {
+        "title": "Bank accounts for QR Platba",
+        "description": "Save the Czech bank accounts you receive invoice payments into.",
+        "add": "Add bank account",
+        "saved": "Bank account saved.",
+        "choose_default": "Choose the default account"
+      }
     },
     "expense_category": {
       "title": "Expense Categories",

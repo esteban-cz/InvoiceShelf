@@ -23,7 +23,7 @@
           name="ShieldCheckIcon"
           class="w-4.5 h-4.5"
         />
-        <span v-else>{{ initial }}</span>
+        <CompanySwitcherLogo v-else :logo="companyStore.selectedCompany?.logo" :name="label" />
       </span>
 
       <template v-if="variant !== 'rail'">
@@ -98,6 +98,7 @@ import { useModalStore } from '@/scripts/stores/modal.store'
 import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
 import CompanyModal from '@/scripts/features/company/settings/components/CompanyModal.vue'
 import CompanySwitcherList from './CompanySwitcherList.vue'
+import CompanySwitcherLogo from './CompanySwitcherLogo.vue'
 import type { Company } from '@/scripts/types/domain/company'
 
 interface Props {
@@ -153,11 +154,6 @@ const label = computed<string>(() => {
   }
 
   return companyStore.selectedCompany?.name ?? ''
-})
-
-const initial = computed<string>(() => {
-  const name = companyStore.selectedCompany?.name ?? ''
-  return name ? name.trim().charAt(0).toUpperCase() : ''
 })
 
 const triggerClass = computed<string>(() => {

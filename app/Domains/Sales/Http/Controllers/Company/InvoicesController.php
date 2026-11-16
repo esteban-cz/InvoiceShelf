@@ -4,12 +4,14 @@ namespace App\Domains\Sales\Http\Controllers\Company;
 
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Sales\Application\CreditNoteService;
+use App\Domains\Sales\Application\InvoicePaymentQr;
 use App\Domains\Sales\Application\InvoiceService;
 use App\Domains\Sales\Http\Requests\ChangeInvoiceStatusRequest;
 use App\Domains\Sales\Http\Requests\CreateCreditNoteRequest;
 use App\Domains\Sales\Http\Requests\DeleteInvoiceRequest;
 use App\Domains\Sales\Http\Requests\InvoicesRequest;
 use App\Domains\Sales\Http\Requests\SendInvoiceRequest;
+use App\Domains\Sales\Http\Requests\StoreInvoiceBankAccountRequest;
 use App\Domains\Sales\Http\Resources\CreditNoteResource;
 use App\Domains\Sales\Http\Resources\EstimateResource;
 use App\Domains\Sales\Http\Resources\InvoiceResource;
@@ -159,6 +161,17 @@ class InvoicesController extends Controller
             ->where('company_id', $request->header('company'))
             ->orderBy('iban')
             ->pluck('iban')]);
+    }
+
+    public function storeBankAccount(StoreInvoiceBankAccountRequest $request, InvoicePaymentQr $paymentQr): JsonResponse
+    {
+        $company = Company::query()->findOrFail($request->header('company'));
+        $this->authorize('manage company', $company);
+
+        $iban = $paymentQr->requireValidAccount($request->validated('iban'), 'iban');
+        $paymentQr->saveAccount($company->id, $iban);
+
+        return response()->json(['data' => $iban]);
     }
 
     /**

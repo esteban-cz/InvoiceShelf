@@ -86,12 +86,13 @@
 
     <!-- The signed-in user, and the collapse control on desktops -->
     <div
-      :class="isRail ? 'flex-col gap-1 px-0 items-center' : 'gap-1 px-3 items-center'"
-      class="flex py-2.5 border-t border-chrome-line safe-rail"
+      :class="isRail ? 'flex-col gap-1 px-0' : 'gap-2 px-3'"
+      class="flex items-center py-2.5 border-t border-chrome-line safe-rail"
     >
       <AccountMenu
         position="top-start"
         :wrapper-class="isRail ? 'flex' : 'flex flex-1 min-w-0'"
+        :fill-trigger="!isRail"
       >
         <template #activator="{ avatar }">
           <span
@@ -119,8 +120,9 @@
         v-if="isDesktop"
         v-tooltip="{ content: isRail ? $t('general.expand') : $t('general.collapse'), placement: flipPlacement('right') }"
         type="button"
-        class="flex items-center justify-center w-9 h-9 transition-colors rounded-lg shrink-0 text-chrome-muted hover:text-chrome-fg hover:bg-chrome-hover"
+        class="flex items-center justify-center w-9 h-9 transition-colors rounded-lg shrink-0 text-chrome-muted hover:text-chrome-fg hover:bg-chrome-hover focus-visible:ring-2 focus-visible:ring-focus"
         :aria-label="isRail ? $t('general.expand') : $t('general.collapse')"
+        :aria-expanded="!isRail"
         @click="globalStore.toggleSidebarCollapse()"
       >
         <BaseIcon

@@ -143,4 +143,9 @@ export const invoiceService = {
     const { data } = await client.get<ApiResponse<string[]>>(API.INVOICE_BANK_ACCOUNTS)
     return data.data
   },
+
+  async saveBankAccount(iban: string): Promise<string> {
+    const { data } = await client.post<ApiResponse<string>>(API.INVOICE_BANK_ACCOUNTS, { iban })
+    return data.data
+  },
 }

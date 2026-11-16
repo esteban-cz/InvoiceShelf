@@ -24,17 +24,24 @@ final class InvoicePaymentQr
             throw ValidationException::withMessages(['payment_qr.iban' => __('payment_qr_czk_only')]);
         }
 
-        $iban = $this->normalizeAccount($input['iban'] ?? '');
-
-        if ($iban === null) {
-            throw ValidationException::withMessages(['payment_qr.iban' => __('payment_qr_invalid_account')]);
-        }
+        $iban = $this->requireValidAccount($input['iban'] ?? '', 'payment_qr.iban');
 
         if ($input['save_account'] ?? false) {
-            InvoiceBankAccount::query()->firstOrCreate(['company_id' => $companyId, 'iban' => $iban]);
+            $this->saveAccount($companyId, $iban);
         }
 
         return ['iban' => $iban, 'variable_symbol' => $input['variable_symbol'] ?? null];
+    }
+
+    public function requireValidAccount(string $input, string $field): string
+    {
+        return $this->normalizeAccount($input)
+            ?? throw ValidationException::withMessages([$field => __('payment_qr_invalid_account')]);
+    }
+
+    public function saveAccount(int $companyId, string $normalizedIban): void
+    {
+        InvoiceBankAccount::query()->firstOrCreate(['company_id' => $companyId, 'iban' => $normalizedIban]);
     }
 
     public function payload(Invoice $invoice): ?string

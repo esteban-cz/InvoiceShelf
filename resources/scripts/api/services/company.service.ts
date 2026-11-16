@@ -38,7 +38,7 @@ export const companyService = {
     return data
   },
 
-  async uploadLogo(payload: FormData): Promise<ApiResponse<Company>> {
+  async uploadLogo(payload: FormData): Promise<{ success: boolean }> {
     const { data } = await client.post(API.COMPANY_UPLOAD_LOGO, payload)
     return data
   },

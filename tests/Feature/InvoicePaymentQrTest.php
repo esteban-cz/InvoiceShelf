@@ -81,6 +81,33 @@ test('invalid payment details fail validation', function (array $payment, string
     'numeric JSON drops leading zeroes' => [['iban' => '123457/0710', 'variable_symbol' => 123], 'payment_qr.variable_symbol'],
 ]);
 
+test('company settings can save a Czech account for the invoice picker and default', function () {
+    $iban = 'CZ4907100000000000123457';
+    $path = '/api/v1/invoices/bank-accounts';
+
+    postJson($path, ['iban' => '123457/0710', 'company_id' => Company::factory()->create()->id])
+        ->assertOk()->assertExactJson(['data' => $iban]);
+    postJson($path, ['iban' => 'cz49 0710 0000 0000 0012 3457'])
+        ->assertOk()->assertExactJson(['data' => $iban]);
+    postJson($path, ['iban' => '123456/0710'])
+        ->assertUnprocessable()->assertJsonValidationErrors('iban');
+
+    getJson($path)->assertOk()->assertExactJson(['data' => [$iban]]);
+    expect(InvoiceBankAccount::query()->sole()->company_id)->toBe($this->company->id);
+
+    postJson('/api/v1/company/settings', ['settings' => ['invoice_default_receiving_iban' => $iban]])
+        ->assertOk()->assertJsonPath('success', true);
+});
+
+test('a company member cannot add a receiving account through settings', function () {
+    $member = User::factory()->create(['role' => 'user']);
+    $member->companies()->attach($this->company->id);
+    Sanctum::actingAs($member, ['*']);
+
+    postJson('/api/v1/invoices/bank-accounts', ['iban' => '123457/0710'])->assertForbidden();
+    expect(InvoiceBankAccount::query()->exists())->toBeFalse();
+});
+
 test('the receiving account default can be set or cleared without changing accounts on existing invoices', function () {
     $iban = 'CZ4907100000000000123457';
     $override = 'CZ9106000000000000000123';

@@ -86,7 +86,7 @@ test('the sales domain preserves company document routes and middleware', functi
             $route->uri(),
         ) === 1);
 
-    expect($routes)->toHaveCount(38);
+    expect($routes)->toHaveCount(39);
 
     foreach ($routes as $route) {
         expect($route->getActionName())
