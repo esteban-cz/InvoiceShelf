@@ -117,3 +117,16 @@ test('Czech account numbers can include a prefix and preserve leading zeroes', f
         ->and($qr->normalizeAccount('000000/0710'))->toBeNull()
         ->and($qr->normalizeAccount('1-123457/0710'))->toBeNull();
 });
+
+test('the Czech invoice PDF uses Czech payment labels', function () {
+    CompanySetting::setSettings(['language' => 'cs'], $this->company->id);
+    $invoice = Invoice::factory()->hasItems(1)->create([
+        'customer_id' => $this->customer->id,
+        'currency_id' => $this->currency->id,
+        'payment_qr' => ['iban' => 'CZ4907100000000000123457', 'variable_symbol' => '202501'],
+    ]);
+
+    get("/invoices/pdf/{$invoice->unique_hash}?preview=true")->assertOk()
+        ->assertSee('Datum vystavení')
+        ->assertSee('Variabilní symbol 202501');
+});
