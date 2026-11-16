@@ -34,11 +34,19 @@
           :error="errors['payment_qr.variable_symbol']?.[0]"
         >
           <BaseInput
-            v-model="payment.variable_symbol"
+            v-model="variableSymbol"
             inputmode="numeric"
             maxlength="10"
             dir="ltr"
           />
+          <button
+            v-if="useDefaultSymbol && payment.variable_symbol === undefined && !defaultSymbol"
+            type="button"
+            class="mt-1 text-sm text-primary-600 hover:underline"
+            @click="variableSymbol = ''"
+          >
+            {{ $t('invoices.payment_qr.leave_symbol_blank') }}
+          </button>
         </BaseInputGroup>
       </BaseInputGrid>
       <BaseCheckbox
@@ -58,7 +66,11 @@ import { computed, onMounted, ref } from 'vue'
 import { invoiceService } from '@/scripts/api/services/invoice.service'
 import type { InvoicePaymentQrInput } from '@/scripts/types/domain/invoice'
 
-defineProps<{ errors: Record<string, string[]> }>()
+const props = defineProps<{
+  errors: Record<string, string[]>
+  useDefaultSymbol: boolean
+  defaultSymbol: string
+}>()
 
 const payment = defineModel<InvoicePaymentQrInput | null>({ required: true })
 const accounts = ref<string[]>([])
@@ -67,6 +79,14 @@ const accountOptions = computed(() => accounts.value.map((iban) => ({ id: iban, 
 const selectedAccount = computed(() =>
   payment.value && accounts.value.includes(payment.value.iban) ? payment.value.iban : '',
 )
+const variableSymbol = computed({
+  get: () => props.useDefaultSymbol && payment.value?.variable_symbol === undefined
+    ? props.defaultSymbol
+    : payment.value?.variable_symbol ?? '',
+  set: (value: string | number) => {
+    if (payment.value) payment.value.variable_symbol = String(value) || null
+  },
+})
 
 onMounted(async () => {
   try {
@@ -77,7 +97,11 @@ onMounted(async () => {
 })
 
 function toggle(enabled: boolean | unknown[]) {
-  payment.value = enabled === true ? { iban: '', variable_symbol: null, save_account: false } : null
+  payment.value = enabled === true ? {
+    iban: '',
+    save_account: false,
+    ...(props.useDefaultSymbol ? {} : { variable_symbol: null }),
+  } : null
 }
 
 function selectAccount(iban: unknown) {

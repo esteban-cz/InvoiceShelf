@@ -55,6 +55,7 @@ class InvoiceService implements InvoicePdfDataProvider
         ?array $taxes = null,
         ?iterable $customFields = null,
     ): Invoice {
+        $paymentInput = $attributes['payment_qr'] ?? null;
         $attributes = $this->configurePaymentQr($attributes);
         $invoice = Invoice::create($attributes);
 
@@ -71,6 +72,14 @@ class InvoiceService implements InvoicePdfDataProvider
             'sequence_number' => $serial->nextSequenceNumber,
             'customer_sequence_number' => $serial->nextCustomerSequenceNumber,
         ]);
+
+        if ($paymentInput !== null && ! array_key_exists('variable_symbol', $paymentInput)) {
+            $invoice->payment_qr = [
+                ...$invoice->payment_qr,
+                'variable_symbol' => $this->paymentQr->defaultVariableSymbol($invoice, (int) $serial->nextSequenceNumber),
+            ];
+        }
+
         $invoice->unique_hash = PublicToken::make();
         $invoice->save();
 

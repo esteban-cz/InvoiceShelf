@@ -71,10 +71,16 @@ class SerialNumberController extends Controller
             ]);
         }
 
-        return response()->json([
+        $result = [
             'success' => true,
             'nextNumber' => $nextNumber,
-        ]);
+        ];
+
+        if ($request->key === 'invoice' && $request->boolean('include_sequence')) {
+            $result['nextSequenceNumber'] = (int) $serial->nextSequenceNumber;
+        }
+
+        return response()->json($result);
     }
 
     /**

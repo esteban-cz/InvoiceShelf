@@ -4,6 +4,8 @@ Create or edit a CZK invoice and select **Add payment QR code**. Choose a saved 
 
 Enter a **Variable symbol** if you use one for matching bank transfers. The field accepts up to ten digits and preserves leading zeroes. It is independent of the invoice number and reference number.
 
+Under **Settings → Customization → Invoices → Variable symbol format**, choose manual entry, digits from the invoice number, invoice year plus sequence, or sequence only. The sequence is the company's invoice sequence. The invoice form previews the default for new QR payments and lets you replace or clear it. InvoiceShelf generates the saved value from the invoice at save time.
+
 On an invoice with a positive CZK balance, the three built-in PDF layouts print the locally generated QR code below the totals. The code pre-fills the receiving IBAN, outstanding amount and, when supplied, the variable symbol in a compatible Czech banking app.
 
 Custom invoice templates can use the same block by including `app.pdf.invoice.partials.payment-qr` below their totals.

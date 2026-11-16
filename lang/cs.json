@@ -577,6 +577,7 @@
       "account": "Číslo českého účtu nebo IBAN",
       "account_placeholder": "IBAN nebo číslo účtu / kód banky",
       "variable_symbol": "Variabilní symbol",
+      "leave_symbol_blank": "Ponechat variabilní symbol prázdný",
       "save_account": "Uložit účet pro další faktury",
       "accounts_unavailable": "Uložené účty se nepodařilo načíst. Účet můžete zadat ručně."
     },
@@ -1564,6 +1565,17 @@
         "title": "Faktury",
         "invoice_number_format": "Formát čísla faktury",
         "invoice_number_format_description": "Přizpůsobte si, jak bude vaše číslo faktury automaticky generováno při vytváření nové faktury.",
+        "variable_symbol_format": {
+          "title": "Formát variabilního symbolu",
+          "description": "Nastavte výchozí variabilní symbol pro nové faktury s QR platbou. Na každé faktuře ho můžete upravit.",
+          "label": "Způsob vytvoření",
+          "manual": "Zadat ručně",
+          "invoice_number": "Číslice z čísla faktury",
+          "year_sequence": "Rok vystavení + pořadové číslo (alespoň 3 číslice)",
+          "sequence": "Pořadové číslo (alespoň 6 číslic)",
+          "preview": "Náhled variabilního symbolu",
+          "no_preview": "Variabilní symbol musí obsahovat 1 až 10 číslic."
+        },
         "preview_invoice_number": "Náhled čísla faktury",
         "due_date": "Datum splatnosti",
         "due_date_description": "Nastavte, jak se při vystavení faktury vypočítá datum splatnosti.",
@@ -2379,6 +2391,7 @@
   "payment_qr_czk_only": "QR platba je dostupná pro faktury v českých korunách.",
   "payment_qr_invalid_account": "Zadejte platný český IBAN nebo číslo účtu včetně kódu banky.",
   "payment_qr_invalid_variable_symbol": "Variabilní symbol musí obsahovat 1 až 10 číslic.",
+  "payment_qr_default_symbol_unavailable": "Výchozí formát nevytvořil variabilní symbol o délce 1 až 10 číslic. Zadejte symbol ručně nebo ponechte pole prázdné.",
   "pdf_credit_note_label": "Dobropis",
   "pdf_credit_note_number": "Číslo dobropisu",
   "pdf_credit_note_date": "Datum vystavení dobropisu",

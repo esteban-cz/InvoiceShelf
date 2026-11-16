@@ -130,3 +130,64 @@ test('the Czech invoice PDF uses Czech payment labels', function () {
         ->assertSee('Datum vystavení')
         ->assertSee('Variabilní symbol 202501');
 });
+
+test('the default variable symbol follows the saved invoice number and preserves leading zeroes', function () {
+    postJson('/api/v1/company/settings', ['settings' => ['invoice_variable_symbol_format' => 'invoice_number']])
+        ->assertOk()->assertJsonPath('success', true);
+
+    postJson('/api/v1/invoices', qrInvoiceInput($this->customer, [
+        'invoice_number' => 'INV-002026001',
+        'payment_qr' => ['iban' => '123457/0710'],
+    ]))->assertOk()->assertJsonPath('data.payment_qr.variable_symbol', '002026001');
+});
+
+test('a sequence preset uses the assigned ordinary invoice sequence and issue year', function (string $format) {
+    postJson('/api/v1/company/settings', ['settings' => ['invoice_variable_symbol_format' => $format]])
+        ->assertOk();
+    $sequence = getJson('/api/v1/next-number?key=invoice&include_sequence=1')
+        ->assertOk()->json('nextSequenceNumber');
+
+    $input = qrInvoiceInput($this->customer, [
+        'invoice_number' => 'INV-01',
+        'invoice_date' => '2025-09-15',
+        'payment_qr' => ['iban' => '123457/0710'],
+    ]);
+    unset($input['sequence_number'], $input['customer_sequence_number']);
+
+    $expected = $format === 'year_sequence'
+        ? '2025'.str_pad((string) $sequence, 3, '0', STR_PAD_LEFT)
+        : str_pad((string) $sequence, 6, '0', STR_PAD_LEFT);
+
+    postJson('/api/v1/invoices', $input)->assertOk()
+        ->assertJsonPath('data.sequence_number', $sequence)
+        ->assertJsonPath('data.payment_qr.variable_symbol', $expected);
+})->with(['year_sequence', 'sequence']);
+
+test('explicit payment symbols override the default and remain as entered when the preset changes', function (?string $symbol) {
+    CompanySetting::setSettings(['invoice_variable_symbol_format' => 'invoice_number'], $this->company->id);
+    $input = qrInvoiceInput($this->customer, [
+        'invoice_number' => 'INV-2026001',
+        'payment_qr' => ['iban' => '123457/0710', 'variable_symbol' => $symbol],
+    ]);
+    $id = postJson('/api/v1/invoices', $input)
+        ->assertOk()->assertJsonPath('data.payment_qr.variable_symbol', $symbol)->json('data.id');
+
+    CompanySetting::setSettings(['invoice_variable_symbol_format' => 'year_sequence'], $this->company->id);
+    unset($input['payment_qr']);
+    putJson("/api/v1/invoices/{$id}", $input)
+        ->assertOk()->assertJsonPath('data.payment_qr.variable_symbol', $symbol);
+})->with([['202501'], [null]]);
+
+test('unknown formats and oversized generated symbols are rejected', function () {
+    postJson('/api/v1/company/settings', ['settings' => ['invoice_variable_symbol_format' => 'arbitrary']])
+        ->assertUnprocessable()->assertJsonValidationErrors('settings.invoice_variable_symbol_format');
+
+    CompanySetting::setSettings(['invoice_variable_symbol_format' => 'invoice_number'], $this->company->id);
+    postJson('/api/v1/invoices', qrInvoiceInput($this->customer, [
+        'invoice_number' => 'INV-12345678901',
+        'payment_qr' => ['iban' => '123457/0710', 'save_account' => true],
+    ]))->assertUnprocessable()->assertJsonValidationErrors('payment_qr.variable_symbol');
+
+    $this->assertDatabaseMissing('invoices', ['invoice_number' => 'INV-12345678901']);
+    $this->assertDatabaseMissing('invoice_bank_accounts', ['company_id' => $this->company->id]);
+});

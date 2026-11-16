@@ -34,6 +34,7 @@ export interface DateRangeParams {
 
 export interface NextNumberResponse {
   nextNumber: string
+  nextSequenceNumber?: number
 }
 
 export interface DeletePayload {

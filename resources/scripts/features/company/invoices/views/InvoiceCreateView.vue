@@ -105,6 +105,8 @@
           v-if="canAddPaymentQr"
           v-model="invoiceStore.newInvoice.payment_qr"
           :errors="paymentQrErrors"
+          :use-default-symbol="useDefaultVariableSymbol"
+          :default-symbol="defaultVariableSymbol"
         />
 
         <!-- Invoice Footer Section -->
@@ -169,6 +171,7 @@ import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
 import { useEntityContributions } from '@/scripts/extensions/runtime'
 import { currencyCodeOf, entityFormContext } from '@/scripts/extensions/records'
 import { useEntitySaveHooks } from '@/scripts/composables/use-entity-save-hooks'
+import { previewInvoiceVariableSymbol } from '@/scripts/utils/invoice-variable-symbol'
 import InvoiceBasicFields from '../components/InvoiceBasicFields.vue'
 import InvoicePaymentQrFields from '../components/InvoicePaymentQrFields.vue'
 import {
@@ -224,6 +227,14 @@ const isEdit = computed<boolean>(() =>
 const isRecurringEdit = computed<boolean>(() =>
   route.name === 'recurring-invoices.edit',
 )
+const variableSymbolFormat = computed(() => companyStore.selectedCompanySettings.invoice_variable_symbol_format)
+const useDefaultVariableSymbol = computed(() => !isEdit.value && !!variableSymbolFormat.value && variableSymbolFormat.value !== 'manual')
+const defaultVariableSymbol = computed(() => previewInvoiceVariableSymbol(
+  variableSymbolFormat.value,
+  invoiceStore.newInvoice.invoice_number,
+  invoiceStore.newInvoice.invoice_date,
+  invoiceStore.nextSequenceNumber,
+))
 
 /** Module form actions, sections and save hooks; see registerEntityFormSection / registerEntitySaveHook. */
 const extensionFormContext = entityFormContext('invoice', {

@@ -2,9 +2,11 @@
 
 namespace App\Domains\Sales\Application;
 
+use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Money\Models\Currency;
 use App\Domains\Sales\Models\Invoice;
 use App\Domains\Sales\Models\InvoiceBankAccount;
+use App\Support\InvoiceVariableSymbolFormat;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
@@ -55,6 +57,19 @@ final class InvoicePaymentQr
         return $payment['variable_symbol'] !== null
             ? $payload.'*X-VS:'.$payment['variable_symbol']
             : $payload;
+    }
+
+    public function defaultVariableSymbol(Invoice $invoice, int $sequence): ?string
+    {
+        $setting = CompanySetting::getSetting(InvoiceVariableSymbolFormat::SETTING, $invoice->company_id);
+        $format = InvoiceVariableSymbolFormat::tryFrom((string) $setting) ?? InvoiceVariableSymbolFormat::Manual;
+
+        if ($format === InvoiceVariableSymbolFormat::Manual) {
+            return null;
+        }
+
+        return $format->generate($invoice->invoice_number, $invoice->invoice_date, $sequence)
+            ?? throw ValidationException::withMessages(['payment_qr.variable_symbol' => __('payment_qr_default_symbol_unavailable')]);
     }
 
     public function image(Invoice $invoice): ?string

@@ -2,6 +2,7 @@
 
 namespace App\Domains\Sales\Http\Controllers\Company;
 
+use App\Domains\Accounts\Models\Company;
 use App\Domains\Sales\Application\CreditNoteService;
 use App\Domains\Sales\Application\InvoiceService;
 use App\Domains\Sales\Http\Requests\ChangeInvoiceStatusRequest;
@@ -75,12 +76,22 @@ class InvoicesController extends Controller
     {
         $this->authorize('create', Invoice::class);
 
-        $invoice = DB::transaction(fn () => $this->invoiceService->create(
-            attributes: $request->getInvoicePayload(),
-            items: $request->input('items'),
-            taxes: $request->has('taxes') ? $request->input('taxes') : null,
-            customFields: $this->customFields($request),
-        ));
+        $invoice = DB::transaction(function () use ($request): Invoice {
+            $payment = $request->validated('payment_qr');
+
+            // Serialize saves that can use the company's next sequence to
+            // generate a bank reference. The preview never reserves a number.
+            if ($payment !== null && ! array_key_exists('variable_symbol', $payment)) {
+                Company::query()->whereKey($request->header('company'))->lockForUpdate()->firstOrFail();
+            }
+
+            return $this->invoiceService->create(
+                attributes: $request->getInvoicePayload(),
+                items: $request->input('items'),
+                taxes: $request->has('taxes') ? $request->input('taxes') : null,
+                customFields: $this->customFields($request),
+            );
+        });
 
         if ($request->exists('invoiceSend')) {
             $this->invoiceService->send($invoice, $request->only(['subject', 'body']));

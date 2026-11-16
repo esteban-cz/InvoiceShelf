@@ -3,14 +3,16 @@
 namespace App\Domains\Accounts\Http\Requests;
 
 use App\Domains\Accounts\Application\MemberVisibleSettings;
+use App\Support\InvoiceVariableSymbolFormat;
 use Closure;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 /**
  * The payload behind writing preferences: one map of option names to values.
  *
- * Values are not constrained, and the currency is guarded by the controller
- * once the books are open. The names are, a little: the mail transport and
+ * Most values are stored as submitted, and the currency is guarded by the
+ * controller once the books are open. The mail transport and
  * module settings are refused, because each has an endpoint of its own that
  * validates it.
  */
@@ -43,6 +45,7 @@ class UpdateSettingsRequest extends FormRequest
                     }
                 },
             ],
+            'settings.'.InvoiceVariableSymbolFormat::SETTING => ['sometimes', 'required', Rule::enum(InvoiceVariableSymbolFormat::class)],
         ];
     }
 }

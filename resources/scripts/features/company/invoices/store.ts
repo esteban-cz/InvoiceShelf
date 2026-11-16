@@ -21,6 +21,7 @@ import type { Tax, TaxType } from '../../../types/domain/tax'
 import type { Currency } from '../../../types/domain/currency'
 import type { Customer } from '../../../types/domain/customer'
 import type { Note } from '../../../types/domain/note'
+import type { NextNumberResponse } from '../../../types/api'
 import type { CustomFieldValue } from '../../../types/domain/custom-field'
 import type { DocumentTax, DocumentItem } from '../../shared/document-form/use-document-calculations'
 import { generateClientId } from '../../../utils'
@@ -143,6 +144,7 @@ export interface InvoiceState {
   showExchangeRate: boolean
   isFetchingInitialSettings: boolean
   isFetchingInvoice: boolean
+  nextSequenceNumber: number | null
   newInvoice: InvoiceFormData
 }
 
@@ -156,6 +158,7 @@ export const useInvoiceStore = defineStore('invoice', {
     showExchangeRate: false,
     isFetchingInitialSettings: false,
     isFetchingInvoice: false,
+    nextSequenceNumber: null,
     newInvoice: createInvoiceStub(),
   }),
 
@@ -240,6 +243,7 @@ export const useInvoiceStore = defineStore('invoice', {
   actions: {
     resetCurrentInvoice(): void {
       this.newInvoice = createInvoiceStub()
+      this.nextSequenceNumber = null
     },
 
     async previewInvoice(params: SendInvoicePayload): Promise<unknown> {
@@ -406,10 +410,11 @@ export const useInvoiceStore = defineStore('invoice', {
     async getNextNumber(
       params?: Record<string, unknown>,
       setState = false,
-    ): Promise<{ data: { nextNumber: string } }> {
-      const response = await invoiceService.getNextNumber(params as never)
+    ): Promise<{ data: NextNumberResponse }> {
+      const response = await invoiceService.getNextNumber(setState ? { ...params, include_sequence: true } : params)
       if (setState) {
         this.newInvoice.invoice_number = response.nextNumber
+        this.nextSequenceNumber = response.nextSequenceNumber ?? null
       }
       return { data: response }
     },
@@ -552,12 +557,13 @@ export const useInvoiceStore = defineStore('invoice', {
           Promise.resolve(), // placeholder for items fetch
           this.resetSelectedNote(),
           this.fetchInvoiceTemplates(),
-          this.getNextNumber(),
+          this.getNextNumber({ include_sequence: !isEdit }),
           Promise.resolve(), // placeholder for tax types fetch
           ...editActions,
         ])
 
         if (!isEdit) {
+          this.nextSequenceNumber = nextNumRes?.data?.nextSequenceNumber ?? null
           if (nextNumRes?.data?.nextNumber) {
             this.newInvoice.invoice_number = nextNumRes.data.nextNumber
           }

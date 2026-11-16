@@ -84,7 +84,8 @@ export interface InvoicePaymentQr {
   variable_symbol: string | null
 }
 
-export interface InvoicePaymentQrInput extends InvoicePaymentQr {
+export interface InvoicePaymentQrInput extends Omit<InvoicePaymentQr, 'variable_symbol'> {
+  variable_symbol?: string | null
   save_account?: boolean
 }
 
