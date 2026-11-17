@@ -4,6 +4,7 @@ import type {
   Invoice,
   CreateInvoicePayload,
   CreateCreditNotePayload,
+  InvoiceBankAccount,
 } from '@/scripts/types/domain/invoice'
 import type {
   ApiResponse,
@@ -144,8 +145,13 @@ export const invoiceService = {
     return data.data
   },
 
-  async saveBankAccount(iban: string): Promise<string> {
-    const { data } = await client.post<ApiResponse<string>>(API.INVOICE_BANK_ACCOUNTS, { iban })
+  async getBankAccountDetails(): Promise<InvoiceBankAccount[]> {
+    const { data } = await client.get<ApiResponse<InvoiceBankAccount[]>>(API.INVOICE_BANK_ACCOUNTS, { params: { details: true } })
+    return data.data
+  },
+
+  async saveBankAccount(iban: string, bankName?: string): Promise<string> {
+    const { data } = await client.post<ApiResponse<string>>(API.INVOICE_BANK_ACCOUNTS, { iban, bank_name: bankName })
     return data.data
   },
 }

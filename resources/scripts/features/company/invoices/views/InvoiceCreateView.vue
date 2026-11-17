@@ -111,6 +111,14 @@
         />
 
         <!-- Invoice Footer Section -->
+        <BaseCheckbox
+          v-if="!isRecurring"
+          v-model="invoiceStore.newInvoice.sign_document"
+          class="mt-6"
+          :label="$t('invoices.signature.enable')"
+          :description="$t('invoices.signature.help')"
+        />
+
         <div
           class="block mt-10 invoice-foot lg:flex lg:justify-between lg:items-start"
         >
@@ -480,9 +488,31 @@ async function submitForm(): Promise<void> {
       }
       router.push(`/admin/recurring-invoices/${response.data.data.id}/view`)
     } else {
+      const invoiceData = cloneDeep(invoiceStore.newInvoice)
       const data: Record<string, unknown> = {
-        ...cloneDeep(invoiceStore.newInvoice),
-        payment_qr: canAddPaymentQr.value ? cloneDeep(invoiceStore.newInvoice.payment_qr) : null,
+        id: invoiceData.id,
+        invoice_date: invoiceData.invoice_date,
+        due_date: invoiceData.due_date,
+        invoice_number: invoiceData.invoice_number,
+        reference_number: invoiceData.reference_number,
+        customer_id: invoiceData.customer_id,
+        template_name: invoiceData.template_name,
+        notes: invoiceData.notes,
+        sign_document: invoiceData.sign_document,
+        payment_qr: canAddPaymentQr.value ? invoiceData.payment_qr : null,
+        discount: invoiceData.discount,
+        discount_type: invoiceData.discount_type,
+        discount_val: invoiceData.discount_val,
+        discount_per_item: invoiceData.discount_per_item,
+        tax_per_item: invoiceData.tax_per_item,
+        tax_included: invoiceData.tax_included,
+        sales_tax_type: invoiceData.sales_tax_type,
+        sales_tax_address_type: invoiceData.sales_tax_address_type,
+        items: invoiceData.items,
+        taxes: invoiceData.taxes,
+        currency_id: invoiceData.currency_id,
+        exchange_rate: invoiceData.exchange_rate,
+        customFields: invoiceData.customFields,
         sub_total: Math.round(invoiceStore.getSubTotal),
         total: Math.round(invoiceStore.getTotal),
         tax: Math.round(invoiceStore.getTotalTax),

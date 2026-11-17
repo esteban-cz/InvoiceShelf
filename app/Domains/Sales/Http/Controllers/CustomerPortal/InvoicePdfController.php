@@ -2,6 +2,7 @@
 
 namespace App\Domains\Sales\Http\Controllers\CustomerPortal;
 
+use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Sales\Events\InvoiceViewed;
 use App\Domains\Sales\Http\Resources\CustomerPortal\InvoiceResource;
 use App\Domains\Sales\Models\Invoice;
@@ -27,6 +28,7 @@ class InvoicePdfController extends Controller
         }
 
         $issuer = $invoice->company_id;
+        app()->setLocale(CompanySetting::getSetting('language', $issuer) ?: config('app.locale'));
 
         return view('app')->with([
             'customer_logo' => get_company_setting('customer_portal_logo', $issuer),
@@ -40,7 +42,13 @@ class InvoicePdfController extends Controller
      */
     public function getInvoice(EmailLog $emailLog)
     {
-        return InvoiceResource::make($this->documentBehind($emailLog));
+        $invoice = $this->documentBehind($emailLog);
+        $language = CompanySetting::getSetting('language', $invoice->company_id) ?: config('app.locale');
+        app()->setLocale($language);
+
+        return InvoiceResource::make($invoice)->additional(['meta' => [
+            'language' => $language,
+        ]]);
     }
 
     /**

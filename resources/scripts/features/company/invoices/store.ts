@@ -80,6 +80,7 @@ export interface InvoiceFormData {
   discount_val: number
   reference_number: string | null
   payment_qr: InvoicePaymentQrInput | null
+  sign_document: boolean
   tax: number
   sub_total: number
   total: number
@@ -114,6 +115,7 @@ function createInvoiceStub(): InvoiceFormData {
     discount_val: 0,
     reference_number: null,
     payment_qr: null,
+    sign_document: true,
     tax: 0,
     sub_total: 0,
     total: 0,

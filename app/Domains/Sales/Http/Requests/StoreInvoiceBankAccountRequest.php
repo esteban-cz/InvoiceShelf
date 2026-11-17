@@ -10,6 +10,7 @@ class StoreInvoiceBankAccountRequest extends FormRequest
     {
         return [
             'iban' => ['required', 'string', 'max:64'],
+            'bank_name' => ['sometimes', 'nullable', 'string', 'max:120'],
         ];
     }
 }

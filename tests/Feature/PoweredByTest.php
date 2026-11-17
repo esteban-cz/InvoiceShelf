@@ -1,7 +1,7 @@
 <?php
 
-use App\Support\PoweredBy;
 use App\Platform\Operations\Application\BuildVersionService;
+use App\Support\PoweredBy;
 use Illuminate\Support\Facades\File;
 
 use function Pest\Laravel\getJson;
@@ -11,11 +11,11 @@ use function Pest\Laravel\getJson;
  * the link to the running version's source code (AGPL section 13). A host may
  * rename or hide the first; the second is always offered.
  */
-test('mail says powered by InvoiceShelf unless the host says otherwise', function () {
+test('mail says powered by tomecka.com unless the host says otherwise', function () {
     expect(view('emails.partials.powered-by')->render())
         ->toContain('Powered by')
-        ->toContain('href="https://invoiceshelf.com"')
-        ->toContain('>InvoiceShelf</a>');
+        ->toContain('href="https://www.tomecka.com"')
+        ->toContain('>tomecka.com</a>');
 
     config([
         'invoiceshelf.powered_by.name' => 'Acme Hosting',
@@ -36,7 +36,7 @@ test('a white-label install sends mail without the line', function () {
 test('the thin client learns the line and the source link from the manifest', function () {
     $manifest = getJson('/api/v1/app/client-manifest')->assertOk();
 
-    expect($manifest->json('branding.powered_by'))->toBe(['name' => 'InvoiceShelf', 'url' => 'https://invoiceshelf.com'])
+    expect($manifest->json('branding.powered_by'))->toBe(['name' => 'tomecka.com', 'url' => 'https://www.tomecka.com'])
         ->and($manifest->json('source_url'))->toBe(PoweredBy::sourceUrl());
 
     config(['invoiceshelf.powered_by.enabled' => false]);

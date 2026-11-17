@@ -25,12 +25,19 @@ final class InvoicePaymentQr
         }
 
         $iban = $this->requireValidAccount($input['iban'] ?? '', 'payment_qr.iban');
+        $bank_name = array_key_exists('bank_name', $input)
+            ? trim((string) $input['bank_name'])
+            : InvoiceBankAccount::query()->where('company_id', $companyId)->where('iban', $iban)->value('bank_name');
 
         if ($input['save_account'] ?? false) {
-            $this->saveAccount($companyId, $iban);
+            $this->saveAccount($companyId, $iban, $bank_name);
         }
 
-        return ['iban' => $iban, 'variable_symbol' => $input['variable_symbol'] ?? null];
+        return [
+            'iban' => $iban,
+            'variable_symbol' => $input['variable_symbol'] ?? null,
+            ...($bank_name ? ['bank_name' => $bank_name] : []),
+        ];
     }
 
     public function requireValidAccount(string $input, string $field): string
@@ -39,9 +46,39 @@ final class InvoicePaymentQr
             ?? throw ValidationException::withMessages([$field => __('payment_qr_invalid_account')]);
     }
 
-    public function saveAccount(int $companyId, string $normalizedIban): void
+    public function saveAccount(int $companyId, string $normalizedIban, ?string $bank_name = null): void
     {
-        InvoiceBankAccount::query()->firstOrCreate(['company_id' => $companyId, 'iban' => $normalizedIban]);
+        $key = ['company_id' => $companyId, 'iban' => $normalizedIban];
+
+        if ($bank_name !== null) {
+            InvoiceBankAccount::query()->updateOrCreate($key, ['bank_name' => trim($bank_name) ?: null]);
+        } else {
+            InvoiceBankAccount::query()->firstOrCreate($key);
+        }
+    }
+
+    public function savedAccounts(int $company_id, bool $details): array
+    {
+        return InvoiceBankAccount::query()->where('company_id', $company_id)->orderBy('iban')->get()
+            ->map(fn (InvoiceBankAccount $account) => $details ? [
+                'iban' => $account->iban,
+                'account_number' => $this->domesticAccount($account->iban),
+                'bank_name' => $account->bank_name,
+            ] : $account->iban)->all();
+    }
+
+    /** The Czech account number is encoded losslessly in a valid Czech IBAN. */
+    public function domesticAccount(string $input): ?string
+    {
+        $iban = $this->normalizeAccount($input);
+
+        if ($iban === null) {
+            return null;
+        }
+
+        $prefix = ltrim(substr($iban, 8, 6), '0');
+
+        return ($prefix !== '' ? $prefix.'-' : '').ltrim(substr($iban, 14), '0').'/'.substr($iban, 4, 4);
     }
 
     public function payload(Invoice $invoice): ?string
@@ -87,7 +124,7 @@ final class InvoicePaymentQr
             return null;
         }
 
-        $writer = new Writer(new ImageRenderer(new RendererStyle(160, 4), new SvgImageBackEnd));
+        $writer = new Writer(new ImageRenderer(new RendererStyle(240, 4), new SvgImageBackEnd));
 
         return 'data:image/svg+xml;base64,'.base64_encode($writer->writeString($payload));
     }

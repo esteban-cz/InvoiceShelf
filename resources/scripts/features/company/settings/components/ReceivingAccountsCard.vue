@@ -4,11 +4,13 @@ import { useI18n } from 'vue-i18n'
 import { invoiceService } from '@/scripts/api/services/invoice.service'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
 import { handleApiError } from '@/scripts/utils/error-handling'
+import type { InvoiceBankAccount } from '@/scripts/types/domain/invoice'
 
 const notificationStore = useNotificationStore()
 const { t } = useI18n()
-const accounts = ref<string[]>([])
+const accounts = ref<InvoiceBankAccount[]>([])
 const iban = ref('')
+const bankName = ref('')
 const fieldError = ref('')
 const saveError = ref('')
 const isLoading = ref(true)
@@ -17,7 +19,7 @@ const isSaving = ref(false)
 
 onMounted(async () => {
   try {
-    accounts.value = await invoiceService.getBankAccounts()
+    accounts.value = await invoiceService.getBankAccountDetails()
   } catch {
     loadFailed.value = true
   } finally {
@@ -33,22 +35,28 @@ async function save(): Promise<void> {
   saveError.value = ''
 
   try {
-    const account = await invoiceService.saveBankAccount(iban.value.trim())
-    if (!accounts.value.includes(account)) {
-      accounts.value = [...accounts.value, account].sort()
-    }
+    await invoiceService.saveBankAccount(iban.value.trim(), bankName.value.trim())
+    accounts.value = await invoiceService.getBankAccountDetails()
     iban.value = ''
+    bankName.value = ''
     notificationStore.showNotification({
       type: 'success',
       message: 'settings.payment_modes.receiving_accounts.saved',
     })
   } catch (err) {
     const error = handleApiError(err)
-    fieldError.value = error.validationErrors.iban ? t('payment_qr_invalid_account') : ''
+    fieldError.value = error.validationErrors.iban ? t('payment_qr_invalid_account') : error.validationErrors.bank_name?.[0] ?? ''
     if (!fieldError.value) saveError.value = error.message
   } finally {
     isSaving.value = false
   }
+}
+
+function edit(account: InvoiceBankAccount) {
+  iban.value = account.iban
+  bankName.value = account.bank_name ?? ''
+  fieldError.value = ''
+  saveError.value = ''
 }
 </script>
 
@@ -72,10 +80,23 @@ async function save(): Promise<void> {
     >
       <li
         v-for="account in accounts"
-        :key="account"
-        class="px-3 py-2 font-mono text-sm text-body"
+        :key="account.iban"
+        class="flex items-start justify-between gap-3 px-3 py-3 text-sm text-body"
       >
-        <bdi>{{ account }}</bdi>
+        <div class="min-w-0">
+          <p v-if="account.bank_name" class="font-medium text-heading">{{ account.bank_name }}</p>
+          <p class="font-mono"><bdi>{{ account.account_number }}</bdi></p>
+          <p class="mt-1 break-all font-mono text-xs text-muted">IBAN <bdi>{{ account.iban }}</bdi></p>
+        </div>
+        <button
+          type="button"
+          class="shrink-0 text-primary-600 hover:underline"
+          :aria-label="$t('invoices.payment_qr.edit_account') + ' ' + account.account_number"
+          :disabled="isSaving"
+          @click="edit(account)"
+        >
+          {{ $t('invoices.payment_qr.edit_account') }}
+        </button>
       </li>
     </ul>
     <p v-if="loadFailed" class="mb-4 text-sm text-muted" role="status">
@@ -98,13 +119,16 @@ async function save(): Promise<void> {
           @update:model-value="fieldError = ''"
         />
       </BaseInputGroup>
+      <BaseInputGroup :label="$t('invoices.payment_qr.bank_name')" class="w-full sm:max-w-xs">
+        <BaseInput v-model="bankName" maxlength="120" :disabled="isSaving" />
+      </BaseInputGroup>
       <BaseButton
         type="submit"
         :loading="isSaving"
         :disabled="isSaving || isLoading || !iban.trim()"
         class="sm:mt-6"
       >
-        {{ $t('settings.payment_modes.receiving_accounts.add') }}
+        {{ $t('general.save') }}
       </BaseButton>
     </form>
     <p v-if="saveError" class="mt-3 text-sm text-danger" role="alert">{{ saveError }}</p>

@@ -33,6 +33,7 @@ class RecurringInvoiceService
         private readonly CustomFieldValueWriter $customFieldValueWriter,
         private readonly DocumentExchangeRateRecorder $exchangeRateRecorder,
         private readonly RecurrenceRunner $runner,
+        private readonly InvoiceSignatureService $signatures,
     ) {}
 
     /**
@@ -325,7 +326,7 @@ class RecurringInvoiceService
             'customer_sequence_number' => $serial->nextCustomerSequenceNumber,
         ];
 
-        $invoice = Invoice::create($newInvoice);
+        $invoice = Invoice::create($this->signatures->configure($newInvoice));
         $invoice->unique_hash = PublicToken::make();
         $invoice->save();
 

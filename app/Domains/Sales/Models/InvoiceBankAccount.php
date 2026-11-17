@@ -8,5 +8,5 @@ class InvoiceBankAccount extends Model
 {
     protected $table = 'invoice_bank_accounts';
 
-    protected $fillable = ['company_id', 'iban'];
+    protected $fillable = ['company_id', 'iban', 'bank_name'];
 }

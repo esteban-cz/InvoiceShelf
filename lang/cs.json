@@ -580,7 +580,10 @@
       "variable_symbol": "Variabilní symbol",
       "leave_symbol_blank": "Ponechat variabilní symbol prázdný",
       "save_account": "Uložit účet pro další faktury",
-      "accounts_unavailable": "Uložené účty se nepodařilo načíst. Účet můžete zadat ručně."
+      "accounts_unavailable": "Uložené účty se nepodařilo načíst. Účet můžete zadat ručně.",
+      "bank_name": "Název banky",
+      "account_number": "Číslo účtu",
+      "edit_account": "Upravit účet"
     },
     "download": "Stáhnout",
     "pay_invoice": "Zaplatit fakturu",
@@ -706,7 +709,11 @@
     "marked_as_sent_message": "Faktura označena jako úspěšně odeslaná",
     "something_went_wrong": "něco se nezdařilo",
     "invalid_due_amount_message": "Celková částka faktury nemůže být nižší než celková částka zaplacená za tuto fakturu. Chcete-li pokračovat, upravte fakturu nebo smažte související platby.",
-    "mark_as_default_invoice_template_description": "Je-li povoleno, bude vybraná šablona automaticky vybrána pro nové faktury."
+    "mark_as_default_invoice_template_description": "Je-li povoleno, bude vybraná šablona automaticky vybrána pro nové faktury.",
+    "signature": {
+      "enable": "Podepsat doklad",
+      "help": "Použije podpis nahraný v nastavení faktur. Jméno vystavitele se vytiskne i bez podpisu."
+    }
   },
   "recurring_invoices": {
     "title": "Opakované faktury",
@@ -1619,7 +1626,16 @@
         "disable_on_invoice_partial_paid": "Zakázat po zaznamenání částečné platby",
         "disable_on_invoice_paid": "Vypnout po zaplacení plné platby",
         "disable_on_invoice_sent": "Vypnout po odeslání faktury",
-        "retrospective_edits_description": "Povolte nebo zakažte uživatelům upravovat dokončené faktury podle pravidel vaší země a firmy."
+        "retrospective_edits_description": "Povolte nebo zakažte uživatelům upravovat dokončené faktury podle pravidel vaší země a firmy.",
+        "signature": {
+          "title": "Vystavitel a podpis",
+          "description": "Nahrajte obrázek podpisu a vyberte jméno, které se vytiskne na fakturách.",
+          "issuer_name": "Vystavil",
+          "image": "Obrázek podpisu",
+          "upload_help": "PNG nebo JPEG, nejvýše 256 KB a 2400 × 1200 pixelů. Nejlépe vypadá PNG s průhledným pozadím.",
+          "saved": "Vystavitel a podpis byly uloženy.",
+          "load_failed": "Nastavení podpisu se nepodařilo načíst. Obnovte prosím stránku."
+        }
       },
       "credit_notes": {
         "title": "Dobropisy",
@@ -3117,5 +3133,10 @@
   "Available": "Dostupné",
   "Gross invoice due": "Faktury celkem k úhradě",
   "Net account balance": "Čistý zůstatek účtu",
-  "Credit note": "Dobropis"
+  "Credit note": "Dobropis",
+  "mail_invoice_attached": "Fakturu najdete v příloze tohoto e-mailu.",
+  "pdf_payment_details": "Platební údaje",
+  "pdf_bank_account": "Číslo účtu:",
+  "pdf_issued_by": "Vystavil:",
+  "pdf_signature": "Podpis:"
 }

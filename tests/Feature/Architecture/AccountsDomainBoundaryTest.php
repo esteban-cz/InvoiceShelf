@@ -145,7 +145,7 @@ test('the accounts domain preserves company account routes and middleware', func
         ->reject(fn ($route): bool => $route->uri() === 'api/v1/invitations/{token}/details')
         ->reject(fn ($route): bool => str_starts_with($route->uri(), 'api/v1/super-admin/'));
 
-    expect($routes)->toHaveCount(32);
+    expect($routes)->toHaveCount(34);
 
     foreach ($routes as $route) {
         expect($route->gatherMiddleware())->toContain('auth:sanctum', 'company');

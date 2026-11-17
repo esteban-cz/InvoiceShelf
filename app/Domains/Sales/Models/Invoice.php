@@ -113,6 +113,8 @@ class Invoice extends Model implements HasMedia
         'id',
     ];
 
+    protected $hidden = ['document_signature'];
+
     /**
      * Columns the pre-cast date handling used to hydrate as instances.
      *
@@ -158,6 +160,8 @@ class Invoice extends Model implements HasMedia
             'exchange_rate' => 'float',
             'reminders_paused' => 'boolean',
             'payment_qr' => 'array',
+            'sign_document' => 'boolean',
+            'document_signature' => 'array',
         ];
     }
 
@@ -658,6 +662,7 @@ class Invoice extends Model implements HasMedia
         return [
             'pdf_attachments_applied' => app(InvoicePdfAttachments::class)->applyTo($this->company_id),
             'payment_qr_fingerprint' => $this->paymentQrFingerprint(),
+            'document_footer_fingerprint' => $this->documentFooterFingerprint(),
         ];
     }
 
@@ -671,7 +676,13 @@ class Invoice extends Model implements HasMedia
     protected function archivedPdfIsCurrent(array $properties): bool
     {
         return (bool) ($properties['pdf_attachments_applied'] ?? false) === app(InvoicePdfAttachments::class)->applyTo($this->company_id)
-            && ($properties['payment_qr_fingerprint'] ?? null) === $this->paymentQrFingerprint();
+            && ($properties['payment_qr_fingerprint'] ?? null) === $this->paymentQrFingerprint()
+            && ($properties['document_footer_fingerprint'] ?? null) === $this->documentFooterFingerprint();
+    }
+
+    private function documentFooterFingerprint(): string
+    {
+        return hash('sha256', json_encode([1, $this->sign_document, $this->document_signature]));
     }
 
     private function paymentQrFingerprint(): ?string

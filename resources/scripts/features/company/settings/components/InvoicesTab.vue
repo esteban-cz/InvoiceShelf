@@ -7,6 +7,7 @@ import InvoicesTabDueDate from './InvoicesTabDueDate.vue'
 import InvoicesTabRetrospective from './InvoicesTabRetrospective.vue'
 import InvoicesTabDefaultFormats from './InvoicesTabDefaultFormats.vue'
 import InvoicesTabQrDefaults from './InvoicesTabQrDefaults.vue'
+import InvoicesTabSignature from './InvoicesTabSignature.vue'
 
 interface Utils {
   mergeSettings: (target: Record<string, unknown>, source: Record<string, unknown>) => void
@@ -52,6 +53,10 @@ const sendAsAttachmentField = computed<boolean>({
   <BaseDivider class="mt-6 mb-2" />
 
   <InvoicesTabQrDefaults />
+
+  <BaseDivider class="mt-6 mb-2" />
+
+  <InvoicesTabSignature />
 
   <BaseDivider class="mt-6 mb-2" />
 

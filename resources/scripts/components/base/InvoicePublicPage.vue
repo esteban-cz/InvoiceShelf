@@ -9,12 +9,6 @@ import type { Currency } from '@/scripts/types/domain'
 import type { Company } from '@/scripts/types/domain'
 import type { Customer } from '@/scripts/types/domain'
 
-declare global {
-  interface Window {
-    customer_logo?: string | null
-  }
-}
-
 interface InvoicePublicData {
   invoice_number: string
   paid_status: string
@@ -35,6 +29,7 @@ loadInvoice()
 async function loadInvoice(): Promise<void> {
   const hash = route.params.hash as string
   const { data } = await client.get(`/customer/invoices/${hash}`)
+  if (data.meta?.language) await window.loadLanguage?.(data.meta.language)
   invoiceData.value = data.data
 }
 
@@ -46,14 +41,6 @@ function getLogo(): URL {
   const imgUrl = new URL('$images/logo-gray.png', import.meta.url)
   return imgUrl
 }
-
-const customerLogo = computed<string | false>(() => {
-  if (window.customer_logo) {
-    return window.customer_logo
-  }
-
-  return false
-})
 
 const pageTitle: ComputedRef<string> = computed(() => invoiceData.value?.invoice_number ?? '')
 
@@ -76,6 +63,7 @@ function payInvoice(): void {
     <div class="bg-linear-to-r from-primary-500 to-primary-400 h-5"></div>
 
     <div
+      v-if="invoiceData"
       class="
         relative
         p-6
@@ -133,7 +121,6 @@ function payInvoice(): void {
       <InvoiceInformationCard :invoice="invoiceData" />
 
       <div
-        v-if="!customerLogo"
         class="flex items-center justify-center mt-4 text-muted font-normal"
       >
         <PoweredBy :logo="getLogo().href" />

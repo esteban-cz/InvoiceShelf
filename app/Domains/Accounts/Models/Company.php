@@ -70,6 +70,7 @@ class Company extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('logo')->useDisk('public')->singleFile();
+        $this->addMediaCollection('signature')->acceptsMimeTypes(['image/png', 'image/jpeg'])->singleFile();
     }
 
     /*
