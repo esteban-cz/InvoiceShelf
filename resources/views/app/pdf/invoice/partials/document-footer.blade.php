@@ -1,6 +1,6 @@
 @php($signature = $invoice->document_signature)
 @if ($invoice->payment_qr || $signature)
-    <div style="clear: both; margin: 20px 30px 0; padding-top: 16px; border-top: 1px solid #E8E8E8; page-break-inside: avoid;">
+    <div style="margin: 20px 30px 0; page-break-inside: avoid;">
         <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
             <tr>
                 <td style="width: 70%; vertical-align: top;">

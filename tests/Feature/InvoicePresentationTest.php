@@ -139,3 +139,14 @@ test('an unsigned invoice can pick up a newly uploaded signature and invalidates
     expect($invoice->document_signature['image'])->toStartWith('data:image/png;base64,')
         ->and($current->invoke($invoice, $properties))->toBeFalse();
 });
+
+test('an archived invoice from the earlier footer layout is regenerated', function () {
+    $id = $this->postJson('/api/v1/invoices', presentationInvoiceInput($this->customer))->assertOk()->json('data.id');
+    $invoice = Invoice::query()->findOrFail($id);
+    $properties = (new ReflectionMethod($invoice, 'archivedPdfProperties'))->invoke($invoice);
+    $current = new ReflectionMethod($invoice, 'archivedPdfIsCurrent');
+    expect($current->invoke($invoice, $properties))->toBeTrue();
+
+    $properties['document_footer_fingerprint'] = hash('sha256', json_encode([1, $invoice->sign_document, $invoice->document_signature]));
+    expect($current->invoke($invoice, $properties))->toBeFalse();
+});

@@ -5,6 +5,7 @@ import { invoiceService } from '@/scripts/api/services/invoice.service'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
 import { handleApiError } from '@/scripts/utils/error-handling'
 import type { InvoiceBankAccount } from '@/scripts/types/domain/invoice'
+import { czechBankName, suggestedCzechBankName } from '@/scripts/utils/czech-banks'
 
 const notificationStore = useNotificationStore()
 const { t } = useI18n()
@@ -54,9 +55,16 @@ async function save(): Promise<void> {
 
 function edit(account: InvoiceBankAccount) {
   iban.value = account.iban
-  bankName.value = account.bank_name ?? ''
+  bankName.value = account.bank_name || czechBankName(account.iban)
   fieldError.value = ''
   saveError.value = ''
+}
+
+function updateAccount(value: string | number) {
+  const account = String(value)
+  bankName.value = suggestedCzechBankName(account, iban.value, bankName.value)
+  iban.value = account
+  fieldError.value = ''
 }
 </script>
 
@@ -110,17 +118,18 @@ function edit(account: InvoiceBankAccount) {
         class="w-full sm:max-w-md"
       >
         <BaseInput
-          v-model="iban"
+          :model-value="iban"
           dir="ltr"
           maxlength="64"
           :placeholder="$t('invoices.payment_qr.account_placeholder')"
           :invalid="!!fieldError"
           :disabled="isSaving"
-          @update:model-value="fieldError = ''"
+          @update:model-value="updateAccount"
         />
       </BaseInputGroup>
       <BaseInputGroup :label="$t('invoices.payment_qr.bank_name')" class="w-full sm:max-w-xs">
         <BaseInput v-model="bankName" maxlength="120" :disabled="isSaving" />
+        <p class="mt-1 text-xs text-muted">{{ $t('invoices.payment_qr.bank_name_help') }}</p>
       </BaseInputGroup>
       <BaseButton
         type="submit"
