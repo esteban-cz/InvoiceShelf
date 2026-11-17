@@ -2,6 +2,7 @@
 
 namespace App\Domains\Reporting\Queries;
 
+use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Contacts\Models\Customer;
 use App\Domains\Receivables\Models\Payment;
 use App\Domains\Receivables\Models\PaymentAllocation;
@@ -118,6 +119,7 @@ class CustomerStatementQuery
     {
         $openingBalance = $this->activityBalanceBefore($customer, $from);
         $entries = collect();
+        $locale = CompanySetting::getSetting('language', $customer->company_id) ?: app()->getLocale();
 
         $documents = $this->statementDocuments($customer)
             ->whereBetween('invoice_date', [$from->toDateString(), $to->toDateString()])
@@ -130,7 +132,7 @@ class CustomerStatementQuery
                 'date' => Carbon::parse($document->invoice_date)->toDateString(),
                 'entry_type' => $isCreditNote ? 'credit_note' : 'invoice',
                 'reference' => $document->invoice_number,
-                'description' => $isCreditNote ? __('Credit note') : __('Invoice'),
+                'description' => __($isCreditNote ? 'Credit note' : 'Invoice', [], $locale),
                 'debit_amount' => $isCreditNote ? 0 : (int) $document->total,
                 'credit_amount' => $isCreditNote ? abs((int) $document->total) : 0,
                 'base_debit_amount' => $isCreditNote ? 0 : (int) $document->base_total,
@@ -151,7 +153,7 @@ class CustomerStatementQuery
                 'date' => Carbon::parse($payment->payment_date)->toDateString(),
                 'entry_type' => 'payment',
                 'reference' => $payment->payment_number,
-                'description' => __('Payment'),
+                'description' => __('Payment', [], $locale),
                 'debit_amount' => 0,
                 'credit_amount' => (int) $payment->amount,
                 'base_debit_amount' => 0,

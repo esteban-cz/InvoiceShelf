@@ -10,24 +10,26 @@
     <BaseCard v-if="!managed" class="mt-6">
       <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <h2 class="text-heading text-lg font-medium">Marketplace access</h2>
+          <h2 class="text-heading text-lg font-medium">{{ $t('modules.marketplace.title') }}</h2>
           <p class="mt-1 text-sm text-muted">
-            Pair this InvoiceShelf instance with your marketplace account. The device credential stays encrypted on this server.
+            {{ $t('modules.marketplace.description') }}
           </p>
           <div v-if="pairingCode" class="mt-4 space-y-1 text-sm text-body">
-            <p>Enter code <strong>{{ pairingCode.user_code }}</strong> at the marketplace verification page.</p>
-            <a v-if="pairingCode.verification_uri_complete || pairingCode.verification_uri" class="text-primary-600 underline" :href="pairingCode.verification_uri_complete || pairingCode.verification_uri || undefined" target="_blank" rel="noopener">Open verification page</a>
+            <i18n-t keypath="modules.marketplace.enter_code" tag="p">
+              <template #code><strong>{{ pairingCode.user_code }}</strong></template>
+            </i18n-t>
+            <a v-if="pairingCode.verification_uri_complete || pairingCode.verification_uri" class="text-primary-600 underline" :href="pairingCode.verification_uri_complete || pairingCode.verification_uri || undefined" target="_blank" rel="noopener">{{ $t('modules.marketplace.open_verification') }}</a>
           </div>
         </div>
         <div class="flex flex-wrap gap-3">
           <BaseButton v-if="!moduleStore.marketplacePairing?.paired" :loading="isPairing" @click="startPairing">
-            Pair marketplace
+            {{ $t('modules.marketplace.pair') }}
           </BaseButton>
           <BaseButton v-if="pairingCode" variant="primary-outline" :loading="isPolling" @click="pollPairing">
-            I have approved this device
+            {{ $t('modules.marketplace.approved') }}
           </BaseButton>
           <BaseButton v-if="moduleStore.marketplacePairing?.paired" variant="primary-outline" @click="disconnect">
-            Disconnect
+            {{ $t('modules.marketplace.disconnect') }}
           </BaseButton>
         </div>
       </div>
@@ -108,10 +110,10 @@ async function pollPairing(): Promise<void> {
     const result = await moduleStore.pollMarketplacePairing()
     if (result.status === 'paired') {
       pairingCode.value = null
-      notificationStore.showNotification({ type: 'success', message: 'Marketplace paired' })
+      notificationStore.showNotification({ type: 'success', message: 'modules.marketplace.connected' })
       await fetchModulesData()
     } else {
-      notificationStore.showNotification({ type: 'info', message: 'Waiting for marketplace approval' })
+      notificationStore.showNotification({ type: 'info', message: 'modules.marketplace.waiting' })
     }
   } finally {
     isPolling.value = false
@@ -120,7 +122,7 @@ async function pollPairing(): Promise<void> {
 
 async function disconnect(): Promise<void> {
   await moduleStore.disconnectMarketplace()
-  notificationStore.showNotification({ type: 'success', message: 'Marketplace disconnected' })
+  notificationStore.showNotification({ type: 'success', message: 'modules.marketplace.disconnected' })
   await fetchModulesData()
 }
 

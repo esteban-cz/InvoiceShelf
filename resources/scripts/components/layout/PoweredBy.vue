@@ -15,7 +15,7 @@ const showLogo = computed<boolean>(() => props.logo !== null && brand?.name === 
 
 <template>
   <span v-if="brand" class="inline-flex items-center gap-1">
-    Powered by
+    {{ $t('powered_by') }}
     <a
       :href="brand.url"
       target="_blank"

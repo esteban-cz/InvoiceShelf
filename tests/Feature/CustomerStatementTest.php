@@ -1,6 +1,7 @@
 <?php
 
 use App\Domains\Accounts\Models\Company;
+use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Accounts\Models\User;
 use App\Domains\Contacts\Models\Customer;
 use App\Domains\Receivables\Models\Payment;
@@ -236,4 +237,29 @@ test('outstanding statement PDF preview includes account totals', function () {
         ->assertSee('Gross invoice due')
         ->assertSee('Available credit')
         ->assertSee('Net account balance');
+});
+
+test('customer statements use Czech labels for a Czech company', function () {
+    CompanySetting::setSettings(['language' => 'cs'], $this->company->id);
+    $customer = statementCustomer();
+    statementInvoice($customer, '2026-01-10');
+    statementPayment($customer, '2026-01-15', 250);
+
+    $range = 'from_date=2026-01-01&to_date=2026-01-31';
+    getJson("/api/v1/customers/{$customer->id}/statement?{$range}")
+        ->assertOk()
+        ->assertJsonPath('data.entries.0.description', 'Faktura')
+        ->assertJsonPath('data.entries.1.description', 'Platba');
+
+    get("/reports/customers/{$customer->id}/statement?{$range}&preview=1")
+        ->assertOk()
+        ->assertSeeText('Výpis ze zákaznického účtu')
+        ->assertSeeText('Počáteční zůstatek')
+        ->assertSeeText('Konečný zůstatek');
+
+    get("/reports/customers/{$customer->id}/statement?type=outstanding&as_of=2026-01-31&preview=1")
+        ->assertOk()
+        ->assertSeeText('Ke dni')
+        ->assertSeeText('Neuhrazené faktury')
+        ->assertSeeText('Čistý zůstatek účtu');
 });

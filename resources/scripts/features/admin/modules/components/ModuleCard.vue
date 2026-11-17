@@ -24,7 +24,7 @@
       <!-- Badges -->
       <div class="absolute top-2.5 end-2.5 flex gap-1.5">
         <span class="bg-white/85 backdrop-blur-sm text-xs px-2 py-0.5 font-medium rounded-md text-heading">
-          {{ data.access_tier === 'premium' ? 'Premium' : 'Public' }}
+          {{ $t(data.access_tier === 'premium' ? 'modules.marketplace.premium' : 'modules.marketplace.public') }}
         </span>
         <span
           v-if="data.installed"

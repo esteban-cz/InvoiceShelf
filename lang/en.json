@@ -204,7 +204,8 @@
     "step_of": "Step {step} of {count}",
     "actions_for": "Actions for {name}",
     "select_named": "Select {name}",
-    "about_page": "About {page}"
+    "about_page": "About {page}",
+    "optional": "Optional"
   },
   "dashboard": {
     "load_failed": "The dashboard could not be loaded.",
@@ -1094,6 +1095,20 @@
     },
     "sidebar": {
       "section_title": "Modules"
+    },
+    "marketplace": {
+      "title": "Marketplace access",
+      "description": "Pair this InvoiceShelf instance with your marketplace account. The device credential stays encrypted on this server.",
+      "enter_code": "Enter code {code} on the marketplace verification page.",
+      "open_verification": "Open verification page",
+      "pair": "Connect marketplace account",
+      "approved": "I have approved this device",
+      "disconnect": "Disconnect",
+      "connected": "Marketplace account connected.",
+      "waiting": "Waiting for marketplace approval.",
+      "disconnected": "Marketplace account disconnected.",
+      "premium": "Premium",
+      "public": "Public"
     }
   },
   "mcp": {
@@ -3069,5 +3084,38 @@
       "ends_at": "Show until"
     },
     "add_button": "Add"
-  }
+  },
+  "powered_by": "Powered by",
+  "invitation": {
+    "loading": "Loading invitation details…",
+    "invalid_title": "Invalid invitation",
+    "create_account": "Create your account",
+    "invited_as": "You have been invited to join {company} as {role}.",
+    "already_registered": "Already have an account? Sign in",
+    "create_and_join": "Create account and join",
+    "missing_token": "The link does not contain an invitation code.",
+    "invalid_or_expired": "This invitation is invalid or has expired."
+  },
+  "Customer Statement": "Customer Statement",
+  "As of": "As of",
+  "Date": "Date",
+  "Description": "Description",
+  "Reference": "Reference",
+  "Debit": "Debit",
+  "Credit": "Credit",
+  "Balance": "Balance",
+  "Opening balance": "Opening balance",
+  "Closing balance": "Closing balance",
+  "Outstanding invoices": "Outstanding invoices",
+  "Invoice": "Invoice",
+  "Due date": "Due date",
+  "Original": "Original",
+  "Applied": "Applied",
+  "Remaining": "Remaining",
+  "Available credit": "Available credit",
+  "Payment": "Payment",
+  "Available": "Available",
+  "Gross invoice due": "Gross invoice due",
+  "Net account balance": "Net account balance",
+  "Credit note": "Credit note"
 }

@@ -52,7 +52,7 @@
               v-model="form.cc"
               type="text"
               :invalid="v$.cc.$error"
-              placeholder="Optional: CC recipient"
+              :placeholder="$t('general.optional')"
               @input="v$.cc.$touch()"
             />
           </BaseInputGroup>
@@ -67,7 +67,7 @@
               v-model="form.bcc"
               type="text"
               :invalid="v$.bcc.$error"
-              placeholder="Optional: BCC recipient"
+              :placeholder="$t('general.optional')"
               @input="v$.bcc.$touch()"
             />
           </BaseInputGroup>

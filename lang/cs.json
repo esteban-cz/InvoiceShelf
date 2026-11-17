@@ -204,7 +204,8 @@
     "step_of": "Krok {step} z {count}",
     "actions_for": "Akce pro {name}",
     "select_named": "Vybrat {name}",
-    "about_page": "Informace o stránce {page}"
+    "about_page": "Informace o stránce {page}",
+    "optional": "Nepovinné"
   },
   "dashboard": {
     "load_failed": "Přehled se nepodařilo načíst.",
@@ -1094,6 +1095,20 @@
     },
     "sidebar": {
       "section_title": "Moduly"
+    },
+    "marketplace": {
+      "title": "Přístup ke katalogu modulů",
+      "description": "Propojte tuto instalaci InvoiceShelf se svým účtem v katalogu modulů. Přístupové údaje zůstanou šifrované na tomto serveru.",
+      "enter_code": "Na ověřovací stránce katalogu zadejte kód {code}.",
+      "open_verification": "Otevřít ověřovací stránku",
+      "pair": "Připojit účet ke katalogu",
+      "approved": "Zařízení je schválené",
+      "disconnect": "Odpojit",
+      "connected": "Účet v katalogu modulů byl připojen.",
+      "waiting": "Čeká se na schválení v katalogu modulů.",
+      "disconnected": "Účet v katalogu modulů byl odpojen.",
+      "premium": "Prémiový",
+      "public": "Veřejný"
     }
   },
   "mcp": {
@@ -2259,7 +2274,7 @@
     "payment_mode_already_taken": "Tento název způsobu platby už existuje.",
     "send_reset_link": "Zaslat odkaz na obnovení hesla",
     "not_yet": "Ještě ne? Poslat znovu",
-    "password_min_length": "Heslo musí obsahovat {count} znaků",
+    "password_min_length": "Heslo musí mít alespoň {count} znaků.",
     "name_min_length": "Jméno musí mít alespoň {count} písmen.",
     "prefix_min_length": "Prefix musí mít alespoň {count} písmen.",
     "enter_valid_tax_rate": "Zadejte platnou daňovou sazbu",
@@ -3069,5 +3084,38 @@
       "ends_at": "Zobrazit do"
     },
     "add_button": "Přidat"
-  }
+  },
+  "powered_by": "Běží na",
+  "invitation": {
+    "loading": "Načítání pozvánky…",
+    "invalid_title": "Neplatná pozvánka",
+    "create_account": "Vytvořte si účet",
+    "invited_as": "Máte pozvánku do firmy {company} s rolí {role}.",
+    "already_registered": "Už máte účet? Přihlaste se",
+    "create_and_join": "Vytvořit účet a připojit se",
+    "missing_token": "V odkazu chybí kód pozvánky.",
+    "invalid_or_expired": "Pozvánka je neplatná nebo její platnost vypršela."
+  },
+  "Customer Statement": "Výpis ze zákaznického účtu",
+  "As of": "Ke dni",
+  "Date": "Datum",
+  "Description": "Popis",
+  "Reference": "Reference",
+  "Debit": "Má dáti",
+  "Credit": "Dal",
+  "Balance": "Zůstatek",
+  "Opening balance": "Počáteční zůstatek",
+  "Closing balance": "Konečný zůstatek",
+  "Outstanding invoices": "Neuhrazené faktury",
+  "Invoice": "Faktura",
+  "Due date": "Datum splatnosti",
+  "Original": "Původní částka",
+  "Applied": "Použito",
+  "Remaining": "Zbývá",
+  "Available credit": "Dostupný kredit",
+  "Payment": "Platba",
+  "Available": "Dostupné",
+  "Gross invoice due": "Faktury celkem k úhradě",
+  "Net account balance": "Čistý zůstatek účtu",
+  "Credit note": "Dobropis"
 }
