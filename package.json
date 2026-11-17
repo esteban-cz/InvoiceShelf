@@ -15,6 +15,7 @@
     "serve": "vite preview",
     "test": "eslint ./resources/scripts",
     "test:bank-autofill": "node --test tests/Frontend/czech-banks.test.mjs",
+    "test:frontend": "node --test tests/Frontend/*.test.mjs",
     "lint": "eslint ./resources/scripts --max-warnings 0",
     "lint:fix": "eslint ./resources/scripts --fix",
     "typecheck": "vue-tsc --noEmit",

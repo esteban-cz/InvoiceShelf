@@ -97,8 +97,7 @@
         }
 
         .content-wrapper {
-            display: block;
-            height: 200px;
+            margin: 20px 30px 0;
         }
 
         .main-content {
@@ -202,9 +201,8 @@
         .notes {
             font-size: 12px;
             color: #595959;
-            margin-top: 100px;
-            margin-left: 30px;
-            width: 90%;
+            margin: 0;
+            width: auto;
             text-align: left;
             page-break-before: avoid;
         }
@@ -241,33 +239,19 @@
 
         /* -- Total Display Box -- */
 
-        .total-display-box {
-            min-width: 315px;
-            display: block;
-            margin-right: 30px;
-            background: #F9FBFF;
-            border: 1px solid #EAF1FB;
-            box-sizing: border-box;
-            float: right;
-            padding: 12px 15px 15px 15px;
-        }
-
         .total-display-label {
-            display: inline;
-            font-weight: bold;
-            font-size: 14px;
-            line-height: 21px;
+            font-size: 12px;
+            line-height: 18px;
             color: #595959;
+            padding-right: 12px;
         }
 
-        .total-display-box .amount {
-            float: right;
+        .amount {
             font-weight: bold;
-            font-size: 14px;
-            line-height: 21px;
+            font-size: 13px;
+            line-height: 18px;
             text-align: right;
             color: #5851D8;
-            margin-left: 150px;
         }
 
         /* The address formats emit <h3>{NAME}</h3> ahead of the <br>-joined
@@ -286,6 +270,7 @@
 
     </style>
 
+    @include('app.pdf.partials.cards')
 </head>
 
 <body>
@@ -316,21 +301,18 @@
     </p>
 
     <div class="content-wrapper">
-        <div class="main-content">
-            <div class="customer-address-container">
-                <div class="billing-address-container billing-address">
-                    @if ($billing_address)
-                        @lang('pdf_received_from')
-                        {!! $billing_address !!}
-                    @endif
-                </div>
-                <div class="billing-address-container--right">
-                </div>
-                <div style="clear: both;"></div>
-            </div>
-
-            <div class="payment-details-container">
-                <table width="100%">
+        <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+                <td style="width: 45%; vertical-align: top; padding-right: 20px;">
+                    <div class="billing-address">
+                        @if ($billing_address)
+                            @lang('pdf_received_from')
+                            {!! $billing_address !!}
+                        @endif
+                    </div>
+                </td>
+                <td style="width: 55%; vertical-align: top;">
+                    <table width="100%">
                     <tr>
                         <td class="attribute-label">@lang('pdf_payment_date')</td>
                         <td class="attribute-value"> &nbsp;{{ $payment->formattedPaymentDate }}</td>
@@ -351,7 +333,7 @@
                                 <td class="attribute-value"> &nbsp;{{ $allocation->invoice->invoice_number }}</td>
                             </tr>
                             <tr>
-                                <td class="attribute-label">@lang('customers.applied')</td>
+                                <td class="attribute-label">@lang('pdf_payment_applied_label')</td>
                                 <td class="attribute-value"> &nbsp;{!! format_money_pdf($allocation->amount, $allocation->invoice->currency) !!}</td>
                             </tr>
                         @endif
@@ -364,21 +346,33 @@
                         </tr>
                     @endif
                 </table>
-            </div>
-        </div>
-        <div style="clear: both;"></div>
+                </td>
+            </tr>
+        </table>
     </div>
-    <div class="total-display-box">
-        <p class="total-display-label">@lang('pdf_payment_amount_received_label')</p>
-        <span class="amount">{!! format_money_pdf($payment->amount, $payment->customer->currency) !!}</span>
-    </div>
-    <div class="notes">
-        @if ($notes)
-            <div class="notes-label">
-                @lang('pdf_notes')
-            </div>
-            {!! $notes !!}
-        @endif
+    <div style="margin: 20px 30px;">
+        <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+                <td style="width: 60%; vertical-align: top; padding-right: 20px;">
+                    @if ($notes)
+                        <div class="notes">
+                            <div class="notes-label">@lang('pdf_notes')</div>
+                            {!! $notes !!}
+                        </div>
+                    @endif
+                </td>
+                <td style="width: 40%; vertical-align: top;">
+                    <div class="pdf-card">
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td class="total-display-label">@lang('pdf_payment_amount_received_label')</td>
+                                <td class="amount">{!! format_money_pdf($payment->amount, $payment->customer->currency) !!}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </table>
     </div>
 </body>
 

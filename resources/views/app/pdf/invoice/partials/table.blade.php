@@ -95,19 +95,10 @@
 
 <hr class="item-cell-table-hr">
 
-{{-- Keep notes and totals in normal table flow in both PDF renderers. A floated
-     totals table can overlap the signature when there are no notes to clear it. --}}
 <div class="total-display-container">
     <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
         <tr>
-            <td style="width: 60%; vertical-align: top; padding-right: 20px;">
-                @if ($notes)
-                    <div class="notes">
-                        <div class="notes-label">@lang('pdf_notes')</div>
-                        {!! $notes !!}
-                    </div>
-                @endif
-            </td>
+            <td style="width: 60%; padding-right: 20px;"></td>
             <td style="width: 40%; vertical-align: top;">
                 <table width="100%" cellspacing="0px" border="0" class="total-display-table @if(count($invoice->items) > 12) page-break @endif">
                     <tr>
@@ -187,9 +178,24 @@
                         <td class="py-3"></td>
                         <td class="py-3"></td>
                     </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 60%; vertical-align: top; padding-right: 20px;">
+                @include('app.pdf.invoice.partials.payment-qr')
+                @if ($notes)
+                    <div class="notes" style="margin-top: 16px;">
+                        <div class="notes-label">@lang('pdf_notes')</div>
+                        {!! $notes !!}
+                    </div>
+                @endif
+            </td>
+            <td style="width: 40%; vertical-align: top;">
+                <table width="100%" cellspacing="0px" border="0" class="total-display-table @if(count($invoice->items) > 12) page-break @endif">
                     <tr>
                         <td colspan="2" style="padding: 0;">
-                            <div style="border: 1px solid #E8E8E8; border-radius: 10px; padding: 8px;">
+                            <div class="pdf-card">
                                 <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
                                     <tr>
                                         <td class="total-table-attribute-label" style="padding: 0;">
@@ -254,6 +260,7 @@
                         </td>
                     </tr>
                 </table>
+                @include('app.pdf.invoice.partials.document-footer')
             </td>
         </tr>
     </table>

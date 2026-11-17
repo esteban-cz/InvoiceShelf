@@ -14,6 +14,7 @@ import type {
   Invoice,
   InvoiceItem,
   InvoicePaymentQrInput,
+  InvoiceSignature,
   DiscountType,
   CreateCreditNotePayload,
 } from '../../../types/domain/invoice'
@@ -81,6 +82,7 @@ export interface InvoiceFormData {
   reference_number: string | null
   payment_qr: InvoicePaymentQrInput | null
   sign_document: boolean
+  signature: InvoiceSignature | null
   tax: number
   sub_total: number
   total: number
@@ -114,8 +116,9 @@ function createInvoiceStub(): InvoiceFormData {
     discount_type: 'fixed',
     discount_val: 0,
     reference_number: null,
-    payment_qr: null,
+    payment_qr: { iban: '', bank_name: '', save_account: false },
     sign_document: true,
+    signature: null,
     tax: 0,
     sub_total: 0,
     total: 0,
@@ -565,6 +568,12 @@ export const useInvoiceStore = defineStore('invoice', {
         ])
 
         if (!isEdit) {
+          this.newInvoice.payment_qr = {
+            iban: companySettings.invoice_default_receiving_iban && companySettings.invoice_default_receiving_iban !== 'none'
+              ? companySettings.invoice_default_receiving_iban : '',
+            bank_name: '',
+            save_account: false,
+          }
           this.nextSequenceNumber = nextNumRes?.data?.nextSequenceNumber ?? null
           if (nextNumRes?.data?.nextNumber) {
             this.newInvoice.invoice_number = nextNumRes.data.nextNumber

@@ -250,7 +250,7 @@
       "portal_empty_description": "Zde se zobrazí nabídky, které vám byly zaslány."
     },
     "receivables": {
-      "title": "Pohledávky",
+      "title": "Kolik mi kdo dluží",
       "on_invoices": "Odeslané faktury: {count}",
       "overdue": "Po splatnosti",
       "due_soon": "Splatné do 30 dnů",
@@ -713,7 +713,8 @@
     "mark_as_default_invoice_template_description": "Je-li povoleno, bude vybraná šablona automaticky vybrána pro nové faktury.",
     "signature": {
       "enable": "Podepsat doklad",
-      "help": "Použije podpis nahraný v nastavení faktur. Jméno vystavitele se vytiskne i bez podpisu."
+      "help": "Použije výchozí jméno a podpis firmy. Změny zde platí jen pro tuto fakturu. Jméno vystavitele se vytiskne i bez podpisu.",
+      "use_company_default": "Obnovit výchozí údaje firmy"
     }
   },
   "recurring_invoices": {
@@ -1906,6 +1907,10 @@
       "empty_description": "Přidejte typ daně a používejte ho na fakturách nebo u výdajů."
     },
     "payment_modes": {
+      "default_method": "Výchozí způsob platby",
+      "default_method_help": "Předvybraný způsob při zadávání nové platby, včetně platby k faktuře.",
+      "no_default": "Bez výchozího způsobu",
+      "default_saved": "Výchozí způsob platby byl uložen.",
       "title": "Způsoby platby",
       "description": "Nastavte způsoby úhrady, které můžete vybrat při evidenci plateb.",
       "add_payment_mode": "Přidat způsob platby",
@@ -3139,5 +3144,8 @@
   "pdf_payment_details": "Platební údaje",
   "pdf_bank_account": "Číslo účtu:",
   "pdf_issued_by": "Vystavil:",
-  "pdf_signature": "Podpis:"
+  "pdf_signature": "Podpis:",
+  "signature_image_invalid": "Použijte PNG nebo JPEG do 256 KB a 2400 × 1200 pixelů.",
+  "pdf_invoice_paid": "Uhrazeno – QR obsahuje původní částku faktury",
+  "pdf_payment_applied_label": "Použitá částka"
 }

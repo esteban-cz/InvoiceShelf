@@ -99,6 +99,12 @@ final class ReportingPeriod
         return $this->start->toDateString();
     }
 
+    /** Labels follow the reader's language without changing the period or global locale. */
+    public function localized(string $locale): self
+    {
+        return new self($this->start->copy()->locale($locale), $this->end->copy()->locale($locale));
+    }
+
     public function to(): string
     {
         return $this->end->toDateString();

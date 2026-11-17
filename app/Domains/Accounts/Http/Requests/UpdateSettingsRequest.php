@@ -3,6 +3,7 @@
 namespace App\Domains\Accounts\Http\Requests;
 
 use App\Domains\Accounts\Application\MemberVisibleSettings;
+use App\Domains\Receivables\Models\PaymentMethod;
 use App\Support\InvoiceVariableSymbolFormat;
 use Closure;
 use Illuminate\Foundation\Http\FormRequest;
@@ -48,6 +49,13 @@ class UpdateSettingsRequest extends FormRequest
                 },
             ],
             'settings.'.InvoiceVariableSymbolFormat::SETTING => ['sometimes', 'required', Rule::enum(InvoiceVariableSymbolFormat::class)],
+            'settings.default_payment_method_id' => [
+                'sometimes', 'required',
+                Rule::unless($this->input('settings.default_payment_method_id') === 'none', [
+                    'integer',
+                    Rule::exists('payment_methods', 'id')->where('company_id', $this->header('company'))->where('type', PaymentMethod::TYPE_GENERAL),
+                ]),
+            ],
             $receivingAccount => [
                 'bail',
                 'sometimes',

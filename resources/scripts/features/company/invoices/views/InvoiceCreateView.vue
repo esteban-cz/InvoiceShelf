@@ -39,7 +39,7 @@
 
           <BaseButton
             :loading="isSaving"
-            :disabled="isSaving"
+            :disabled="isSaving || signatureBusy"
             variant="primary"
             type="submit"
           >
@@ -60,7 +60,7 @@
         :currency="invoiceStore.newInvoice.selectedCurrency"
         :save-label="isRecurring ? $t('recurring_invoices.save_invoice') : $t('invoices.save_invoice')"
         :saving="isSaving"
-        :loading="isLoadingContent"
+        :loading="isLoadingContent || signatureBusy"
         :pdf-url="isEdit ? `/invoices/pdf/${invoiceStore.newInvoice.unique_hash}` : null"
       />
 
@@ -111,12 +111,12 @@
         />
 
         <!-- Invoice Footer Section -->
-        <BaseCheckbox
-          v-if="!isRecurring"
-          v-model="invoiceStore.newInvoice.sign_document"
-          class="mt-6"
-          :label="$t('invoices.signature.enable')"
-          :description="$t('invoices.signature.help')"
+        <InvoiceSignatureFields
+          v-if="!isRecurring && !isLoadingContent"
+          v-model="invoiceStore.newInvoice.signature"
+          v-model:enabled="invoiceStore.newInvoice.sign_document"
+          :errors="paymentQrErrors"
+          @busy="signatureBusy = $event"
         />
 
         <div
@@ -168,6 +168,7 @@ import {
 } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useInvoiceStore } from '../store'
+import InvoiceSignatureFields from '../components/InvoiceSignatureFields.vue'
 import { useRecurringInvoiceStore } from '@/scripts/features/company/recurring-invoices/store'
 import { useCompanyStore } from '@/scripts/stores/company.store'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
@@ -203,6 +204,7 @@ const { isPhone } = useBreakpoints()
 
 const invoiceValidationScope = 'newInvoice'
 const isSaving = ref<boolean>(false)
+const signatureBusy = ref(false)
 const isMarkAsDefault = ref<boolean>(false)
 const isRecurring = ref<boolean>(false)
 
@@ -428,6 +430,7 @@ watch(
 )
 
 async function submitForm(): Promise<void> {
+  if (signatureBusy.value || isSaving.value) return
   paymentQrErrors.value = {}
   v$.value.$touch()
 
@@ -499,6 +502,7 @@ async function submitForm(): Promise<void> {
         template_name: invoiceData.template_name,
         notes: invoiceData.notes,
         sign_document: invoiceData.sign_document,
+        ...(invoiceData.signature ? { signature: invoiceData.signature } : {}),
         payment_qr: canAddPaymentQr.value ? invoiceData.payment_qr : null,
         discount: invoiceData.discount,
         discount_type: invoiceData.discount_type,

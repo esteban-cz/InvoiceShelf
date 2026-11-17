@@ -317,6 +317,7 @@
 
     </style>
 
+    @include('app.pdf.partials.cards')
 </head>
 
 <body>
@@ -386,7 +387,6 @@
             @include('app.pdf.invoice.partials.table')
         </div>
 
-        @include('app.pdf.invoice.partials.document-footer')
     </div>
 </body>
 

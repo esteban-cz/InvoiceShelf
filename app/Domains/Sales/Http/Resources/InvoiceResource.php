@@ -7,6 +7,7 @@ use App\Domains\Accounts\Http\Resources\UserResource;
 use App\Domains\Contacts\Http\Resources\CustomerResource;
 use App\Domains\Metadata\Http\Resources\CustomFieldValueResource;
 use App\Domains\Money\Http\Resources\CurrencyResource;
+use App\Domains\Sales\Models\Invoice as InvoiceModel;
 use App\Domains\Taxation\Http\Resources\TaxResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -54,6 +55,13 @@ class InvoiceResource extends JsonResource
             'payment_qr' => $invoice->payment_qr,
             'sign_document' => $invoice->sign_document,
             'issuer_name' => $invoice->document_signature['issuer_name'] ?? null,
+            'signature' => $this->when(
+                $request->route('invoice') instanceof InvoiceModel,
+                fn () => $invoice->document_signature === null ? null : [
+                    'issuer_name' => $invoice->document_signature['issuer_name'],
+                    'image' => $invoice->document_signature['image'] ?? null,
+                ],
+            ),
             'type' => $invoice->type,
             'related_invoice_id' => $invoice->related_invoice_id,
             'status' => $invoice->status,

@@ -2,6 +2,7 @@
 
 namespace App\Domains\Sales\Http\Controllers\Company;
 
+use App\Domains\Accounts\Application\CompanySignatureService;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Sales\Application\CreditNoteService;
 use App\Domains\Sales\Application\InvoicePaymentQr;
@@ -38,7 +39,17 @@ class InvoicesController extends Controller
     public function __construct(
         private readonly InvoiceService $invoiceService,
         private readonly CreditNoteService $creditNoteService,
+        private readonly CompanySignatureService $signatures,
     ) {}
+
+    public function signatureDefaults(Request $request): JsonResponse
+    {
+        $this->authorize('create', Invoice::class);
+
+        return response()->json(['data' => $this->signatures->settings(
+            Company::query()->findOrFail($request->header('company')),
+        )])->header('Cache-Control', 'no-store');
+    }
 
     /**
      * Paginated invoices of the active company, newest first.

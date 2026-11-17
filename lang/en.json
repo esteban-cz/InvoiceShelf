@@ -713,7 +713,8 @@
     "mark_as_default_invoice_template_description": "If enabled, the selected template will be automatically selected for new invoices.",
     "signature": {
       "enable": "Sign document",
-      "help": "Use the company signature uploaded in invoice settings. The issuer name is printed even when signing is off."
+      "help": "Start with the company issuer and signature. Changes here apply only to this invoice; the issuer name prints even without signing.",
+      "use_company_default": "Restore company defaults"
     }
   },
   "recurring_invoices": {
@@ -1906,6 +1907,10 @@
       "empty_description": "Add a tax once, then pick it on any invoice or expense."
     },
     "payment_modes": {
+      "default_method": "Default payment method",
+      "default_method_help": "Preselected when recording a new payment, including payments for an invoice.",
+      "no_default": "No default",
+      "default_saved": "Default payment method saved.",
       "title": "Payment Modes",
       "description": "Modes of transaction for payments",
       "add_payment_mode": "Add Payment Mode",
@@ -3139,5 +3144,8 @@
   "pdf_payment_details": "Payment details",
   "pdf_bank_account": "Account:",
   "pdf_issued_by": "Issued by:",
-  "pdf_signature": "Signature:"
+  "pdf_signature": "Signature:",
+  "signature_image_invalid": "Use a PNG or JPEG up to 256 KB and 2400 × 1200 pixels.",
+  "pdf_invoice_paid": "Paid — QR contains the original invoice amount",
+  "pdf_payment_applied_label": "Applied amount"
 }
