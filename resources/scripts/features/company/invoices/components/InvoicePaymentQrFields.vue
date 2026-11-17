@@ -23,10 +23,11 @@
           required
         >
           <BaseInput
-            v-model="payment.iban"
+            :model-value="payment.iban"
             :placeholder="$t('invoices.payment_qr.account_placeholder')"
             dir="ltr"
             maxlength="64"
+            @update:model-value="updateAccount"
           />
         </BaseInputGroup>
         <BaseInputGroup
@@ -34,6 +35,7 @@
           :error="errors['payment_qr.bank_name']?.[0]"
         >
           <BaseInput v-model="payment.bank_name" maxlength="120" />
+          <p class="mt-1 text-xs text-muted">{{ $t('invoices.payment_qr.bank_name_help') }}</p>
         </BaseInputGroup>
         <BaseInputGroup
           :label="$t('invoices.payment_qr.variable_symbol')"
@@ -71,6 +73,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { invoiceService } from '@/scripts/api/services/invoice.service'
 import type { InvoiceBankAccount, InvoicePaymentQrInput } from '@/scripts/types/domain/invoice'
+import { czechBankName, suggestedCzechBankName } from '@/scripts/utils/czech-banks'
 
 const props = defineProps<{
   errors: Record<string, string[]>
@@ -102,16 +105,17 @@ onMounted(async () => {
   try {
     accounts.value = await invoiceService.getBankAccountDetails()
     const saved = accounts.value.find((account) => account.iban === payment.value?.iban)
-    if (payment.value && payment.value.bank_name === undefined && saved) payment.value.bank_name = saved.bank_name
+    if (payment.value && !payment.value.bank_name) payment.value.bank_name = saved?.bank_name || czechBankName(payment.value.iban)
   } catch {
     accountsUnavailable.value = true
+    if (payment.value && !payment.value.bank_name) payment.value.bank_name = czechBankName(payment.value.iban)
   }
 })
 
 function toggle(enabled: boolean | unknown[]) {
   payment.value = enabled === true ? {
     iban: props.defaultAccount,
-    bank_name: accounts.value.find((account) => account.iban === props.defaultAccount)?.bank_name ?? '',
+    bank_name: accounts.value.find((account) => account.iban === props.defaultAccount)?.bank_name || czechBankName(props.defaultAccount),
     save_account: false,
     ...(props.useDefaultSymbol ? {} : { variable_symbol: null }),
   } : null
@@ -121,8 +125,15 @@ function selectAccount(iban: unknown) {
   const saved = accounts.value.find((account) => account.iban === iban)
   if (payment.value && saved) {
     payment.value.iban = saved.iban
-    payment.value.bank_name = saved.bank_name
+    payment.value.bank_name = saved.bank_name || czechBankName(saved.iban)
     payment.value.save_account = false
   }
+}
+
+function updateAccount(value: string | number) {
+  if (!payment.value) return
+  const account = String(value)
+  payment.value.bank_name = suggestedCzechBankName(account, payment.value.iban, payment.value.bank_name)
+  payment.value.iban = account
 }
 </script>

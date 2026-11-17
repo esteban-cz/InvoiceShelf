@@ -28,11 +28,19 @@ take their own snapshot from the current company settings.
 Open Company Settings → Payment modes to add or edit a receiving account.
 Enter either a valid Czech account number, including an optional prefix and
 bank code, or a Czech IBAN. Add the bank's name if it should appear on invoices.
+The bank name is suggested automatically from the four-digit Czech bank code,
+including when an IBAN is entered. Both the receiving-account settings and the
+invoice editor use a bundled copy of the [Czech National Bank directory](https://www.cnb.cz/cs/platebni-styk/ucty-kody-bank/),
+version 255, valid from 1 October 2026. There is no network request while typing.
+Unknown codes leave the name available for manual entry, and a saved or manually
+corrected name is preserved. Refresh `resources/scripts/utils/czech-banks.ts`
+from the linked ČNB CSV when the directory changes; no database migration is needed.
+
 The canonical Czech account number is derived from the IBAN, so both forms
 remain consistent and existing saved accounts need no manual conversion.
 
 The invoice's payment block records the bank name with its IBAN and variable
-symbol. The PDF shows a rounded payment card below the notes and totals, with
+symbol. The PDF shows a rounded payment card below the notes and rounded totals, with
 the QR code, bank name, Czech account number, IBAN and variable symbol. Paid
 invoices retain the account details without a QR code requesting payment.
 The issuer name and optional signature sit beside this card in all three stock

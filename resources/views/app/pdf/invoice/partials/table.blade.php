@@ -95,143 +95,166 @@
 
 <hr class="item-cell-table-hr">
 
+{{-- Keep notes and totals in normal table flow in both PDF renderers. A floated
+     totals table can overlap the signature when there are no notes to clear it. --}}
 <div class="total-display-container">
-    <table width="100%" cellspacing="0px" border="0" class="total-display-table @if(count($invoice->items) > 12) page-break @endif">
+    <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
         <tr>
-            <td class="border-0 total-table-attribute-label">@lang('pdf_subtotal')</td>
-            <td class="py-2 border-0 item-cell total-table-attribute-value">
-                {!! format_money_pdf($invoice->sub_total, $invoice->customer->currency) !!}
+            <td style="width: 60%; vertical-align: top; padding-right: 20px;">
+                @if ($notes)
+                    <div class="notes">
+                        <div class="notes-label">@lang('pdf_notes')</div>
+                        {!! $notes !!}
+                    </div>
+                @endif
+            </td>
+            <td style="width: 40%; vertical-align: top;">
+                <table width="100%" cellspacing="0px" border="0" class="total-display-table @if(count($invoice->items) > 12) page-break @endif">
+                    <tr>
+                        <td class="border-0 total-table-attribute-label">@lang('pdf_subtotal')</td>
+                        <td class="py-2 border-0 item-cell total-table-attribute-value">
+                            {!! format_money_pdf($invoice->sub_total, $invoice->customer->currency) !!}
+                        </td>
+                    </tr>
+
+                    @if($invoice->discount > 0)
+                        @if ($invoice->discount_per_item === 'NO')
+                            <tr>
+                                <td class="border-0 total-table-attribute-label">
+                                    @if($invoice->discount_type === 'fixed')
+                                        @lang('pdf_discount_label')
+                                    @endif
+                                    @if($invoice->discount_type === 'percentage')
+                                        @lang('pdf_discount_label') ({{$invoice->discount}}%)
+                                    @endif
+                                </td>
+                                <td class="py-2 border-0 item-cell total-table-attribute-value" >
+                                    @if($invoice->discount_type === 'fixed')
+                                        {!! format_money_pdf($invoice->discount_val, $invoice->customer->currency) !!}
+                                    @endif
+                                    @if($invoice->discount_type === 'percentage')
+                                        {!! format_money_pdf($invoice->discount_val, $invoice->customer->currency) !!}
+                                    @endif
+                                </td>
+                            </tr>
+                        @endif
+                    @endif
+
+                    @if ($invoice->tax_included)
+                    <tr>
+                        <td class="border-0 total-table-attribute-label">
+                            @lang('pdf_net_total')
+                        </td>
+                        <td class="py-2 border-0 item-cell total-table-attribute-value">
+                            {!! format_money_pdf($invoice->sub_total - $invoice->discount - $invoice->tax, $invoice->customer->currency) !!}
+                        </td>
+                    </tr>
+                    @endif
+
+                    @if ($invoice->tax_per_item === 'YES')
+                        @foreach ($taxes as $tax)
+                            <tr>
+                                <td class="border-0 total-table-attribute-label">
+                                    @if($tax->calculation_type === 'fixed')
+                                        {{$tax->name }} ({!! format_money_pdf($tax->fixed_amount, $invoice->customer->currency) !!})
+                                    @else
+                                        {{$tax->name.' ('.$tax->percent.'%)'}}
+                                    @endif
+                                </td>
+                                <td class="py-2 border-0 item-cell total-table-attribute-value">
+                                    {!! format_money_pdf($tax->amount, $invoice->customer->currency) !!}
+                                </td>
+                            </tr>
+                        @endforeach
+                    @else
+                        @foreach ($invoice->taxes as $tax)
+                            <tr>
+                                <td class="border-0 total-table-attribute-label">
+                                    @if($tax->calculation_type === 'fixed')
+                                        {{$tax->name }} ({!! format_money_pdf($tax->fixed_amount, $invoice->customer->currency) !!})
+                                    @else
+                                        {{$tax->name.' ('.$tax->percent.'%)'}}
+                                    @endif
+                                </td>
+                                <td class="py-2 border-0 item-cell total-table-attribute-value">
+                                    {!! format_money_pdf($tax->amount, $invoice->customer->currency) !!}
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
+
+                    <tr>
+                        <td class="py-3"></td>
+                        <td class="py-3"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding: 0;">
+                            <div style="border: 1px solid #E8E8E8; border-radius: 10px; padding: 8px;">
+                                <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
+                                    <tr>
+                                        <td class="total-table-attribute-label" style="padding: 0;">
+                                            @lang('pdf_total')
+                                        </td>
+                                        <td
+                                            class="total-table-attribute-value"
+                                            style="color: #5851D8; padding: 0;"
+                                        >
+                                            {!! format_money_pdf($invoice->total, $invoice->customer->currency)!!}
+                                        </td>
+                                    </tr>
+
+                                    @php
+                                        // What settled the invoice is split between money and credit, because
+                                        // paid_status alone cannot tell them apart: a credited invoice reads as
+                                        // paid without a cent having been received. The credited figure is the
+                                        // negated sum of the credit notes (they store negative totals), and
+                                        // whatever the balance dropped by beyond that was actually paid.
+                                        //
+                                        // For an invoice with no credit notes this is the old expression: the
+                                        // credited figure is zero and "paid > 0" holds exactly when paid_status
+                                        // is PARTIALLY_PAID or PAID.
+                                        $creditedTotal = $invoice->relationLoaded('creditNotes') ? -(int) $invoice->creditNotes->sum('total') : 0;
+                                        $amountPaid = (int) $invoice->total - (int) $invoice->due_amount - $creditedTotal;
+                                    @endphp
+
+                                    @if($creditedTotal > 0)
+                                        <tr>
+                                            <td class="total-table-attribute-label" style="padding: 8px 8px 0 0;">
+                                                @lang('pdf_amount_credited')
+                                            </td>
+                                            <td class="total-table-attribute-value" style="padding: 8px 0 0;">
+                                                {!! format_money_pdf($creditedTotal, $invoice->customer->currency)!!}
+                                            </td>
+                                        </tr>
+                                    @endif
+
+                                    @if($amountPaid > 0)
+                                        <tr>
+                                            <td class="total-table-attribute-label" style="padding: 8px 8px 0 0;">
+                                                @lang('pdf_amount_paid')
+                                            </td>
+                                            <td class="total-table-attribute-value" style="padding: 8px 0 0;">
+                                                {!! format_money_pdf($amountPaid, $invoice->customer->currency)!!}
+                                            </td>
+                                        </tr>
+                                    @endif
+
+                                    @if($creditedTotal > 0 || $amountPaid > 0)
+                                        <tr>
+                                            <td class="total-table-attribute-label" style="padding: 8px 8px 0 0;">
+                                                @lang('pdf_amount_due')
+                                            </td>
+                                            <td class="total-table-attribute-value" style="color: #5851D8; padding: 8px 0 0;">
+                                                {!! format_money_pdf($invoice->due_amount, $invoice->customer->currency)!!}
+                                            </td>
+                                        </tr>
+                                    @endif
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </td>
         </tr>
-
-        @if($invoice->discount > 0)
-            @if ($invoice->discount_per_item === 'NO')
-                <tr>
-                    <td class="border-0 total-table-attribute-label">
-                        @if($invoice->discount_type === 'fixed')
-                            @lang('pdf_discount_label')
-                        @endif
-                        @if($invoice->discount_type === 'percentage')
-                            @lang('pdf_discount_label') ({{$invoice->discount}}%)
-                        @endif
-                    </td>
-                    <td class="py-2 border-0 item-cell total-table-attribute-value" >
-                        @if($invoice->discount_type === 'fixed')
-                            {!! format_money_pdf($invoice->discount_val, $invoice->customer->currency) !!}
-                        @endif
-                        @if($invoice->discount_type === 'percentage')
-                            {!! format_money_pdf($invoice->discount_val, $invoice->customer->currency) !!}
-                        @endif
-                    </td>
-                </tr>
-            @endif
-        @endif
-
-        @if ($invoice->tax_included)
-        <tr>
-            <td class="border-0 total-table-attribute-label">
-                @lang('pdf_net_total')
-            </td>
-            <td class="py-2 border-0 item-cell total-table-attribute-value">
-                {!! format_money_pdf($invoice->sub_total - $invoice->discount - $invoice->tax, $invoice->customer->currency) !!}
-            </td>
-        </tr>
-        @endif
-
-        @if ($invoice->tax_per_item === 'YES')
-            @foreach ($taxes as $tax)
-                <tr>
-                    <td class="border-0 total-table-attribute-label">
-                        @if($tax->calculation_type === 'fixed')
-                            {{$tax->name }} ({!! format_money_pdf($tax->fixed_amount, $invoice->customer->currency) !!})
-                        @else
-                            {{$tax->name.' ('.$tax->percent.'%)'}}
-                        @endif
-                    </td>
-                    <td class="py-2 border-0 item-cell total-table-attribute-value">
-                        {!! format_money_pdf($tax->amount, $invoice->customer->currency) !!}
-                    </td>
-                </tr>
-            @endforeach
-        @else
-            @foreach ($invoice->taxes as $tax)
-                <tr>
-                    <td class="border-0 total-table-attribute-label">
-                        @if($tax->calculation_type === 'fixed')
-                            {{$tax->name }} ({!! format_money_pdf($tax->fixed_amount, $invoice->customer->currency) !!})
-                        @else
-                            {{$tax->name.' ('.$tax->percent.'%)'}}
-                        @endif
-                    </td>
-                    <td class="py-2 border-0 item-cell total-table-attribute-value">
-                        {!! format_money_pdf($tax->amount, $invoice->customer->currency) !!}
-                    </td>
-                </tr>
-            @endforeach
-        @endif
-
-        <tr>
-            <td class="py-3"></td>
-            <td class="py-3"></td>
-        </tr>
-        <tr>
-            <td class="border-0 total-border-left total-table-attribute-label">
-                @lang('pdf_total')
-            </td>
-            <td
-                class="py-8 border-0 total-border-right item-cell total-table-attribute-value"
-                style="color: #5851D8"
-            >
-                {!! format_money_pdf($invoice->total, $invoice->customer->currency)!!}
-            </td>
-        </tr>
-
-        @php
-            // What settled the invoice is split between money and credit, because
-            // paid_status alone cannot tell them apart: a credited invoice reads as
-            // paid without a cent having been received. The credited figure is the
-            // negated sum of the credit notes (they store negative totals), and
-            // whatever the balance dropped by beyond that was actually paid.
-            //
-            // For an invoice with no credit notes this is the old expression: the
-            // credited figure is zero and "paid > 0" holds exactly when paid_status
-            // is PARTIALLY_PAID or PAID.
-            $creditedTotal = $invoice->relationLoaded('creditNotes') ? -(int) $invoice->creditNotes->sum('total') : 0;
-            $amountPaid = (int) $invoice->total - (int) $invoice->due_amount - $creditedTotal;
-        @endphp
-
-        @if($creditedTotal > 0)
-            <tr>
-                <td class="border-0 total-border-left total-table-attribute-label">
-                    @lang('pdf_amount_credited')
-                </td>
-                <td class="py-8 border-0 total-border-right item-cell total-table-attribute-value">
-                    {!! format_money_pdf($creditedTotal, $invoice->customer->currency)!!}
-                </td>
-            </tr>
-        @endif
-
-        @if($amountPaid > 0)
-            <tr>
-                <td class="border-0 total-border-left total-table-attribute-label">
-                    @lang('pdf_amount_paid')
-                </td>
-                <td class="py-8 border-0 total-border-right item-cell total-table-attribute-value">
-                    {!! format_money_pdf($amountPaid, $invoice->customer->currency)!!}
-                </td>
-            </tr>
-        @endif
-
-        @if($creditedTotal > 0 || $amountPaid > 0)
-            <tr>
-                <td class="border-0 total-border-left total-table-attribute-label">
-                    @lang('pdf_amount_due')
-                </td>
-                <td class="py-8 border-0 total-border-right item-cell total-table-attribute-value" style="color: #5851D8">
-                    {!! format_money_pdf($invoice->due_amount, $invoice->customer->currency)!!}
-                </td>
-            </tr>
-        @endif
-
     </table>
 </div>

@@ -582,6 +582,7 @@
       "save_account": "Uložit účet pro další faktury",
       "accounts_unavailable": "Uložené účty se nepodařilo načíst. Účet můžete zadat ručně.",
       "bank_name": "Název banky",
+      "bank_name_help": "Název se doplní podle kódu banky, pokud je známý. Můžete ho upravit.",
       "account_number": "Číslo účtu",
       "edit_account": "Upravit účet"
     },

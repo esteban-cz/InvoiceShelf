@@ -7,6 +7,22 @@ For upstream releases, the section beneath each `##` version heading is what CI 
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 1.0.10-[3.0.0-alpha.15] - 2026-11-17
+
+- Autofill bank names in receiving-account settings and invoice payment details
+  from Czech account numbers or IBANs, using the bundled Czech National Bank
+  directory. Preserve manual corrections and allow names for unknown bank codes.
+- Remove the separator below invoice totals and give the total amount the same
+  rounded border as the payment card in all three invoice templates.
+- Keep notes and totals in a shared row so the issuer and signature appear
+  below them without overlapping, including invoices without notes.
+- Regenerate archived PDFs that still use the previous footer layout.
+
+Upgrade: no new database migration is required.
+
+Deployment branch: `1.x.x-3.0.0-alpha.15`.
+Source tag: `fork-v1.0.10-upstream-3.0.0-alpha.15`.
+
 ## 1.0.9-[3.0.0-alpha.15] - 2026-11-17
 
 - Give invoice emails a compact layout with the invoice number, due date and

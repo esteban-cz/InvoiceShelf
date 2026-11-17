@@ -582,6 +582,7 @@
       "save_account": "Save this bank account for future invoices",
       "accounts_unavailable": "Saved bank accounts could not be loaded. You can enter an account manually.",
       "bank_name": "Bank name",
+      "bank_name_help": "Filled from the Czech bank code when available. You can edit the name.",
       "account_number": "Account number",
       "edit_account": "Edit account"
     },
