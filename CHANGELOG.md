@@ -7,6 +7,17 @@ For upstream releases, the section beneath each `##` version heading is what CI 
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 1.0.12-[3.0.0-alpha.15] - 2026-11-18
+
+- Fix the allocated-payments heading on invoice details by moving its existing
+  translations into the invoice namespace. Czech now displays
+  "Přiřazené platby" instead of the raw translation key.
+
+Upgrade: no new database migration is required.
+
+Deployment branch: `1.x.x-3.0.0-alpha.15`.
+Source tag: `fork-v1.0.12-upstream-3.0.0-alpha.15`.
+
 ## 1.0.11-[3.0.0-alpha.15] - 2026-11-18
 
 - Use a shared rounded card style for invoice totals, all three estimate

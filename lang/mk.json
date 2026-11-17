@@ -507,7 +507,6 @@
     "send_estimate": "Испрати понуда",
     "resend_estimate": "Повторно испрати понуда",
     "record_payment": "Запиши плаќање",
-    "allocated_payments": "Allocated Payments",
     "add_estimate": "Додај понуда",
     "save_estimate": "Зачувај понуда",
     "cloned_successfully": "Понудата е клонирана успешно",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "Ако е овозможено, избраниот шаблон автоматски ќе се избира за нови понуди."
   },
   "invoices": {
+    "allocated_payments": "Allocated Payments",
     "title": "Фактури",
     "download": "Преземи",
     "pay_invoice": "Плати фактура",

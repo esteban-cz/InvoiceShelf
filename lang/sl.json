@@ -505,7 +505,6 @@
     "send_estimate": "Pošlji oceno",
     "resend_estimate": "Ponovno pošlji oceno",
     "record_payment": "Zapisno plačilo",
-    "allocated_payments": "Allocated Payments",
     "add_estimate": "Dodaj oceno",
     "save_estimate": "Shrani ocena",
     "cloned_successfully": "Ocena uspešno klonirana",
@@ -567,6 +566,7 @@
     "mark_as_default_estimate_template_description": "Če je ta možnost omogočena, bo izbrana predloga samodejno izbrana za nove ocene."
   },
   "invoices": {
+    "allocated_payments": "Allocated Payments",
     "title": "Računi",
     "download": "Prenesi",
     "pay_invoice": "Plačilo računa",

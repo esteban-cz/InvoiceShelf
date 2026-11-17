@@ -507,7 +507,6 @@
     "send_estimate": "Envoyer par email",
     "resend_estimate": "Renvoyer le devis",
     "record_payment": "Enregistrer un paiement",
-    "allocated_payments": "Paiements alloués",
     "add_estimate": "Nouveau devis",
     "save_estimate": "Enregistrer",
     "cloned_successfully": "Devis dupliqué avec succès",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "Si activé, le modèle sélectionné sera automatiquement utilisé pour les prochains devis."
   },
   "invoices": {
+    "allocated_payments": "Paiements alloués",
     "title": "Factures",
     "download": "Télécharger",
     "pay_invoice": "Payer la facture",

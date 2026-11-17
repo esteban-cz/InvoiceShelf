@@ -507,7 +507,6 @@
     "send_estimate": "ارسال برآورد هزینه",
     "resend_estimate": "ارسال مجدد برآورد هزینه",
     "record_payment": "ثبت پرداخت",
-    "allocated_payments": "Allocated Payments",
     "add_estimate": "اضافه کردن برآورد هزینه",
     "save_estimate": "ذخیره برآورد هزینه",
     "cloned_successfully": "Estimate cloned successfully",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "اگر فعال باشد این تمپلیت برای براورد به صورت خودکار انتخاب میشود"
   },
   "invoices": {
+    "allocated_payments": "Allocated Payments",
     "title": "فاکتور",
     "download": "دانلود",
     "pay_invoice": "پرداخت فاکتور",

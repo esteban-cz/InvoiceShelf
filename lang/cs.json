@@ -508,7 +508,6 @@
     "send_estimate": "Odeslat nabídku",
     "resend_estimate": "Znovu odeslat nabídku",
     "record_payment": "Zaznamenat platbu",
-    "allocated_payments": "Přiřazené platby",
     "add_estimate": "Přidat nabídku",
     "save_estimate": "Uložit nabídku",
     "cloned_successfully": "Nabídka byla zduplikována.",
@@ -570,6 +569,7 @@
     "mark_as_default_estimate_template_description": "Je-li povoleno, bude vybraná šablona automaticky vybrána pro nové nabídky."
   },
   "invoices": {
+    "allocated_payments": "Přiřazené platby",
     "title": "Faktury",
     "payment_qr": {
       "enable": "Přidat QR platbu",

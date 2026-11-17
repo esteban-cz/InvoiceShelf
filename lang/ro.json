@@ -507,7 +507,6 @@
     "send_estimate": "Trimite Ofertă",
     "resend_estimate": "Retrimite Oferta",
     "record_payment": "Înregistrează Plată",
-    "allocated_payments": "Allocated Payments",
     "add_estimate": "Adaugă Ofertă",
     "save_estimate": "Salvare Ofertă",
     "cloned_successfully": "Ofertă clonată cu succes",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "Dacă este activat, șablonul selectat va fi selectat automat pentru ofertele noi."
   },
   "invoices": {
+    "allocated_payments": "Allocated Payments",
     "title": "Factură",
     "download": "Descarcă",
     "pay_invoice": "Plătește Factura",

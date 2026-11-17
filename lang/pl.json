@@ -507,7 +507,6 @@
     "send_estimate": "Wyślij ofertę",
     "resend_estimate": "Wyślij ponownie ofertę",
     "record_payment": "Zarejestruj płatność",
-    "allocated_payments": "Allocated Payments",
     "add_estimate": "Dodaj ofertę",
     "save_estimate": "Zapisz ofertę",
     "cloned_successfully": "Estimate cloned successfully",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "If enabled, the selected template will be automatically selected for new estimates."
   },
   "invoices": {
+    "allocated_payments": "Allocated Payments",
     "title": "Faktury",
     "download": "Pobierz",
     "pay_invoice": "Zapłać Fakturę",

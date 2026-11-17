@@ -507,7 +507,6 @@
     "send_estimate": "Νέα Εκτίμηση",
     "resend_estimate": "Πρόσφατες προσφορές",
     "record_payment": "Καταγραφή Πληρωμής",
-    "allocated_payments": "Allocated Payments",
     "add_estimate": "Νέα Εκτίμηση",
     "save_estimate": "Νέα Εκτίμηση",
     "cloned_successfully": "Estimate cloned successfully",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "If enabled, the selected template will be automatically selected for new estimates."
   },
   "invoices": {
+    "allocated_payments": "Allocated Payments",
     "title": "Τιμολόγια",
     "download": "Λήψη",
     "pay_invoice": "Pay Invoice",

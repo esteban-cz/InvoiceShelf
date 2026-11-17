@@ -507,7 +507,6 @@
     "send_estimate": "Enviar orçamento",
     "resend_estimate": "Reenviar Orçamento",
     "record_payment": "Registro de pago",
-    "allocated_payments": "Allocated Payments",
     "add_estimate": "Adicionar orçamento",
     "save_estimate": "Salvar Orçamento",
     "cloned_successfully": "Orçamento clonado com sucesso",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "Se ativado, o modelo selecionado será usado para novas estimativas."
   },
   "invoices": {
+    "allocated_payments": "Allocated Payments",
     "title": "Faturas",
     "download": "Baixar",
     "pay_invoice": "Pagar fatura",

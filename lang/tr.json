@@ -507,7 +507,6 @@
     "send_estimate": "Proformayı gönder",
     "resend_estimate": "Proformayı tekrar gönder",
     "record_payment": "Ödemeyi kaydet",
-    "allocated_payments": "Allocated Payments",
     "add_estimate": "Proforma ekle",
     "save_estimate": "Proformayı kaydet",
     "cloned_successfully": "Estimate cloned successfully",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "Etkinleştirilirse, seçilen şablon yeni proformalar için otomatik olarak seçilecektir."
   },
   "invoices": {
+    "allocated_payments": "Allocated Payments",
     "title": "Faturalar",
     "download": "İndir",
     "pay_invoice": "Fatura Ödeme",

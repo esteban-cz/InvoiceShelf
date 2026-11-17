@@ -507,7 +507,6 @@
     "send_estimate": "傳送報價",
     "resend_estimate": "重新傳送報價",
     "record_payment": "紀錄付款",
-    "allocated_payments": "Allocated Payments",
     "add_estimate": "新增報價",
     "save_estimate": "保存報價",
     "cloned_successfully": "Estimate cloned successfully",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "If enabled, the selected template will be automatically selected for new estimates."
   },
   "invoices": {
+    "allocated_payments": "Allocated Payments",
     "title": "發票",
     "download": "Download",
     "pay_invoice": "Pay Invoice",

@@ -507,7 +507,6 @@
     "send_estimate": "Pošalji Ponudu",
     "resend_estimate": "Ponovo pošalji Ponudu",
     "record_payment": "Unesi uplatu",
-    "allocated_payments": "Allocated Payments",
     "add_estimate": "Dodaj Ponudu",
     "save_estimate": "Spremi Ponudu",
     "cloned_successfully": "Ponuda uspješno duplicirana",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "Ako je omogućeno, izabrani predložak biti će automatski izabran za nove predračune."
   },
   "invoices": {
+    "allocated_payments": "Allocated Payments",
     "title": "Fakture",
     "download": "Preuzmi",
     "pay_invoice": "Plati Račun",
