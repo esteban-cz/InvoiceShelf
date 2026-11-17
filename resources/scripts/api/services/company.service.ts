@@ -26,6 +26,11 @@ export interface CompanySettingsPayload {
   settings: Record<string, string | number | boolean | null>
 }
 
+export interface CompanySignature {
+  issuer_name: string
+  image: string | null
+}
+
 export interface CreateCompanyPayload {
   name: string
   currency?: number
@@ -33,6 +38,16 @@ export interface CreateCompanyPayload {
 }
 
 export const companyService = {
+  async getSignature(): Promise<CompanySignature> {
+    const { data } = await client.get<ApiResponse<CompanySignature>>(API.COMPANY_SIGNATURE)
+    return data.data
+  },
+
+  async saveSignature(payload: FormData): Promise<CompanySignature> {
+    const { data } = await client.post<ApiResponse<CompanySignature>>(API.COMPANY_SIGNATURE, payload)
+    return data.data
+  },
+
   async update(payload: UpdateCompanyPayload): Promise<ApiResponse<Company>> {
     const { data } = await client.put(API.COMPANY, payload)
     return data

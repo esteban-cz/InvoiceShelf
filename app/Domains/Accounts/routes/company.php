@@ -5,6 +5,7 @@ use App\Domains\Accounts\Http\Controllers\Auth\TokenController;
 use App\Domains\Accounts\Http\Controllers\Company\AbilitiesController;
 use App\Domains\Accounts\Http\Controllers\Company\CompanyController;
 use App\Domains\Accounts\Http\Controllers\Company\CompanySettingsController;
+use App\Domains\Accounts\Http\Controllers\Company\CompanySignatureController;
 use App\Domains\Accounts\Http\Controllers\Company\InvitationController;
 use App\Domains\Accounts\Http\Controllers\Company\InvitationResponseController;
 use App\Domains\Accounts\Http\Controllers\Company\RolesController;
@@ -36,6 +37,8 @@ Route::controller(CompanyController::class)->group(function (): void {
 Route::get('/company/settings', [CompanySettingsController::class, 'show']);
 Route::post('/company/settings', [CompanySettingsController::class, 'update']);
 Route::get('/company/has-transactions', [CompanySettingsController::class, 'checkTransactions']);
+Route::get('/company/signature', [CompanySignatureController::class, 'show']);
+Route::post('/company/signature', [CompanySignatureController::class, 'update']);
 
 Route::get('abilities', AbilitiesController::class); // the fixed catalogue the role editor lists
 Route::apiResources(['roles' => RolesController::class]);

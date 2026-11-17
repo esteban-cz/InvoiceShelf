@@ -9,8 +9,8 @@ export interface PoweredBy {
 }
 
 const DEFAULT_POWERED_BY: PoweredBy = {
-  name: 'InvoiceShelf',
-  url: 'https://invoiceshelf.com',
+  name: 'tomecka.com',
+  url: 'https://www.tomecka.com',
 }
 
 /**

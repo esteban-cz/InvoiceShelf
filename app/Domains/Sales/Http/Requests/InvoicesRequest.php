@@ -47,10 +47,12 @@ class InvoicesRequest extends FormRequest
             'total' => 'numeric|max:999999999999|required',
             'tax' => 'required',
             'template_name' => ['required', new PdfTemplateExists('invoice')],
-            'payment_qr' => ['sometimes', 'nullable', 'array:iban,variable_symbol,save_account'],
+            'payment_qr' => ['sometimes', 'nullable', 'array:iban,variable_symbol,save_account,bank_name'],
             'payment_qr.iban' => ['required_with:payment_qr', 'string', 'max:64'],
             'payment_qr.variable_symbol' => ['nullable', 'string', 'regex:/\A[0-9]{1,10}\z/'],
             'payment_qr.save_account' => ['sometimes', 'boolean'],
+            'payment_qr.bank_name' => ['sometimes', 'nullable', 'string', 'max:120'],
+            'sign_document' => ['sometimes', 'boolean'],
             'items' => 'required|array',
             'items.*' => 'required|max:255',
             'items.*.description' => 'nullable',
@@ -88,6 +90,10 @@ class InvoicesRequest extends FormRequest
 
         if ($this->has('payment_qr')) {
             $attributes['payment_qr'] = $this->validated('payment_qr');
+        }
+
+        if ($this->has('sign_document')) {
+            $attributes['sign_document'] = $this->boolean('sign_document');
         }
 
         return $attributes;

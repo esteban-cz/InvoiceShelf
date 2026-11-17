@@ -131,6 +131,9 @@ The source link defaults to the matching tag in this fork. An explicit
 `{fork_version}` and `{fork_tag}` placeholders. Docker images include both
 version files, as do the release archives built by the Makefile.
 
+For the company signature, Czech bank details and customer-facing invoice
+emails, see [Invoice presentation](docs/features/invoice-presentation.md).
+
 ## Health monitoring
 
 `GET /api/health` is a public readiness check for uptime monitors. It runs a

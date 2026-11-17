@@ -402,8 +402,6 @@
             @include('app.pdf.invoice.partials.table')
         </div>
 
-        @include('app.pdf.invoice.partials.payment-qr')
-
         <div class="notes">
             @if ($notes)
                 <div class="notes-label">
@@ -413,6 +411,8 @@
                 {!! $notes !!}
             @endif
         </div>
+
+        @include('app.pdf.invoice.partials.document-footer')
     </div>
 </body>
 

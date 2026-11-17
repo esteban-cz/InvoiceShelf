@@ -18,12 +18,12 @@ use App\Domains\Sales\Http\Resources\InvoiceResource;
 use App\Domains\Sales\Jobs\GenerateInvoicePdfJob;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\Invoice;
-use App\Domains\Sales\Models\InvoiceBankAccount;
 use App\Platform\Http\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Markdown;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Traits\Localizable;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -33,6 +33,8 @@ use Illuminate\Validation\ValidationException;
  */
 class InvoicesController extends Controller
 {
+    use Localizable;
+
     public function __construct(
         private readonly InvoiceService $invoiceService,
         private readonly CreditNoteService $creditNoteService,
@@ -153,14 +155,11 @@ class InvoicesController extends Controller
     /**
      * Bank accounts saved for reuse on this company's invoices.
      */
-    public function bankAccounts(Request $request): JsonResponse
+    public function bankAccounts(Request $request, InvoicePaymentQr $paymentQr): JsonResponse
     {
         $this->authorize('viewAny', Invoice::class);
 
-        return response()->json(['data' => InvoiceBankAccount::query()
-            ->where('company_id', $request->header('company'))
-            ->orderBy('iban')
-            ->pluck('iban')]);
+        return response()->json(['data' => $paymentQr->savedAccounts((int) $request->header('company'), $request->boolean('details'))]);
     }
 
     public function storeBankAccount(StoreInvoiceBankAccountRequest $request, InvoicePaymentQr $paymentQr): JsonResponse
@@ -169,7 +168,7 @@ class InvoicesController extends Controller
         $this->authorize('manage company', $company);
 
         $iban = $paymentQr->requireValidAccount($request->validated('iban'), 'iban');
-        $paymentQr->saveAccount($company->id, $iban);
+        $paymentQr->saveAccount($company->id, $iban, $request->has('bank_name') ? (string) $request->validated('bank_name') : null);
 
         return response()->json(['data' => $iban]);
     }
@@ -215,7 +214,7 @@ class InvoicesController extends Controller
         // out through SendCreditNoteMail, so it must preview as one.
         $view = $invoice->isCreditNote() ? 'emails.send.credit-note' : 'emails.send.invoice';
 
-        return $markdown->render($view, ['data' => $data]);
+        return $this->withLocale($data['locale'], fn () => $markdown->render($view, ['data' => $data]));
     }
 
     public function clone(Request $request, Invoice $invoice)

@@ -30,6 +30,12 @@
           />
         </BaseInputGroup>
         <BaseInputGroup
+          :label="$t('invoices.payment_qr.bank_name')"
+          :error="errors['payment_qr.bank_name']?.[0]"
+        >
+          <BaseInput v-model="payment.bank_name" maxlength="120" />
+        </BaseInputGroup>
+        <BaseInputGroup
           :label="$t('invoices.payment_qr.variable_symbol')"
           :error="errors['payment_qr.variable_symbol']?.[0]"
         >
@@ -64,7 +70,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { invoiceService } from '@/scripts/api/services/invoice.service'
-import type { InvoicePaymentQrInput } from '@/scripts/types/domain/invoice'
+import type { InvoiceBankAccount, InvoicePaymentQrInput } from '@/scripts/types/domain/invoice'
 
 const props = defineProps<{
   errors: Record<string, string[]>
@@ -74,11 +80,14 @@ const props = defineProps<{
 }>()
 
 const payment = defineModel<InvoicePaymentQrInput | null>({ required: true })
-const accounts = ref<string[]>([])
+const accounts = ref<InvoiceBankAccount[]>([])
 const accountsUnavailable = ref(false)
-const accountOptions = computed(() => accounts.value.map((iban) => ({ id: iban, label: iban })))
+const accountOptions = computed(() => accounts.value.map((account) => ({
+  id: account.iban,
+  label: [account.bank_name, account.account_number].filter(Boolean).join(' · '),
+})))
 const selectedAccount = computed(() =>
-  payment.value && accounts.value.includes(payment.value.iban) ? payment.value.iban : '',
+  payment.value && accounts.value.some((account) => account.iban === payment.value?.iban) ? payment.value.iban : '',
 )
 const variableSymbol = computed({
   get: () => props.useDefaultSymbol && payment.value?.variable_symbol === undefined
@@ -91,7 +100,9 @@ const variableSymbol = computed({
 
 onMounted(async () => {
   try {
-    accounts.value = await invoiceService.getBankAccounts()
+    accounts.value = await invoiceService.getBankAccountDetails()
+    const saved = accounts.value.find((account) => account.iban === payment.value?.iban)
+    if (payment.value && payment.value.bank_name === undefined && saved) payment.value.bank_name = saved.bank_name
   } catch {
     accountsUnavailable.value = true
   }
@@ -100,14 +111,17 @@ onMounted(async () => {
 function toggle(enabled: boolean | unknown[]) {
   payment.value = enabled === true ? {
     iban: props.defaultAccount,
+    bank_name: accounts.value.find((account) => account.iban === props.defaultAccount)?.bank_name ?? '',
     save_account: false,
     ...(props.useDefaultSymbol ? {} : { variable_symbol: null }),
   } : null
 }
 
 function selectAccount(iban: unknown) {
-  if (payment.value && typeof iban === 'string' && accounts.value.includes(iban)) {
-    payment.value.iban = iban
+  const saved = accounts.value.find((account) => account.iban === iban)
+  if (payment.value && saved) {
+    payment.value.iban = saved.iban
+    payment.value.bank_name = saved.bank_name
     payment.value.save_account = false
   }
 }

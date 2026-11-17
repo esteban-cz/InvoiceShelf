@@ -7,6 +7,28 @@ For upstream releases, the section beneath each `##` version heading is what CI 
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 1.0.9-[3.0.0-alpha.15] - 2026-11-17
+
+- Give invoice emails a compact layout with the invoice number, due date and
+  outstanding amount. Translate the button and public invoice page using the
+  issuing company's language, including emails without a PDF attachment.
+- Default the configurable Powered by branding to `tomecka.com`.
+- Add company settings for an issuer name and an uploaded PNG or JPEG signature,
+  with Sign document enabled by default on new invoices. Snapshot these details
+  with each invoice so later company changes preserve issued documents.
+- Place the issuer and optional signature beside a rounded payment card below
+  the notes and totals in all three invoice templates. Show the bank name,
+  Czech account number, IBAN and variable symbol alongside the payment QR code.
+- Allow receiving-account bank names to be saved and edited, while keeping the
+  existing bank-account API compatible. Regenerate archived invoice PDFs when
+  the footer or signature changes.
+
+Upgrade: apply the included database migration for invoice signatures and bank
+names. Existing invoices remain unsigned until signing is explicitly enabled.
+
+Deployment branch: `1.x.x-3.0.0-alpha.15`.
+Source tag: `fork-v1.0.9-upstream-3.0.0-alpha.15`.
+
 ## 1.0.8-[3.0.0-alpha.15] - 2026-11-17
 
 First numbered release of this personal fork, collecting the changes made since

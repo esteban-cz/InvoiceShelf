@@ -30,6 +30,7 @@ class EstimateService implements EstimatePdfDataProvider
         private readonly CustomFieldValueWriter $customFieldValueWriter,
         private readonly DocumentExchangeRateRecorder $exchangeRateRecorder,
         private readonly EstimateEmailSender $estimateEmailSender,
+        private readonly InvoiceSignatureService $signatures,
     ) {}
 
     /**
@@ -384,6 +385,7 @@ class EstimateService implements EstimatePdfDataProvider
             ...$carriedOver,
         ]);
 
+        $invoice->fill($this->signatures->configure(['company_id' => $invoice->company_id]));
         $invoice->unique_hash = PublicToken::make();
         $invoice->save();
 

@@ -13,6 +13,10 @@ class LaravelInvoiceEmailSender implements InvoiceEmailSender
     {
         $mail = Mail::to($data['to']);
 
+        if (! empty($data['locale'])) {
+            $mail->locale($data['locale']);
+        }
+
         if (! empty($data['cc'])) {
             $mail->cc($data['cc']);
         }

@@ -23,11 +23,14 @@ use App\Support\PublicToken;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Traits\Localizable;
 use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class InvoiceService implements InvoicePdfDataProvider
 {
+    use Localizable;
+
     /**
      * Relations a single-document payload is always returned with.
      */
@@ -42,6 +45,7 @@ class InvoiceService implements InvoicePdfDataProvider
         private readonly InvoiceEmailSender $invoiceEmailSender,
         private readonly InvoicePdfAttachments $pdfAttachments,
         private readonly InvoicePaymentQr $paymentQr,
+        private readonly InvoiceSignatureService $signatures,
     ) {}
 
     /**
@@ -57,6 +61,7 @@ class InvoiceService implements InvoicePdfDataProvider
     ): Invoice {
         $paymentInput = $attributes['payment_qr'] ?? null;
         $attributes = $this->configurePaymentQr($attributes);
+        $attributes = $this->signatures->configure($attributes);
         $invoice = Invoice::create($attributes);
 
         $serial = (new SerialNumberService)
@@ -147,6 +152,7 @@ class InvoiceService implements InvoicePdfDataProvider
         $attributes['customer_sequence_number'] = $serial->nextCustomerSequenceNumber;
         $attributes = $this->configurePaymentQr($attributes);
 
+        $attributes = $this->signatures->configure($attributes, $invoice);
         $invoice->update($attributes);
 
         $statusData = $invoice->getInvoiceStatusByAmount($attributes['due_amount']);
@@ -252,14 +258,19 @@ class InvoiceService implements InvoicePdfDataProvider
 
     public function sendInvoiceData(Invoice $invoice, array $data): array
     {
-        $data['invoice'] = $invoice->toArray();
-        $data['customer'] = $invoice->customer->toArray();
-        $data['company'] = Company::find($invoice->company_id);
-        $data['subject'] = $invoice->getEmailString($data['subject']);
-        $data['body'] = $invoice->getEmailString($data['body']);
-        $data['attach']['data'] = ($invoice->getEmailAttachmentSetting()) ? $this->getPdfData($invoice) : null;
+        $locale = CompanySetting::getSetting('language', $invoice->company_id) ?: config('app.locale');
 
-        return $data;
+        return $this->withLocale($locale, function () use ($invoice, $data, $locale): array {
+            $data['locale'] = $locale;
+            $data['invoice'] = $invoice->toArray();
+            $data['customer'] = $invoice->customer->toArray();
+            $data['company'] = Company::find($invoice->company_id);
+            $data['subject'] = $invoice->getEmailString($data['subject']);
+            $data['body'] = $invoice->getEmailString($data['body']);
+            $data['attach']['data'] = $invoice->getEmailAttachmentSetting() ? $this->getPdfData($invoice) : null;
+
+            return $data;
+        });
     }
 
     public function preview(Invoice $invoice, array $data): array
@@ -358,6 +369,7 @@ class InvoiceService implements InvoicePdfDataProvider
             'logo' => $logo ?? null,
             'taxes' => $taxes,
             'paymentQrImage' => $this->paymentQr->image($invoice),
+            'paymentAccount' => $this->paymentQr->domesticAccount($invoice->payment_qr['iban'] ?? ''),
         ]);
 
         $templatePath = PdfTemplateUtils::resolveView('invoice', $invoiceTemplate, 'invoice1');
@@ -455,6 +467,7 @@ class InvoiceService implements InvoicePdfDataProvider
             ...$carriedOver,
         ]);
 
+        $newInvoice->fill($this->signatures->configure(['company_id' => $newInvoice->company_id]));
         $newInvoice->unique_hash = PublicToken::make();
         $newInvoice->save();
 

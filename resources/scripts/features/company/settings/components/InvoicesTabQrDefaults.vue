@@ -6,12 +6,13 @@ import { useCompanyStore } from '@/scripts/stores/company.store'
 import type { NextNumberResponse } from '@/scripts/types/api'
 import { handleApiError } from '@/scripts/utils/error-handling'
 import { invoiceVariableSymbolFormats, previewInvoiceVariableSymbol } from '@/scripts/utils/invoice-variable-symbol'
+import type { InvoiceBankAccount } from '@/scripts/types/domain/invoice'
 
 const { t } = useI18n()
 const companyStore = useCompanyStore()
 const format = ref(companyStore.selectedCompanySettings.invoice_variable_symbol_format || 'manual')
 const receivingAccount = ref(companyStore.selectedCompanySettings.invoice_default_receiving_iban || 'none')
-const savedAccounts = ref<string[] | null>(null)
+const savedAccounts = ref<InvoiceBankAccount[] | null>(null)
 const loadingAccounts = ref(true)
 const isSaving = ref(false)
 const nextInvoice = ref<NextNumberResponse | null>(null)
@@ -23,7 +24,7 @@ const options = computed(() => invoiceVariableSymbolFormats.map((id) => ({
 })))
 const accountOptions = computed(() => [
   { id: 'none', label: t('settings.customization.invoices.receiving_account.none') },
-  ...(savedAccounts.value ?? []).map((iban) => ({ id: iban, label: iban })),
+  ...(savedAccounts.value ?? []).map((account) => ({ id: account.iban, label: [account.bank_name, account.account_number].filter(Boolean).join(' · ') })),
 ])
 const preview = computed(() => previewInvoiceVariableSymbol(
   format.value,
@@ -44,8 +45,8 @@ onMounted(async () => {
 
 onMounted(async () => {
   try {
-    savedAccounts.value = await invoiceService.getBankAccounts()
-    if (!savedAccounts.value.includes(receivingAccount.value)) receivingAccount.value = 'none'
+    savedAccounts.value = await invoiceService.getBankAccountDetails()
+    if (!savedAccounts.value.some((account) => account.iban === receivingAccount.value)) receivingAccount.value = 'none'
   } catch {
     savedAccounts.value = null
   } finally {

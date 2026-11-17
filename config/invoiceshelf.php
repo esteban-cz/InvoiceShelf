@@ -129,8 +129,8 @@ return [
     */
     'powered_by' => [
         'enabled' => (bool) env('INVOICESHELF_POWERED_BY', true),
-        'name' => env('INVOICESHELF_POWERED_BY_NAME', 'InvoiceShelf'),
-        'url' => env('INVOICESHELF_POWERED_BY_URL', 'https://invoiceshelf.com'),
+        'name' => env('INVOICESHELF_POWERED_BY_NAME', 'tomecka.com'),
+        'url' => env('INVOICESHELF_POWERED_BY_URL', 'https://www.tomecka.com'),
     ],
 
     /*

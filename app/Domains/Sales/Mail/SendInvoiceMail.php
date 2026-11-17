@@ -2,6 +2,7 @@
 
 namespace App\Domains\Sales\Mail;
 
+use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Sales\Models\Invoice;
 use App\Platform\Mail\Application\OutgoingSender;
 use App\Platform\Mail\Models\EmailLog;
@@ -40,6 +41,7 @@ class SendInvoiceMail extends Mailable
         $data
     ) {
         $this->data = $data;
+        $this->locale($data['locale'] ?? CompanySetting::getSetting('language', $data['invoice']['company_id'] ?? null) ?: config('app.locale'));
     }
 
     /**
@@ -56,11 +58,7 @@ class SendInvoiceMail extends Mailable
         $message = OutgoingSender::apply($this, $payload['from'], config('mail.from.name'))
             ->subject($payload['subject'])
             ->markdown('emails.send.invoice', [
-                // Handed over as a list, not as a keyed array. The numeric
-                // keys that produces are inert: the view reads $data, which
-                // Laravel already supplies from the public property above.
-                'data',
-                $this->data,
+                'data' => $this->data,
             ]);
 
         $pdf = $payload['attach']['data'];

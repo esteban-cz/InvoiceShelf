@@ -186,7 +186,7 @@ test('the Czech invoice PDF uses Czech payment labels', function () {
 
     get("/invoices/pdf/{$invoice->unique_hash}?preview=true")->assertOk()
         ->assertSee('Datum vystavení')
-        ->assertSee('Variabilní symbol 202501');
+        ->assertSee('Variabilní symbol')->assertSee('202501');
 });
 
 test('the default variable symbol follows the saved invoice number and preserves leading zeroes', function () {

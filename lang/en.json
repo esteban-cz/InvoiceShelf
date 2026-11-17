@@ -580,7 +580,10 @@
       "variable_symbol": "Variable symbol",
       "leave_symbol_blank": "Leave the variable symbol blank",
       "save_account": "Save this bank account for future invoices",
-      "accounts_unavailable": "Saved bank accounts could not be loaded. You can enter an account manually."
+      "accounts_unavailable": "Saved bank accounts could not be loaded. You can enter an account manually.",
+      "bank_name": "Bank name",
+      "account_number": "Account number",
+      "edit_account": "Edit account"
     },
     "download": "Download",
     "pay_invoice": "Pay Invoice",
@@ -706,7 +709,11 @@
     "marked_as_sent_message": "Invoice marked as sent successfully",
     "something_went_wrong": "something went wrong",
     "invalid_due_amount_message": "Total Invoice amount cannot be less than total paid amount for this Invoice. Please update the invoice or delete the associated payments to continue.",
-    "mark_as_default_invoice_template_description": "If enabled, the selected template will be automatically selected for new invoices."
+    "mark_as_default_invoice_template_description": "If enabled, the selected template will be automatically selected for new invoices.",
+    "signature": {
+      "enable": "Sign document",
+      "help": "Use the company signature uploaded in invoice settings. The issuer name is printed even when signing is off."
+    }
   },
   "recurring_invoices": {
     "title": "Recurring Invoices",
@@ -1619,7 +1626,16 @@
         "disable_on_invoice_partial_paid": "Disable after partial payment is recorded",
         "disable_on_invoice_paid": "Disable after full payment is recorded",
         "disable_on_invoice_sent": "Disable after invoice is sent",
-        "retrospective_edits_description": "Based on your country's laws or your preference, you can restrict users from editing finalised invoices."
+        "retrospective_edits_description": "Based on your country's laws or your preference, you can restrict users from editing finalised invoices.",
+        "signature": {
+          "title": "Issuer and signature",
+          "description": "Upload a signature image and choose the name printed on your invoices.",
+          "issuer_name": "Issued by",
+          "image": "Signature image",
+          "upload_help": "PNG or JPEG, up to 256 KB and 2400 × 1200 pixels. A PNG with a transparent background works best.",
+          "saved": "Issuer and signature saved.",
+          "load_failed": "Signature settings could not be loaded. Please reload this page."
+        }
       },
       "credit_notes": {
         "title": "Credit Notes",
@@ -3117,5 +3133,10 @@
   "Available": "Available",
   "Gross invoice due": "Gross invoice due",
   "Net account balance": "Net account balance",
-  "Credit note": "Credit note"
+  "Credit note": "Credit note",
+  "mail_invoice_attached": "Your invoice is attached to this email.",
+  "pdf_payment_details": "Payment details",
+  "pdf_bank_account": "Account:",
+  "pdf_issued_by": "Issued by:",
+  "pdf_signature": "Signature:"
 }
