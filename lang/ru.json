@@ -507,7 +507,6 @@
     "send_estimate": "Отправить заказ",
     "resend_estimate": "Переотправить заказ",
     "record_payment": "Добавить платёж",
-    "allocated_payments": "Allocated Payments",
     "add_estimate": "Добавить заказ",
     "save_estimate": "Сохранить заказ",
     "cloned_successfully": "Примерный расчёт успешно клонирован",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "Если включено, выбранный шаблон будет автоматически выбираться для новых заказов."
   },
   "invoices": {
+    "allocated_payments": "Allocated Payments",
     "title": "Счет-фактуры",
     "download": "Загрузить",
     "pay_invoice": "Оплатить счет",

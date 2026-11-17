@@ -504,7 +504,6 @@
     "send_estimate": "Enviar presupuesto",
     "resend_estimate": "Reenviar presupuesto",
     "record_payment": "Registro de pago",
-    "allocated_payments": "Allocated Payments",
     "add_estimate": "Agregar presupuesto",
     "save_estimate": "Guardar presupuesto",
     "cloned_successfully": "Presupuesto clonado correctamente",
@@ -566,6 +565,7 @@
     "mark_as_default_estimate_template_description": "Si se activa, esta plantilla se selccionará automáticamente para nuevos presupuestos. "
   },
   "invoices": {
+    "allocated_payments": "Allocated Payments",
     "title": "Facturas",
     "download": "Descargar",
     "pay_invoice": "Pagar factura",

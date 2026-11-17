@@ -507,7 +507,6 @@
     "send_estimate": "إرسال التقدير",
     "resend_estimate": "إعادة إرسال التقدير",
     "record_payment": "تسجيل مدفوات",
-    "allocated_payments": "Allocated Payments",
     "add_estimate": "إضافة تقدير",
     "save_estimate": "حفظ التقدير",
     "cloned_successfully": "Estimate cloned successfully",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "If enabled, the selected template will be automatically selected for new estimates."
   },
   "invoices": {
+    "allocated_payments": "Allocated Payments",
     "title": "الفواتير",
     "download": "Download",
     "pay_invoice": "Pay Invoice",

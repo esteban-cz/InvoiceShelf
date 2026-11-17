@@ -507,7 +507,6 @@
     "send_estimate": "Dërgo ofertën",
     "resend_estimate": "Ridërgo ofertën",
     "record_payment": "Regjistro pagesën",
-    "allocated_payments": "Pagesat e caktuara",
     "add_estimate": "Shto ofertë",
     "save_estimate": "Ruaj ofertën",
     "cloned_successfully": "Oferta u klonua me sukses",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "Nëse aktivizohet, shablloni i zgjedhur do të jetë automatikisht i përzgjedhur për ofertat e reja."
   },
   "invoices": {
+    "allocated_payments": "Pagesat e caktuara",
     "title": "Faturat",
     "download": "Shkarko",
     "pay_invoice": "Paguaj faturën",

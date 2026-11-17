@@ -507,7 +507,6 @@
     "send_estimate": "Pošalji Profakturu",
     "resend_estimate": "Ponovo pošalji Profakturu",
     "record_payment": "Unesi uplatu",
-    "allocated_payments": "Allocated Payments",
     "add_estimate": "Dodaj Profakturu",
     "save_estimate": "Sačuvaj Profakturu",
     "cloned_successfully": "Uspešno napravljen duplikat Fakture",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "Ako je omogućeno, izabrani šablon će automatski biti postavljen za nove ponude."
   },
   "invoices": {
+    "allocated_payments": "Allocated Payments",
     "title": "Fakture",
     "download": "Download",
     "pay_invoice": "Pay Invoice",

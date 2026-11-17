@@ -507,7 +507,6 @@
     "send_estimate": "अनुमान भेजें",
     "resend_estimate": "अनुमान फिर से भेजें",
     "record_payment": "रिकॉर्ड भुगतान",
-    "allocated_payments": "Allocated Payments",
     "add_estimate": "अनुमान जोड़ें",
     "save_estimate": "अनुमान बचाएं",
     "cloned_successfully": "अनुमान सफलतापूर्वक क्लोन किया गया",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "यदि सक्षम किया गया है, तो चयनित टेम्पलेट स्वचालित रूप से नए अनुमानों के लिए चयनित हो जाएगा।"
   },
   "invoices": {
+    "allocated_payments": "Allocated Payments",
     "title": "चालान",
     "download": "डाउनलोड",
     "pay_invoice": "रसीद का भुगतान करो",

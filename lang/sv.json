@@ -507,7 +507,6 @@
     "send_estimate": "Skicka offert",
     "resend_estimate": "Skicka offert igen",
     "record_payment": "Registrera betalning",
-    "allocated_payments": "Fördelade betalningar",
     "add_estimate": "Lägg till offert",
     "save_estimate": "Spara offert",
     "cloned_successfully": "Offerten kopierades",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "Om funktionen är aktiverad väljs den valda mallen automatiskt för nya offerter."
   },
   "invoices": {
+    "allocated_payments": "Fördelade betalningar",
     "title": "Fakturor",
     "download": "Ladda ner",
     "pay_invoice": "Betala faktura",

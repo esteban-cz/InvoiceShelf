@@ -507,7 +507,6 @@
     "send_estimate": "Angebot senden",
     "resend_estimate": "Angebot erneut senden",
     "record_payment": "Zahlung erfassen",
-    "allocated_payments": "Zugewiesene Zahlungen",
     "add_estimate": "Angebote hinzufügen",
     "save_estimate": "Angebot speichern",
     "cloned_successfully": "Angebot erfolgreich kopiert",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "Wenn aktiviert, wird die ausgewählte Vorlage automatisch für neue Angebote ausgewählt."
   },
   "invoices": {
+    "allocated_payments": "Zugewiesene Zahlungen",
     "title": "Rechnungen",
     "download": "Herunterladen",
     "pay_invoice": "Rechnung bezahlen",

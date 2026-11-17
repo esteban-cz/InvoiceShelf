@@ -507,7 +507,6 @@
     "send_estimate": "Gửi ước tính",
     "resend_estimate": "Gửi lại ước tính",
     "record_payment": "Ghi lại Thanh toán",
-    "allocated_payments": "Allocated Payments",
     "add_estimate": "Thêm ước tính",
     "save_estimate": "Lưu ước tính",
     "cloned_successfully": "Estimate cloned successfully",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "Nếu bật, mẫu đang chọn sẽ được tự động áp dụng cho ước tính mới."
   },
   "invoices": {
+    "allocated_payments": "Allocated Payments",
     "title": "Hóa đơn",
     "download": "Tải xuống",
     "pay_invoice": "Thanh toán hóa đơn",

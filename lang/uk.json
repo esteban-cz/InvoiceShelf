@@ -507,7 +507,6 @@
     "send_estimate": "Надіслати кошторис",
     "resend_estimate": "Надіслати кошторис ще раз",
     "record_payment": "Записати платіж",
-    "allocated_payments": "Allocated Payments",
     "add_estimate": "Додати кошторис",
     "save_estimate": "Зберегти кошторис",
     "cloned_successfully": "Копіювання кошторису успішне",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "Якщо увімкнуто, вибраний шаблон буде автоматично обраний для нових оцінок."
   },
   "invoices": {
+    "allocated_payments": "Allocated Payments",
     "title": "Рахунки",
     "download": "Завантажити",
     "pay_invoice": "Сплатити Рахунок",

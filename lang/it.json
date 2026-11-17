@@ -507,7 +507,6 @@
     "send_estimate": "Invia preventivo",
     "resend_estimate": "Invia di nuovo il preventivo",
     "record_payment": "Registra Pagamento",
-    "allocated_payments": "Allocated Payments",
     "add_estimate": "Aggiungi Preventivo",
     "save_estimate": "Salva Preventivo",
     "cloned_successfully": "Preventivo clonato con successo",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "Se abilitato, il modello selezionato verrà selezionato automaticamente per i nuovi preventivi."
   },
   "invoices": {
+    "allocated_payments": "Allocated Payments",
     "title": "Fatture",
     "download": "Scarica",
     "pay_invoice": "Paga Fattura",

@@ -507,7 +507,6 @@
     "send_estimate": "Send tilbud",
     "resend_estimate": "Send tilbud på nytt",
     "record_payment": "Registrer betaling",
-    "allocated_payments": "Fordelte betalinger",
     "add_estimate": "Legg til tilbud",
     "save_estimate": "Lagre tilbud",
     "cloned_successfully": "Tilbudet ble duplisert",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "Hvis aktivert, velges den valgte malen automatisk for nye tilbud."
   },
   "invoices": {
+    "allocated_payments": "Fordelte betalinger",
     "title": "Fakturaer",
     "download": "Last ned",
     "pay_invoice": "Betal faktura",

@@ -507,7 +507,6 @@
     "send_estimate": "Kirim Penawaran",
     "resend_estimate": "Kirim Ulang Penawaran",
     "record_payment": "Rekam Pembayaran",
-    "allocated_payments": "Allocated Payments",
     "add_estimate": "Tambah Penawaran",
     "save_estimate": "Simpan Penawaran",
     "cloned_successfully": "Estimate cloned successfully",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "Jika diaktifkan, template terpilih akan secara otomatis digunakan saat pembuatan estimate baru."
   },
   "invoices": {
+    "allocated_payments": "Allocated Payments",
     "title": "Faktur",
     "download": "Unduh",
     "pay_invoice": "Bayar Faktur",

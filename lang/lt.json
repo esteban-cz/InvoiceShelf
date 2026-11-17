@@ -507,7 +507,6 @@
     "send_estimate": "Siųsti pasiūlymą",
     "resend_estimate": "Siųsti pasiūlymą dar kartą",
     "record_payment": "Record Payment",
-    "allocated_payments": "Allocated Payments",
     "add_estimate": "Pridėti naują Pasiūlymą",
     "save_estimate": "Išsaugoti Pasiūlymą",
     "cloned_successfully": "Estimate cloned successfully",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "If enabled, the selected template will be automatically selected for new estimates."
   },
   "invoices": {
+    "allocated_payments": "Allocated Payments",
     "title": "Sąskaitos",
     "download": "Download",
     "pay_invoice": "Pay Invoice",

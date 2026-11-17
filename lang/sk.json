@@ -507,7 +507,6 @@
     "send_estimate": "Odoslať Cenový odhad",
     "resend_estimate": "Znovu Odoslať Cenový odhad",
     "record_payment": "Zaznamenať Platbu",
-    "allocated_payments": "Allocated Payments",
     "add_estimate": "Vytvoriť Cenový odhad",
     "save_estimate": "Uložiť Cenový odhad",
     "cloned_successfully": "Estimate cloned successfully",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "Ak je táto možnosť povolená, vybratá šablóna sa automaticky vyberie pre nové odhady."
   },
   "invoices": {
+    "allocated_payments": "Allocated Payments",
     "title": "Faktúry",
     "download": "Stiahnuť",
     "pay_invoice": "Zaplatiť faktúru",

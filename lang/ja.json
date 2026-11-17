@@ -507,7 +507,6 @@
     "send_estimate": "見積を送信",
     "resend_estimate": "見積を再送信する",
     "record_payment": "支払いを記録",
-    "allocated_payments": "Allocated Payments",
     "add_estimate": "見積を追加",
     "save_estimate": "見積を保存",
     "cloned_successfully": "見積りの複製に成功しました",
@@ -569,6 +568,7 @@
     "mark_as_default_estimate_template_description": "有効にすると、選択したテンプレートが新しい見積りに自動的に選択されます。"
   },
   "invoices": {
+    "allocated_payments": "Allocated Payments",
     "title": "請求書",
     "download": "ダウンロード",
     "pay_invoice": "請求の支払い",
