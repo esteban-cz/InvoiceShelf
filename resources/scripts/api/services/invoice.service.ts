@@ -5,6 +5,7 @@ import type {
   CreateInvoicePayload,
   CreateCreditNotePayload,
   InvoiceBankAccount,
+  InvoiceSignature,
 } from '@/scripts/types/domain/invoice'
 import type {
   ApiResponse,
@@ -68,6 +69,11 @@ export interface InvoiceTemplatesResponse {
 }
 
 export const invoiceService = {
+  async signatureDefaults(): Promise<InvoiceSignature> {
+    const { data } = await client.get<ApiResponse<InvoiceSignature>>(`${API.INVOICES}/signature-defaults`)
+    return data.data
+  },
+
   async list(params?: InvoiceListParams): Promise<InvoiceListResponse> {
     const { data } = await client.get(API.INVOICES, { params })
     return data

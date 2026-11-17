@@ -5,6 +5,7 @@ namespace App\Domains\Sales\Application;
 use App\Domains\Accounts\Application\CompanySignatureService;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Sales\Models\Invoice;
+use Illuminate\Support\Arr;
 
 class InvoiceSignatureService
 {
@@ -18,8 +19,15 @@ class InvoiceSignatureService
     {
         $enabled = (bool) ($attributes['sign_document'] ?? $invoice?->sign_document ?? true);
         $snapshot = $invoice?->document_signature;
+        $override = Arr::pull($attributes, 'signature');
 
-        if ($snapshot === null || ($enabled && empty($snapshot['image']))) {
+        if ($override !== null) {
+            $snapshot = [
+                'issuer_name' => $override['issuer_name'],
+                'image' => $override['image'] ?? null,
+                'customized' => true,
+            ];
+        } elseif ($snapshot === null || ($enabled && empty($snapshot['image']) && empty($snapshot['customized']))) {
             $snapshot = $this->signatures->settings(Company::query()->findOrFail($attributes['company_id']));
         }
 

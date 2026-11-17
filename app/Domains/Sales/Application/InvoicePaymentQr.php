@@ -84,10 +84,14 @@ final class InvoicePaymentQr
     public function payload(Invoice $invoice): ?string
     {
         $payment = $invoice->payment_qr;
-        $amount = (int) $invoice->due_amount;
+        $amount = (int) $invoice->due_amount > 0 ? (int) $invoice->due_amount : (int) $invoice->total;
 
         if ($payment === null || $invoice->isCreditNote() || $amount <= 0
             || $amount > self::MAX_AMOUNT || $invoice->currency?->code !== 'CZK') {
+            return null;
+        }
+
+        if ((int) $invoice->total + (int) $invoice->creditNotes->sum('total') <= 0) {
             return null;
         }
 

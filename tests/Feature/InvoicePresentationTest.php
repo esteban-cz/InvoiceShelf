@@ -1,9 +1,12 @@
 <?php
 
+use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Accounts\Models\User;
 use App\Domains\Contacts\Models\Customer;
 use App\Domains\Money\Models\Currency;
+use App\Domains\Receivables\Models\Payment;
+use App\Domains\Receivables\Models\PaymentMethod;
 use App\Domains\Sales\Application\InvoicePaymentQr;
 use App\Domains\Sales\Application\InvoiceService;
 use App\Domains\Sales\Jobs\GenerateInvoicePdfJob;
@@ -149,4 +152,56 @@ test('an archived invoice from the earlier footer layout is regenerated', functi
 
     $properties['document_footer_fingerprint'] = hash('sha256', json_encode([1, $invoice->sign_document, $invoice->document_signature]));
     expect($current->invoke($invoice, $properties))->toBeFalse();
+});
+
+test('an invoice can override its issuer and signature without changing company defaults', function () {
+    $this->post('/api/v1/company/signature', [
+        'issuer_name' => 'Výchozí vystavitel', 'signature' => UploadedFile::fake()->image('company.png', 400, 120),
+    ])->assertOk();
+    $defaults = $this->getJson('/api/v1/invoices/signature-defaults')->assertOk()->json('data');
+    $file = UploadedFile::fake()->image('custom.png', 320, 100);
+    $image = 'data:image/png;base64,'.base64_encode(file_get_contents($file->getPathname()));
+    $input = presentationInvoiceInput($this->customer, ['signature' => ['issuer_name' => 'Jiný vystavitel', 'image' => $image]]);
+    $id = $this->postJson('/api/v1/invoices', $input)->assertOk()->json('data.id');
+
+    $this->getJson('/api/v1/invoices/'.$id)->assertOk()->assertJsonPath('data.signature.issuer_name', 'Jiný vystavitel')->assertJsonPath('data.signature.image', $image);
+    $this->getJson('/api/v1/company/signature')->assertOk()->assertJsonPath('data', $defaults);
+    $this->getJson('/api/v1/invoices')->assertOk()->assertJsonMissingPath('data.0.signature');
+
+    $invoice = Invoice::query()->findOrFail($id);
+    $this->get('/invoices/pdf/'.$invoice->unique_hash.'?preview')->assertOk()->assertSee('Jiný vystavitel')->assertSee($image, false);
+    $this->putJson('/api/v1/invoices/'.$id, [...$input, 'signature' => ['issuer_name' => 'Bez obrázku', 'image' => null]])->assertOk();
+    unset($input['signature']);
+    $this->putJson('/api/v1/invoices/'.$id, $input)->assertOk();
+    expect($invoice->fresh()->document_signature)->toMatchArray(['issuer_name' => 'Bez obrázku', 'image' => null]);
+
+    $next = $this->postJson('/api/v1/invoices', presentationInvoiceInput($this->customer))->assertOk()->json('data.id');
+    expect(Invoice::query()->findOrFail($next)->document_signature)->toBe($defaults);
+});
+
+test('an invoice signature refuses remote URLs, SVG and invalid image content', function (string $image) {
+    $this->postJson('/api/v1/invoices', presentationInvoiceInput($this->customer, [
+        'signature' => ['issuer_name' => 'Vystavitel', 'image' => $image],
+    ]))->assertUnprocessable()->assertInvalid('signature.image');
+})->with([
+    'remote image' => ['https://example.com/signature.png'],
+    'SVG' => ['data:image/svg+xml;base64,'.base64_encode('<svg xmlns="http://www.w3.org/2000/svg"></svg>')],
+    'invalid PNG' => ['data:image/png;base64,'.base64_encode('not an image')],
+]);
+
+test('the default payment method is company-scoped and used only when a new payment omits a method', function () {
+    $method = PaymentMethod::factory()->create(['company_id' => $this->company->id, 'type' => PaymentMethod::TYPE_GENERAL]);
+    $this->postJson('/api/v1/company/settings', ['settings' => ['default_payment_method_id' => $method->id]])->assertOk();
+    $payload = Payment::factory()->raw(['customer_id' => $this->customer->id, 'currency_id' => $this->currency->id, 'exchange_rate' => 1, 'amount' => 10000]);
+    unset($payload['payment_method_id'], $payload['unique_hash']);
+    $id = $this->postJson('/api/v1/payments', $payload)->assertOk()->assertJsonPath('data.payment_method_id', $method->id)->json('data.id');
+
+    $payload['payment_number'] .= '-null';
+    $this->postJson('/api/v1/payments', [...$payload, 'payment_method_id' => null])->assertOk()->assertJsonPath('data.payment_method_id', null);
+    $this->putJson('/api/v1/payments/'.$id, [...$payload, 'payment_number' => 'PAY-EDITED'])->assertOk()->assertJsonPath('data.payment_method_id', $method->id);
+
+    $other = PaymentMethod::factory()->create(['company_id' => Company::factory()->create()->id]);
+    $this->postJson('/api/v1/company/settings', ['settings' => ['default_payment_method_id' => $other->id]])
+        ->assertUnprocessable()->assertInvalid('settings.default_payment_method_id');
+    $this->postJson('/api/v1/company/settings', ['settings' => ['default_payment_method_id' => 'none']])->assertOk();
 });

@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\Storage;
  */
 trait GeneratesPdf
 {
+    private const PDF_STYLE_VERSION = 1;
+
     /**
      * Answer with the archived PDF when one is reachable, otherwise render a
      * fresh copy. Either way the document is served inline, so a browser shows
@@ -75,7 +77,8 @@ trait GeneratesPdf
         try {
             $archive = $this->getMedia($collection_name)->last();
 
-            if (! $archive || ! $this->archivedPdfIsCurrent($archive->custom_properties)) {
+            if (! $archive || $archive->getCustomProperty('pdf_style_version') !== self::PDF_STYLE_VERSION
+                || ! $this->archivedPdfIsCurrent($archive->custom_properties)) {
                 return false;
             }
 
@@ -141,7 +144,7 @@ trait GeneratesPdf
 
         try {
             $this->addMedia($temp_path)
-                ->withCustomProperties(['file_disk_id' => $default_disk->id, ...$this->archivedPdfProperties()])
+                ->withCustomProperties(['file_disk_id' => $default_disk->id, 'pdf_style_version' => self::PDF_STYLE_VERSION, ...$this->archivedPdfProperties()])
                 ->usingFileName($file_name.'.pdf')
                 ->toMediaCollection($collection_name, config('filesystems.default'));
 

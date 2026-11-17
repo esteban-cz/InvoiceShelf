@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { useNotificationStore } from '../../../stores/notification.store'
 import { paymentService } from '../../../api/services/payment.service'
+import { useCompanyStore } from '@/scripts/stores/company.store'
 import type {
   PaymentListParams,
   PaymentListResponse,
@@ -300,6 +301,8 @@ export const usePaymentStore = defineStore('payment', {
             ({ invoice_id, amount }) => ({ invoice_id, amount }),
           ) ?? []
         } else if (!isEdit && nextNumRes) {
+          const defaultId = Number(useCompanyStore().selectedCompanySettings.default_payment_method_id)
+          this.currentPayment.payment_method_id = this.paymentModes.some(({ id }) => id === defaultId) ? defaultId : null
           const now = new Date()
           this.currentPayment.payment_date = formatDate(now)
           this.currentPayment.payment_number =

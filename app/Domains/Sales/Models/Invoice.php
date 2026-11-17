@@ -682,16 +682,17 @@ class Invoice extends Model implements HasMedia
 
     private function documentFooterFingerprint(): string
     {
-        return hash('sha256', json_encode([2, $this->sign_document, $this->document_signature]));
+        return hash('sha256', json_encode([3, $this->sign_document, $this->document_signature]));
     }
 
     private function paymentQrFingerprint(): ?string
     {
-        if ($this->payment_qr === null || (int) $this->due_amount <= 0) {
+        if ($this->payment_qr === null) {
             return null;
         }
 
-        return hash('sha256', json_encode([$this->payment_qr, (int) $this->due_amount, (int) $this->currency_id]));
+        return hash('sha256', json_encode([$this->payment_qr, (int) $this->due_amount, (int) $this->total,
+            (int) $this->creditNotes()->sum('total'), (int) $this->currency_id]));
     }
 
     /**

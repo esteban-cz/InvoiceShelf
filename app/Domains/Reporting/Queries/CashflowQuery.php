@@ -2,6 +2,9 @@
 
 namespace App\Domains\Reporting\Queries;
 
+use App\Domains\Accounts\Application\UserLocale;
+use App\Domains\Accounts\Models\CompanySetting;
+use App\Domains\Accounts\Models\User;
 use App\Domains\Purchases\Models\Expense;
 use App\Domains\Purchases\Models\SupplierPayment;
 use App\Domains\Purchases\Models\SupplierRefund;
@@ -43,6 +46,11 @@ class CashflowQuery
      */
     public function series(ReportingPeriod $period, ?int $customerId = null): array
     {
+        $companyId = (int) request()->header('company');
+        $user = request()->user();
+        $locale = $user instanceof User ? UserLocale::for($user, $companyId)
+            : (CompanySetting::getSetting('language', $companyId) ?: app()->getLocale());
+        $period = $period->localized($locale);
         $span = [$period->from(), $period->to()];
 
         $invoices = Invoice::query()

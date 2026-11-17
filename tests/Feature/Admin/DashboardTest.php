@@ -1,6 +1,8 @@
 <?php
 
+use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Accounts\Models\User;
+use App\Domains\Contacts\Models\Customer;
 use App\Domains\Sales\Models\Invoice;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Sanctum\Sanctum;
@@ -25,6 +27,18 @@ beforeEach(function () {
 getJson('api/v1/dashboard')->assertOk();
 
 getJson('api/v1/search?name=ab')->assertOk();
+
+test('dashboard and customer cashflow labels follow the reader language with a company fallback', function () {
+    $user = User::query()->findOrFail(1);
+    $company = $user->companies()->firstOrFail();
+    CompanySetting::setSettings(['language' => 'cs', 'fiscal_year' => 'calendar_year'], $company->id);
+    $user->setSettings(['language' => 'default']);
+    getJson('/api/v1/dashboard')->assertOk()->assertJsonPath('chart_data.months.0', 'led')->assertJsonPath('chart_data.months.1', 'úno');
+    $customer = Customer::factory()->create(['company_id' => $company->id]);
+    getJson('/api/v1/customers/'.$customer->id.'/stats')->assertOk()->assertJsonPath('meta.chartData.months.0', 'led');
+    $user->setSettings(['language' => 'en']);
+    getJson('/api/v1/dashboard')->assertOk()->assertJsonPath('chart_data.months.0', 'Jan');
+});
 
 test('the invoice count excludes credit notes while the sales total nets them out', function () {
     $before = getJson('api/v1/dashboard')->assertOk();

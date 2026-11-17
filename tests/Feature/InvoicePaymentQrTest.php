@@ -164,9 +164,9 @@ test('every stock PDF includes the QR for the current outstanding balance', func
     expect($pdf->getContent())->toStartWith('%PDF-');
 
     $invoice->update(['due_amount' => 0]);
-    expect($qr->payload($invoice))->toBeNull();
+    expect($qr->payload($invoice))->toBe('SPD*1.0*ACC:CZ4907100000000000123457*AM:34990.00*CC:CZK*X-VS:0202501');
     get("/invoices/pdf/{$invoice->unique_hash}?preview=true")->assertOk()
-        ->assertDontSee('data:image/svg+xml;base64,', false);
+        ->assertSee('data:image/svg+xml;base64,', false)->assertSee(__('pdf_invoice_paid'));
 })->with(['invoice1', 'invoice2', 'invoice3']);
 
 test('Czech account numbers can include a prefix and preserve leading zeroes', function () {
@@ -174,6 +174,22 @@ test('Czech account numbers can include a prefix and preserve leading zeroes', f
     expect($qr->normalizeAccount('19-123457/0710'))->toBe('CZ3507100000190000123457')
         ->and($qr->normalizeAccount('000000/0710'))->toBeNull()
         ->and($qr->normalizeAccount('1-123457/0710'))->toBeNull();
+});
+
+test('a fully credited invoice does not retain a QR requesting its original amount', function () {
+    $invoice = Invoice::factory()->hasItems(1)->create([
+        'customer_id' => $this->customer->id, 'currency_id' => $this->currency->id,
+        'total' => 10000, 'due_amount' => 0,
+        'payment_qr' => ['iban' => 'CZ4907100000000000123457', 'variable_symbol' => null],
+    ]);
+    Invoice::factory()->create([
+        'customer_id' => $this->customer->id, 'currency_id' => $this->currency->id,
+        'type' => Invoice::TYPE_CREDIT_NOTE, 'related_invoice_id' => $invoice->id,
+        'total' => -10000, 'due_amount' => 0,
+    ]);
+    expect(app(InvoicePaymentQr::class)->payload($invoice))->toBeNull();
+    get('/invoices/pdf/'.$invoice->unique_hash.'?preview')->assertOk()
+        ->assertDontSee('data:image/svg+xml;base64,', false)->assertDontSee(__('pdf_invoice_paid'));
 });
 
 test('the Czech invoice PDF uses Czech payment labels', function () {

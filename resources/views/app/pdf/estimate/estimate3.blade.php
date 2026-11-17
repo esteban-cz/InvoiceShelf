@@ -233,18 +233,13 @@
         /* -- Total Display Table -- */
 
         .total-display-container {
-            padding: 0 25px;
+            margin-top: 20px;
+            padding: 0 30px;
         }
 
         .total-display-table {
-            box-sizing: border-box;
             page-break-inside: avoid;
-            page-break-before: auto;
-            page-break-after: auto;
-            margin-top: 20px;
-            float: right;
-            width: auto;
-
+            width: 100%;
         }
 
         .total-table-attribute-label {
@@ -264,28 +259,13 @@
             padding-bottom: 2px;
         }
 
-        .total-border-left {
-            border: 1px solid #E8E8E8 !important;
-            border-right: 0px !important;
-            padding-top: 0px;
-            padding: 8px !important;
-        }
-
-        .total-border-right {
-            border: 1px solid #E8E8E8 !important;
-            border-left: 0px !important;
-            padding-top: 0px;
-            padding: 8px !important;
-        }
-
         /* -- Notes -- */
 
         .notes {
             font-size: 12px;
             color: #595959;
-            margin-top: 80px;
-            margin-left: 30px;
-            width: 442px;
+            margin: 0;
+            width: auto;
             text-align: left;
             page-break-inside: avoid;
         }
@@ -373,6 +353,7 @@
 
     </style>
 
+    @include('app.pdf.partials.cards')
 </head>
 
 <body>
@@ -438,14 +419,7 @@
                 @include('app.pdf.estimate.partials.table')
             </div>
 
-            <div class="notes">
-                @if ($notes)
-                    <div class="notes-label">
-                        @lang('pdf_notes')
-                    </div>
-                    {!! $notes !!}
-                @endif
-            </div>
+
         </div>
     </div>
 </body>

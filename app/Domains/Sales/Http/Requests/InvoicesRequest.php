@@ -7,6 +7,7 @@ use App\Domains\Contacts\Models\Customer;
 use App\Domains\Metadata\Http\Requests\Concerns\ValidatesCustomFields;
 use App\Domains\Sales\Application\Composition\InvoiceAttributes;
 use App\Domains\Sales\Models\Invoice;
+use App\Domains\Sales\Rules\SignatureImage;
 use App\Platform\Pdf\Rules\PdfTemplateExists;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -53,6 +54,9 @@ class InvoicesRequest extends FormRequest
             'payment_qr.save_account' => ['sometimes', 'boolean'],
             'payment_qr.bank_name' => ['sometimes', 'nullable', 'string', 'max:120'],
             'sign_document' => ['sometimes', 'boolean'],
+            'signature' => ['sometimes', 'nullable', 'array:issuer_name,image'],
+            'signature.issuer_name' => ['required_with:signature', 'string', 'max:255'],
+            'signature.image' => ['bail', 'sometimes', 'nullable', 'string', 'max:350000', new SignatureImage],
             'items' => 'required|array',
             'items.*' => 'required|max:255',
             'items.*.description' => 'nullable',
@@ -94,6 +98,10 @@ class InvoicesRequest extends FormRequest
 
         if ($this->has('sign_document')) {
             $attributes['sign_document'] = $this->boolean('sign_document');
+        }
+
+        if ($this->has('signature')) {
+            $attributes['signature'] = $this->validated('signature');
         }
 
         return $attributes;

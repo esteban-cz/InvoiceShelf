@@ -91,6 +91,11 @@ export interface InvoiceBankAccount {
   bank_name: string | null
 }
 
+export interface InvoiceSignature {
+  issuer_name: string
+  image: string | null
+}
+
 export interface InvoicePaymentQrInput extends Omit<InvoicePaymentQr, 'variable_symbol'> {
   variable_symbol?: string | null
   save_account?: boolean
@@ -104,6 +109,7 @@ export interface Invoice {
   reference_number: string | null
   payment_qr?: InvoicePaymentQr | null
   sign_document?: boolean
+  signature?: InvoiceSignature | null
   issuer_name?: string | null
   type: InvoiceType
   related_invoice_id: number | null
@@ -169,6 +175,7 @@ export interface CreateInvoicePayload {
   reference_number?: string | null
   payment_qr?: InvoicePaymentQrInput | null
   sign_document?: boolean
+  signature?: InvoiceSignature | null
   customer_id: number
   template_name?: string | null
   notes?: string | null

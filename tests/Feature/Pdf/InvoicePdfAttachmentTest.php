@@ -235,3 +235,13 @@ test('an archive is served only while it matches whether attachments apply', fun
         ->and($this->invoice->fresh()->getMedia('invoice'))->toHaveCount(1)
         ->and($this->invoice->fresh()->getGeneratedPDF('invoice'))->not->toBeFalse();
 });
+
+test('an archive with the previous document styling is regenerated', function () {
+    Setting::setSetting('save_pdf_to_disk', 'YES');
+    expect($this->invoice->generatePDF('invoice', 'INV-000042'))->toBeTrue();
+    $archive = $this->invoice->getMedia('invoice')->last();
+    $archive->forgetCustomProperty('pdf_style_version')->save();
+    expect($this->invoice->fresh()->getGeneratedPDF('invoice'))->toBeFalse();
+    expect($this->invoice->generatePDF('invoice', 'INV-000042', true))->toBeTrue()
+        ->and($this->invoice->fresh()->getGeneratedPDF('invoice'))->not->toBeFalse();
+});

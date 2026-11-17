@@ -9,6 +9,7 @@ import { ABILITIES } from '@/scripts/config/abilities'
 import PaymentModeModal from '@/scripts/features/company/settings/components/PaymentModeModal.vue'
 import PaymentModeDropdown from '@/scripts/features/company/settings/components/PaymentModeDropdown.vue'
 import ReceivingAccountsCard from '@/scripts/features/company/settings/components/ReceivingAccountsCard.vue'
+import DefaultPaymentMethodCard from '@/scripts/features/company/settings/components/DefaultPaymentMethodCard.vue'
 
 interface TableColumn {
   key: string
@@ -135,5 +136,6 @@ function addPaymentMode(): void {
     </BaseTable>
   </BaseSettingCard>
 
+  <DefaultPaymentMethodCard v-if="canManageAccounts" :key="'default-' + companyStore.selectedCompany?.id" class="mt-5" />
   <ReceivingAccountsCard v-if="canManageAccounts" :key="companyStore.selectedCompany?.id" class="mt-5" />
 </template>

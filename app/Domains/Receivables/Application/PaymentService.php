@@ -12,6 +12,7 @@ use App\Domains\Receivables\Contracts\PaymentNumberAssigner;
 use App\Domains\Receivables\Contracts\PaymentPdfDataProvider;
 use App\Domains\Receivables\Events\PaymentRecorded;
 use App\Domains\Receivables\Models\Payment;
+use App\Domains\Receivables\Models\PaymentMethod;
 use App\Platform\Mail\Contracts\MailConfigurator;
 use App\Platform\Pdf\Facades\Pdf;
 use App\Platform\Pdf\Rendering\PdfMetadata;
@@ -42,6 +43,13 @@ class PaymentService implements PaymentPdfDataProvider
         array $allocations = [],
         ?iterable $customFields = null,
     ): Payment {
+        if (! array_key_exists('payment_method_id', $attributes)) {
+            $default = CompanySetting::getSetting('default_payment_method_id', $attributes['company_id']);
+            $attributes['payment_method_id'] = ctype_digit((string) $default) ? PaymentMethod::query()
+                ->where('company_id', $attributes['company_id'])->where('type', PaymentMethod::TYPE_GENERAL)
+                ->whereKey($default)->value('id') : null;
+        }
+
         $payment = DB::transaction(function () use ($attributes, $allocations, $customFields): Payment {
             $payment = Payment::create($attributes);
             $payment->unique_hash = PublicToken::make();

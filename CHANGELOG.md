@@ -7,6 +7,30 @@ For upstream releases, the section beneath each `##` version heading is what CI 
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 1.0.11-[3.0.0-alpha.15] - 2026-11-18
+
+- Use a shared rounded card style for invoice totals, all three estimate
+  templates and payment receipts. Refresh archived PDFs for the new styling.
+- Place the invoice payment QR beside the total, with notes below the QR and
+  the issuer and signature below the total.
+- Enable QR payment and signing by default on new invoices. Preload the company
+  issuer and signature in a matching editor card, allowing invoice-only changes
+  to the name and image or restoration of company defaults.
+- Retain the QR on fully paid invoices using the original invoice amount and a
+  clear paid label. Partially paid invoices use the remaining balance, and fully
+  credited invoices omit the payment QR.
+- Add a company default payment method under Payment modes and preselect it on
+  new payment forms, including payments recorded against an invoice. New API
+  payments use the default when no method is supplied; edits preserve it.
+- Translate dashboard and customer cashflow month labels using the reader's
+  language, and rename the Czech receivables heading to "Kolik mi kdo dluží".
+- Translate the applied-amount label on payment receipts.
+
+Upgrade: no new database migration is required.
+
+Deployment branch: `1.x.x-3.0.0-alpha.15`.
+Source tag: `fork-v1.0.11-upstream-3.0.0-alpha.15`.
+
 ## 1.0.10-[3.0.0-alpha.15] - 2026-11-17
 
 - Autofill bank names in receiving-account settings and invoice payment details
