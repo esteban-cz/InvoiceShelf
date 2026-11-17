@@ -3,6 +3,7 @@
 namespace App\Domains\Sales\Application;
 
 use App\Domains\Accounts\Models\CompanySetting;
+use App\Support\SpaTranslations;
 
 /**
  * A company's payment reminder settings, with the defaults for anything the
@@ -14,16 +15,13 @@ final class ReminderSettings
 
     public const DEFAULT_SEND_HOUR = 9;
 
-    public const DEFAULT_SUBJECT = 'Reminder: invoice {INVOICE_NUMBER}';
-
-    public const DEFAULT_BODY = 'Hello {CONTACT_DISPLAY_NAME},<br><br>This is a friendly reminder that invoice <b>{INVOICE_NUMBER}</b> from <b>{COMPANY_NAME}</b> was due on {INVOICE_DUE_DATE}. <b>{INVOICE_DUE_AMOUNT}</b> is still open.<br><br>If you have already paid, please ignore this message. Thank you!';
-
     /** The furthest before or after the due date a reminder may be scheduled. */
     public const MAX_OFFSET = 365;
 
     public const MAX_OFFSETS = 10;
 
     private const KEYS = [
+        'language',
         'reminders_enabled',
         'reminders_offsets',
         'reminders_send_hour',
@@ -49,13 +47,14 @@ final class ReminderSettings
         $stored = CompanySetting::getSettings(self::KEYS, $companyId);
         $offsets = json_decode((string) ($stored['reminders_offsets'] ?? ''), true);
         $hour = $stored['reminders_send_hour'] ?? null;
+        $locale = ($stored['language'] ?? '') ?: 'en';
 
         return new self(
             enabled: ($stored['reminders_enabled'] ?? 'NO') === 'YES',
             offsets: is_array($offsets) ? self::normalise($offsets) : self::DEFAULT_OFFSETS,
             sendHour: is_numeric($hour) ? max(0, min(23, (int) $hour)) : self::DEFAULT_SEND_HOUR,
-            subject: (string) (($stored['reminders_subject'] ?? '') ?: self::DEFAULT_SUBJECT),
-            body: (string) (($stored['reminders_body'] ?? '') ?: self::DEFAULT_BODY),
+            subject: (string) (($stored['reminders_subject'] ?? '') ?: SpaTranslations::get($locale, 'reminders.default_subject')),
+            body: (string) (($stored['reminders_body'] ?? '') ?: SpaTranslations::get($locale, 'reminders.default_body')),
             attachPdf: ($stored['reminders_attach_pdf'] ?? 'NO') === 'YES',
         );
     }

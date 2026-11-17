@@ -2,6 +2,7 @@
 
 namespace App\Domains\Accounts\Models;
 
+use App\Support\SpaTranslations;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,6 +19,13 @@ use Illuminate\Support\Collection;
 class CompanySetting extends Model
 {
     use HasFactory;
+
+    /** The original stock text is stored on existing companies. */
+    public const DOCUMENT_MAIL_BODIES = [
+        'invoice_mail_body' => 'You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:',
+        'estimate_mail_body' => 'You have received a new estimate from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:',
+        'payment_mail_body' => 'Thank you for the payment.</b></br> Please download your payment receipt using the button below:',
+    ];
 
     protected $table = 'company_settings';
 
@@ -58,9 +66,9 @@ class CompanySetting extends Model
      */
     public static function getAllSettings(mixed $company_id): Collection
     {
-        return self::flatten(
+        return self::localizeMailBodies(self::flatten(
             static::whereCompany($company_id)->get()
-        );
+        ), $company_id);
     }
 
     /**
@@ -68,9 +76,9 @@ class CompanySetting extends Model
      */
     public static function getSettings(array $settings, mixed $company_id): Collection
     {
-        return self::flatten(
+        return self::localizeMailBodies(self::flatten(
             static::whereIn('option', $settings)->whereCompany($company_id)->get()
-        );
+        ), $company_id);
     }
 
     /**
@@ -78,6 +86,10 @@ class CompanySetting extends Model
      */
     public static function getSetting(string $key, mixed $company_id): mixed
     {
+        if (isset(self::DOCUMENT_MAIL_BODIES[$key])) {
+            return self::getSettings([$key], $company_id)->get($key);
+        }
+
         $setting = static::query()
             ->where('option', $key)
             ->whereCompany($company_id)
@@ -110,5 +122,20 @@ class CompanySetting extends Model
         return $rows->mapWithKeys(function ($row) {
             return [$row['option'] => $row['value']];
         });
+    }
+
+    private static function localizeMailBodies(Collection $settings, mixed $companyId): Collection
+    {
+        $stock = $settings->intersectAssoc(self::DOCUMENT_MAIL_BODIES);
+
+        if ($stock->isEmpty()) {
+            return $settings;
+        }
+
+        $locale = $settings->get('language') ?: self::getSetting('language', $companyId) ?: 'en';
+
+        return $settings->replace($stock->map(
+            fn (string $value, string $key): string => SpaTranslations::get($locale, 'document_mail_defaults.'.$key)
+        ));
     }
 }

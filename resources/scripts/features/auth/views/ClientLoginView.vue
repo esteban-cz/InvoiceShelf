@@ -399,14 +399,14 @@ async function onSubmit(): Promise<void> {
 
     notificationStore.showNotification({
       type: 'success',
-      message: 'Logged in successfully.',
+      message: 'general.login_successfully',
     })
   } catch (err: unknown) {
-    const { handleApiError } = await import('@/scripts/utils/error-handling')
+    const { getErrorTranslationKey, handleApiError } = await import('@/scripts/utils/error-handling')
     const normalized = handleApiError(err)
     notificationStore.showNotification({
       type: 'error',
-      message: normalized.message,
+      message: getErrorTranslationKey(normalized.message) ?? normalized.message,
     })
     isBusy.value = false
   }

@@ -185,6 +185,18 @@ export function createAppI18n(
     locale: 'en',
     fallbackLocale: 'en',
     globalInjection: true,
+    pluralRules: {
+      cs(choice, choicesLength, defaultRule) {
+        if (choicesLength !== 4) {
+          return defaultRule?.(choice, choicesLength) ?? 0
+        }
+
+        // Czech count labels use separate forms for zero, one, two to four, and the rest.
+        const count = Math.abs(choice)
+        if (count === 0 || count === 1) return count
+        return Number.isInteger(count) && count >= 2 && count <= 4 ? 2 : 3
+      },
+    },
     messages: messages as I18nOptions['messages'],
   }
 

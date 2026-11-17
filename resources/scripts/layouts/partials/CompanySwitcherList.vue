@@ -54,7 +54,7 @@
       <span class="flex flex-col flex-1 min-w-0 text-start">
         <span class="text-sm font-medium truncate">{{ company.name }}</span>
         <span v-if="company.user_role" class="text-xs truncate text-muted">
-          {{ company.user_role }}
+          {{ company.owner_id === userStore.currentUser?.id ? $t('administration.companies.owner') : company.user_role }}
         </span>
       </span>
       <BaseIcon

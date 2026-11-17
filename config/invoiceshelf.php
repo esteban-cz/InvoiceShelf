@@ -190,7 +190,7 @@ return [
         ['code' => 'zh_CN', 'name' => 'Chinese (Simplified)'],
         ['code' => 'zh', 'name' => 'Chinese (Traditional)'],
         ['code' => 'hr', 'name' => 'Croatian'],
-        ['code' => 'cs', 'name' => 'Czech'],
+        ['code' => 'cs', 'name' => 'Čeština'],
         ['code' => 'nl', 'name' => 'Dutch'],
         ['code' => 'en', 'name' => 'English'],
         ['code' => 'fi', 'name' => 'Finnish'],

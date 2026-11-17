@@ -269,6 +269,33 @@ test('the owner edits the reminder settings, and the days are checked', function
     $this->putJson('/api/v1/company/payment-reminders', ['send_hour' => 24])->assertUnprocessable();
 });
 
+test('the Czech company language supplies localized stock email text and keeps custom text', function () {
+    CompanySetting::setSettings([
+        ...CompanySetting::DOCUMENT_MAIL_BODIES,
+        'language' => 'cs',
+    ], $this->companyId);
+
+    $reminders = $this->getJson('/api/v1/company/payment-reminders')->assertOk();
+    $reminders->assertJsonPath('data.subject', 'Upomínka k úhradě faktury {INVOICE_NUMBER}');
+    expect($reminders->json('data.body'))->toContain('zbývá uhradit', '{INVOICE_DUE_AMOUNT}');
+
+    $settingPath = '/api/v1/company/settings?settings[]=invoice_mail_body&settings[]=estimate_mail_body&settings[]=payment_mail_body';
+    $settings = $this->getJson($settingPath)->assertOk();
+    expect($settings->json('invoice_mail_body'))->toContain('Posíláme vám fakturu', '{COMPANY_NAME}')
+        ->and($settings->json('estimate_mail_body'))->toContain('Posíláme vám nabídku', '{COMPANY_NAME}')
+        ->and($settings->json('payment_mail_body'))->toContain('Děkujeme za úhradu')
+        ->and(CompanySetting::getSetting('invoice_mail_body', $this->companyId))->toBe($settings->json('invoice_mail_body'))
+        ->and(CompanySetting::getAllSettings($this->companyId)->get('invoice_mail_body'))->toBe($settings->json('invoice_mail_body'));
+
+    CompanySetting::setSettings(['invoice_mail_body' => 'Our custom invoice message.'], $this->companyId);
+    ReminderSettings::save($this->companyId, ['subject' => 'Our own subject', 'body' => 'Our own reminder.']);
+
+    $this->getJson($settingPath)->assertJsonPath('invoice_mail_body', 'Our custom invoice message.');
+    $this->getJson('/api/v1/company/payment-reminders')
+        ->assertJsonPath('data.subject', 'Our own subject')
+        ->assertJsonPath('data.body', 'Our own reminder.');
+});
+
 test('a customer can be paused from the customer form', function () {
     $this->putJson("/api/v1/customers/{$this->customer->id}", [
         'name' => 'Globex',

@@ -27,13 +27,6 @@ class CompanyService
     /** The role every company's creator is given. */
     private const OWNER_ROLE = RolePreset::OWNER;
 
-    /** Mail bodies quoted into the outgoing document mails. */
-    private const INVOICE_MAIL_BODY = 'You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:';
-
-    private const ESTIMATE_MAIL_BODY = 'You have received a new estimate from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:';
-
-    private const PAYMENT_MAIL_BODY = 'Thank you for the payment.</b></br> Please download your payment receipt using the button below:';
-
     /** Address blocks printed on the documents; placeholders filled at render. */
     private const BILLING_ADDRESS_FORMAT = '<h3>{BILLING_ADDRESS_NAME}</h3><p>{BILLING_ADDRESS_STREET_1}</p><p>{BILLING_ADDRESS_STREET_2}</p><p>{BILLING_CITY}  {BILLING_STATE}</p><p>{BILLING_COUNTRY}  {BILLING_ZIP_CODE}</p><p>{BILLING_PHONE}</p>';
 
@@ -156,9 +149,7 @@ class CompanyService
     private function setupDefaultSettings(Company $company, int $currencyId): void
     {
         CompanySetting::setSettings([
-            'invoice_mail_body' => self::INVOICE_MAIL_BODY,
-            'estimate_mail_body' => self::ESTIMATE_MAIL_BODY,
-            'payment_mail_body' => self::PAYMENT_MAIL_BODY,
+            ...CompanySetting::DOCUMENT_MAIL_BODIES,
             'invoice_company_address_format' => self::COMPANY_ADDRESS_FORMAT,
             'invoice_shipping_address_format' => self::SHIPPING_ADDRESS_FORMAT,
             'invoice_billing_address_format' => self::BILLING_ADDRESS_FORMAT,

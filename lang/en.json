@@ -2981,6 +2981,11 @@
       }
     }
   },
+  "document_mail_defaults": {
+    "invoice_mail_body": "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:",
+    "estimate_mail_body": "You have received a new estimate from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:",
+    "payment_mail_body": "Thank you for the payment.</b></br> Please download your payment receipt using the button below:"
+  },
   "reminders": {
     "title": "Payment reminders",
     "description": "Email customers about invoices they have not paid yet, on the days you choose around the due date. Reminders stop by themselves once an invoice is paid.",
@@ -2998,6 +3003,8 @@
     "email": "Email",
     "subject": "Subject",
     "body": "Message",
+    "default_subject": "Reminder: invoice {INVOICE_NUMBER}",
+    "default_body": "Hello {CONTACT_DISPLAY_NAME},<br><br>This is a friendly reminder that invoice <b>{INVOICE_NUMBER}</b> from <b>{COMPANY_NAME}</b> was due on {INVOICE_DUE_DATE}. <b>{INVOICE_DUE_AMOUNT}</b> is still open.<br><br>If you have already paid, please ignore this message. Thank you!",
     "attach_pdf": "Attach the invoice PDF",
     "saved": "Payment reminder settings saved",
     "card_title": "Reminders",

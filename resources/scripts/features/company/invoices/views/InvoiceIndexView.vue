@@ -75,7 +75,7 @@
         />
       </BaseInputGroup>
 
-      <BaseInputGroup :label="$t('general.from')">
+      <BaseInputGroup :label="$t('general.from_date')">
         <BaseDatePicker
           v-model="filters.from_date"
           :calendar-button="true"
@@ -87,7 +87,7 @@
         class="hidden w-4 h-px mb-5 shrink-0 bg-line-strong xl:block"
       />
 
-      <BaseInputGroup :label="$t('general.to')">
+      <BaseInputGroup :label="$t('general.to_date')">
         <BaseDatePicker
           v-model="filters.to_date"
           :calendar-button="true"
@@ -129,7 +129,7 @@
         />
       </BaseInputGroup>
 
-      <BaseInputGroup :label="$t('general.from')">
+      <BaseInputGroup :label="$t('general.from_date')">
         <BaseDatePicker
           v-model="recurringFilters.from_date"
           :calendar-button="true"
@@ -141,7 +141,7 @@
         class="hidden w-4 h-px mb-5 shrink-0 bg-line-strong xl:block"
       />
 
-      <BaseInputGroup :label="$t('general.to')">
+      <BaseInputGroup :label="$t('general.to_date')">
         <BaseDatePicker
           v-model="recurringFilters.to_date"
           :calendar-button="true"
