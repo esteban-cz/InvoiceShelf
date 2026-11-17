@@ -2,7 +2,7 @@
 
 namespace App\Support;
 
-use Illuminate\Support\Facades\File;
+use App\Platform\Operations\Application\BuildVersionService;
 
 /**
  * The "Powered by" line and the link to the running version's source code.
@@ -34,8 +34,12 @@ final class PoweredBy
      */
     public static function sourceUrl(): string
     {
-        $version = (string) preg_replace('~[\r\n]+~', '', File::get(base_path('version.md')));
+        $version = app(BuildVersionService::class);
 
-        return str_replace('{version}', rawurlencode($version), (string) config('invoiceshelf.source_url'));
+        return str_replace(
+            ['{version}', '{fork_version}', '{fork_tag}'],
+            [rawurlencode($version->upstream()), rawurlencode($version->fork()), rawurlencode($version->tag())],
+            (string) config('invoiceshelf.source_url'),
+        );
     }
 }

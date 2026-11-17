@@ -104,6 +104,8 @@ export const settingService = {
   // App Version
   async getAppVersion(): Promise<{
     version: string
+    fork_version: string
+    display_version: string
     channel: string
     containerized: boolean
   }> {

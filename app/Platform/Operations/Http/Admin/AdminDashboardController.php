@@ -5,21 +5,23 @@ namespace App\Platform\Operations\Http\Admin;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\User;
 use App\Platform\Http\Controller;
+use App\Platform\Operations\Application\BuildVersionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 
 class AdminDashboardController extends Controller
 {
+    public function __construct(
+        private readonly BuildVersionService $version,
+    ) {}
+
     public function index(): JsonResponse
     {
-        $version = preg_replace('~[\r\n]+~', '', File::get(base_path('version.md')));
-
         $dbDriver = config('database.default');
         $dbVersion = $this->getDatabaseVersion($dbDriver);
 
         return response()->json([
-            'app_version' => $version,
+            'app_version' => $this->version->display(),
             'php_version' => phpversion(),
             'database' => [
                 'driver' => $dbDriver,

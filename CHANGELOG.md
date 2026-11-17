@@ -1,11 +1,30 @@
 # Changelog
 
-Release notes for the 3.x line. Each `##` heading is a released version, and the
-section beneath it is what CI publishes to the updater — see
+Fork release notes appear first, followed by the original 3.x release history.
+For upstream releases, the section beneath each `##` version heading is what CI publishes to the updater — see
 `.github/scripts/changelog-section.php`.
 
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
+
+## 1.0.8-[3.0.0-alpha.15] - 2026-11-17
+
+First numbered release of this personal fork, collecting the changes made since
+the InvoiceShelf 3.0.0-alpha.15 baseline. Earlier fork version numbers are not
+assigned retroactively.
+
+- Add the public `/api/health` endpoint with independent database and upload-disk
+  checks, HTTP 200 for healthy responses and HTTP 503 when either check fails.
+- Improve Czech translations, stock document emails, invitations, marketplace
+  labels and customer statements.
+- Add QR Platba payment details to Czech invoices, saved receiving accounts,
+  default receiving account settings and variable-symbol presets.
+- Refine sidebar, company-switcher and profile controls.
+- Track the fork version separately from the upstream compatibility version,
+  display both in administration, and link the source menu to the fork release.
+
+Deployment branch: `1.x.x-3.0.0-alpha.15`.
+Source tag: `fork-v1.0.8-upstream-3.0.0-alpha.15`.
 
 ## 3.0.0-alpha.15 - 2026-10-26
 

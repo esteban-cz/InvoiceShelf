@@ -37,6 +37,7 @@ const isUpdating = ref(false)
 const insiderChannel = ref(false)
 const isContainerized = ref(false)
 const currentVersion = ref('')
+const currentDisplayVersion = ref('')
 const updateRelease = ref<UpdateRelease | null>(null)
 const isMinorUpdate = ref(false)
 
@@ -120,7 +121,7 @@ const clientVersionLine = computed<string>(() => {
 
   return t('settings.update_app.client_versions', {
     server: clientServerUrl.value,
-    serverVersion: currentVersion.value || clientServerVersion.value,
+    serverVersion: currentDisplayVersion.value || currentVersion.value || clientServerVersion.value,
     appVersion: CLIENT_VERSION,
   })
 })
@@ -150,6 +151,7 @@ async function loadCurrentVersion(): Promise<void> {
   try {
     const response = await settingService.getAppVersion()
     currentVersion.value = response.version
+    currentDisplayVersion.value = response.display_version || response.version
     insiderChannel.value = response.channel === 'insider'
     isContainerized.value = Boolean(response.containerized)
   } catch (error: unknown) {
@@ -362,7 +364,7 @@ function showApiError(error: unknown): void {
         <div
           class="my-2 inline-block rounded-md border border-line-default bg-surface-muted p-3 text-sm text-body"
         >
-          {{ currentVersion }}
+          {{ currentDisplayVersion || currentVersion }}
         </div>
       </div>
 

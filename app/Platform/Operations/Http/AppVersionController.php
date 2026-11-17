@@ -3,26 +3,32 @@
 namespace App\Platform\Operations\Http;
 
 use App\Platform\Http\Controller;
+use App\Platform\Operations\Application\BuildVersionService;
 use App\Platform\Operations\Models\Setting;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
 
 /**
  * Public probe describing the running build.
  *
- * Three facts, no authentication: what is on disk, which release channel the
- * updater follows, and whether the in-app updater is available at all.
+ * The fork's display version and upstream compatibility version, the release
+ * channel and whether the in-app updater is available, without authentication.
  */
 class AppVersionController extends Controller
 {
+    public function __construct(
+        private readonly BuildVersionService $version,
+    ) {}
+
     /**
      * @return JsonResponse
      */
     public function __invoke(Request $request)
     {
         return response()->json([
-            'version' => preg_replace('~[\r\n]+~', '', File::get(base_path('version.md'))),
+            'version' => $this->version->upstream(),
+            'fork_version' => $this->version->fork(),
+            'display_version' => $this->version->display(),
             'channel' => $this->releaseChannel(),
             'containerized' => (bool) config('invoiceshelf.containerized'),
         ]);

@@ -214,6 +214,29 @@ InvoiceShelf follows TDD development style:
 
 ## Releasing
 
+### This fork
+
+For this personal fork, the workflow below takes precedence over the upstream
+release instructions that follow:
+
+- Coolify tracks the permanent deployment branch `1.x.x-3.0.0-alpha.15`.
+- Start new work on a feature or fix branch based on that deployment branch.
+  Merge the tested result back when the release is ready; keep Coolify on the
+  same branch.
+- The first numbered fork release is `1.0.8`. Bump `fork-version.md` for each
+  later release and add its combined version to `CHANGELOG.md`. Keep
+  `version.md` at the upstream compatibility version unless intentionally
+  upgrading the upstream baseline.
+- `BuildVersionService` formats the display label as
+  `1.0.8-[3.0.0-alpha.15]` and its immutable source tag as
+  `fork-v1.0.8-upstream-3.0.0-alpha.15`. Use the corresponding new fork version
+  for later tags. Git refs cannot contain the display label's square brackets.
+- Push the finalized deployment branch and its fork tag. The `fork-` tag prefix
+  avoids the original project's release and publication workflows. Coolify
+  builds this fork from the deployment branch.
+
+### Upstream release workflow
+
 Releases are cut by pushing a tag. Nothing is typed into GitHub by hand.
 
 ```bash

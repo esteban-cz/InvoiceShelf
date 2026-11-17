@@ -148,10 +148,10 @@ return [
 
     /*
     * Where the source code of the running version is, offered to everyone who
-    * uses the install (AGPL section 13). {version} becomes the running
-    * version. A modified build points it at its own source.
+    * uses the install (AGPL section 13). {version} is the upstream version;
+    * {fork_version} and {fork_tag} identify this fork's release.
     */
-    'source_url' => env('INVOICESHELF_SOURCE_URL', 'https://github.com/InvoiceShelf/InvoiceShelf/tree/{version}'),
+    'source_url' => env('INVOICESHELF_SOURCE_URL', 'https://github.com/esteban-cz/InvoiceShelf/tree/{fork_tag}'),
 
     /*
     * Whether the app runs inside the official Docker image, which sets

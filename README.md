@@ -106,6 +106,46 @@ For a traditional web-server installation, see the
 InvoiceShelf 3.x requires PHP 8.4 or 8.5 and supports MySQL/MariaDB,
 PostgreSQL, and SQLite. Docker includes the required application runtime.
 
+## Personal fork releases
+
+This fork starts its own version history at **1.0.8-[3.0.0-alpha.15]**. The fork
+version lives in `fork-version.md`; `version.md` records the upstream version
+used for module compatibility, mobile clients and upstream update checks. The
+administration dashboard and update settings show the combined version, and
+`GET /api/v1/app/version` exposes `fork_version` and `display_version` alongside
+the upstream `version`.
+
+Configure Coolify to deploy the permanent branch **`1.x.x-3.0.0-alpha.15`**.
+Future work starts on a feature or fix branch based on that branch. Once it is
+tested, bump `fork-version.md`, add the release notes to `CHANGELOG.md`, and merge
+the result into `1.x.x-3.0.0-alpha.15`. Coolify can keep tracking that branch for
+every fork release.
+
+Each finalized release also gets an immutable source tag, such as
+`fork-v1.0.8-upstream-3.0.0-alpha.15`. Square brackets are for the displayed label;
+Git refs use the spelling shown above. Fork tags use the `fork-` prefix so they
+do not trigger the original project's release and publication workflows.
+
+The source link defaults to the matching tag in this fork. An explicit
+`INVOICESHELF_SOURCE_URL` overrides it and supports `{version}` (upstream),
+`{fork_version}` and `{fork_tag}` placeholders. Docker images include both
+version files, as do the release archives built by the Makefile.
+
+## Health monitoring
+
+`GET /api/health` is a public readiness check for uptime monitors. It runs a
+database query and writes and removes a temporary file on the configured media
+upload disk. A healthy response has HTTP status 200:
+
+```json
+{"status":"healthy","database":"connected","uploads":"writable"}
+```
+
+If either check fails, the endpoint returns HTTP 503 with `status` set to
+`unhealthy`. The individual checks report `database: "unavailable"` and/or
+`uploads: "not writable"`. Responses are not cached. `/up` remains the basic
+application liveness check.
+
 ## Learn and get help
 
 - [User and installation documentation](https://docs.invoiceshelf.com/)

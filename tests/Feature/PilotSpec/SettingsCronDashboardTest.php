@@ -4,6 +4,7 @@
 // Spec: platform-operations-spec.md §1, §5, §6.
 
 use App\Domains\Accounts\Models\User;
+use App\Platform\Operations\Application\BuildVersionService;
 use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\Sanctum;
 
@@ -91,7 +92,7 @@ it('guards the cron webhook with the shared token', function () {
 it('reports versions and row counts on the admin dashboard', function () {
     $payload = getJson('/api/v1/super-admin/dashboard')->assertOk()->json();
 
-    $expected = preg_replace('~[\r\n]+~', '', file_get_contents(base_path('version.md')));
+    $expected = app(BuildVersionService::class)->display();
     expect($payload['app_version'])->toBe($expected);
     expect($payload['php_version'])->toBe(phpversion());
     expect($payload['database']['driver'])->toBe(config('database.default'));

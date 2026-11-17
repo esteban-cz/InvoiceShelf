@@ -1,5 +1,6 @@
 <?php
 
+use App\Platform\Operations\Http\HealthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::get('health', HealthController::class)->name('health');
 
 // ping
 // ----------------------------------

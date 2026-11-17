@@ -1,6 +1,7 @@
 <?php
 
 use App\Support\PoweredBy;
+use App\Platform\Operations\Application\BuildVersionService;
 use Illuminate\Support\Facades\File;
 
 use function Pest\Laravel\getJson;
@@ -46,7 +47,8 @@ test('the thin client learns the line and the source link from the manifest', fu
 test('the source link points at the version that is running', function () {
     $version = trim(File::get(base_path('version.md')));
 
-    expect(PoweredBy::sourceUrl())->toBe("https://github.com/InvoiceShelf/InvoiceShelf/tree/{$version}");
+    $tag = app(BuildVersionService::class)->tag();
+    expect(PoweredBy::sourceUrl())->toBe("https://github.com/esteban-cz/InvoiceShelf/tree/{$tag}");
 
     config(['invoiceshelf.source_url' => 'https://git.example/fork/archive/{version}.tar.gz']);
 

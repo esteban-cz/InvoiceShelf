@@ -32,6 +32,7 @@ dist-gen: clean composer npm-build
 	@cp -r vendor                           InvoiceShelf 2> /dev/null || true
 	@cp -r scripts                          InvoiceShelf
 	@cp -r version.md						InvoiceShelf
+	@cp -r fork-version.md                    InvoiceShelf
 	@cp -r .env.example                     InvoiceShelf
 	@cp -r artisan                          InvoiceShelf
 	@cp -r composer.json                    InvoiceShelf
