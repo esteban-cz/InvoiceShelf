@@ -142,7 +142,7 @@ async function setInitialData(): Promise<void> {
     globalStore.fetchCountries(),
   ])
 
-  if (!customerStore.isEdit) {
+  if (!customerStore.isEdit && !customerStore.currentCustomer.currency_id) {
     customerStore.currentCustomer.currency_id =
       companyStore.selectedCompanyCurrency?.id ?? null
   }

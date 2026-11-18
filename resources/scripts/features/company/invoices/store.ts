@@ -150,6 +150,7 @@ export interface InvoiceState {
   isFetchingInitialSettings: boolean
   isFetchingInvoice: boolean
   nextSequenceNumber: number | null
+  preserveImportedNumber: boolean
   newInvoice: InvoiceFormData
 }
 
@@ -164,6 +165,7 @@ export const useInvoiceStore = defineStore('invoice', {
     isFetchingInitialSettings: false,
     isFetchingInvoice: false,
     nextSequenceNumber: null,
+    preserveImportedNumber: false,
     newInvoice: createInvoiceStub(),
   }),
 
@@ -249,6 +251,7 @@ export const useInvoiceStore = defineStore('invoice', {
     resetCurrentInvoice(): void {
       this.newInvoice = createInvoiceStub()
       this.nextSequenceNumber = null
+      this.preserveImportedNumber = false
     },
 
     async previewInvoice(params: SendInvoicePayload): Promise<unknown> {
@@ -417,7 +420,7 @@ export const useInvoiceStore = defineStore('invoice', {
       setState = false,
     ): Promise<{ data: NextNumberResponse }> {
       const response = await invoiceService.getNextNumber(setState ? { ...params, include_sequence: true } : params)
-      if (setState) {
+      if (setState && !this.preserveImportedNumber) {
         this.newInvoice.invoice_number = response.nextNumber
         this.nextSequenceNumber = response.nextSequenceNumber ?? null
       }

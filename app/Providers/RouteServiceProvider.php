@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Domains\Accounts\Application\UserLocale;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as FrameworkRouteServiceProvider;
 use Illuminate\Http\Request;
@@ -51,5 +52,10 @@ class RouteServiceProvider extends FrameworkRouteServiceProvider
     protected function configureRateLimiting(): void
     {
         RateLimiter::for('api', fn (Request $request) => Limit::perMinute(60));
+        RateLimiter::for('invoice-import', fn (Request $request) => Limit::perMinute(6)
+            ->by($request->user()?->getAuthIdentifier().':'.(int) $request->header('company'))
+            ->response(fn (Request $request, array $headers) => response()->json([
+                'message' => __('invoice_import_rate_limited', ['seconds' => (int) ($headers['Retry-After'] ?? 60)], UserLocale::for($request->user(), (int) $request->header('company'))),
+            ], 429, $headers)));
     }
 }
