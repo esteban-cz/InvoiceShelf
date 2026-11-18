@@ -7,6 +7,30 @@ For upstream releases, the section beneath each `##` version heading is what CI 
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 1.0.13-[3.0.0-alpha.15] - 2026-11-18
+
+- Add owner-managed Fio bank connections with encrypted API tokens, token
+  replacement, scheduled imports every 15 minutes and manual synchronization.
+- Automatically record incoming payments when one issued invoice matches the
+  receiving IBAN, variable symbol, currency and outstanding amount. Preserve
+  bank movement IDs to prevent duplicate imports and payments after reconnecting.
+- Add a transaction review queue for partial payments, overpayments, ambiguous
+  matches and possible existing receipts. Allow linking existing payments,
+  ignoring movements and returning them to review. Reviewed overpayments leave
+  the remainder as customer credit; foreign-currency payments require a rate.
+- Add Czech ARES lookup to customer forms and the quick-create modal. Preview
+  registry details before applying the name, IČO, DIČ and billing address while
+  preserving contact details, currency and shipping information.
+- Store customer registration numbers separately from tax IDs, display them in
+  customer details, and add Czech and English setup and review labels.
+
+Upgrade: apply the included migration for Fio connections, bank movement history
+and customer registration numbers. Configure a read-only Fio token under Payment
+modes to enable imports; the existing Laravel scheduler runs `fio:sync`.
+
+Testing branch: `feat/fio-matching-and-ares-lookup`.
+Source tag: `fork-v1.0.13-upstream-3.0.0-alpha.15`.
+
 ## 1.0.12-[3.0.0-alpha.15] - 2026-11-18
 
 - Fix the allocated-payments heading on invoice details by moving its existing

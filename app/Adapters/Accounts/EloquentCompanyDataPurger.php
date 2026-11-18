@@ -14,6 +14,8 @@ use App\Domains\Purchases\Models\SupplierCreditItem;
 use App\Domains\Purchases\Models\SupplierPayment;
 use App\Domains\Purchases\Models\SupplierPaymentAllocation;
 use App\Domains\Purchases\Models\SupplierRefund;
+use App\Domains\Receivables\Models\FioConnection;
+use App\Domains\Receivables\Models\FioTransaction;
 use App\Domains\Receivables\Models\PaymentAllocation;
 use App\Domains\Sales\Models\InvoiceBankAccount;
 use App\Domains\Sales\Models\InvoiceReminder;
@@ -24,6 +26,8 @@ class EloquentCompanyDataPurger implements CompanyDataPurger
 {
     public function purge(Company $company): void
     {
+        FioConnection::query()->where('company_id', $company->id)->delete();
+        FioTransaction::query()->where('company_id', $company->id)->delete();
         foreach ([
             RecurrenceOccurrence::class,
             InvoiceReminder::class,

@@ -1,14 +1,14 @@
 <?php
 
+use App\Domains\Contacts\Http\Controllers\Company\AresLookupController;
 use App\Domains\Contacts\Http\Controllers\Company\CustomersController;
 use App\Domains\Contacts\Http\Controllers\Company\CustomerStatsController;
 use Illuminate\Support\Facades\Route;
 
-// The two endpoints that hang off the contacts collection but are not part of
-// its resource. Both are declared first, so the literal "delete" segment can
-// never be read as a {customer} key.
+// Collection helpers precede the resource, so literal segments cannot be read as customer keys.
 Route::prefix('customers')->group(function () {
     Route::post('delete', [CustomersController::class, 'delete']);
+    Route::get('ares/{ico}', AresLookupController::class)->middleware('throttle:30,1');
     Route::get('{customer}/stats', CustomerStatsController::class);
 });
 

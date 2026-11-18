@@ -7,6 +7,18 @@
 
     <BaseDescriptionList>
       <BaseDescriptionListItem
+        v-if="selectedViewCustomer.registration_number"
+        :content-loading="contentLoading"
+        :label="$t('customers.ares.registration_number')"
+        :value="selectedViewCustomer.registration_number"
+      />
+      <BaseDescriptionListItem
+        v-if="selectedViewCustomer.tax_id"
+        :content-loading="contentLoading"
+        :label="$t('customers.tax_id')"
+        :value="selectedViewCustomer.tax_id"
+      />
+      <BaseDescriptionListItem
         v-if="selectedViewCustomer.name"
         :content-loading="contentLoading"
         :label="$t('customers.display_name')"

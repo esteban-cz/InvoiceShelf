@@ -30,6 +30,7 @@ class CustomerResource extends JsonResource
             'phone' => $this->phone,
             'contact_name' => $this->contact_name,
             'company_name' => $this->company_name,
+            'registration_number' => $this->registration_number,
             'website' => $this->website,
             'enable_portal' => $this->enable_portal,
             'reminders_paused' => (bool) $this->reminders_paused,

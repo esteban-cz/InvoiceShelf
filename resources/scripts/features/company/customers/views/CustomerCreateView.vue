@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import CustomerAresLookup from '../components/CustomerAresLookup.vue'
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -203,6 +204,7 @@ async function submitCustomerData(): Promise<void> {
       </BasePageHeader>
 
       <BaseCard container-class="p-4 md:p-5">
+        <CustomerAresLookup :customer="customerStore.currentCustomer" :disabled="isFetchingInitialData" />
         <!-- Basic Info -->
         <div class="grid grid-cols-5 gap-4 mb-8">
           <h2 class="col-span-5 font-semibold text-start text-section text-heading lg:col-span-1">
