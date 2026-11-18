@@ -37,8 +37,9 @@ The authenticated, company-scoped endpoint is
 `POST /api/v1/invoices/import/preview` with a multipart `file` field and the
 normal invoice creation permission. It accepts PDFs up to 10 MB and 10 pages,
 with OCR limited to two pages that lack a usable text layer. Text size,
-rendered image dimensions, subprocess timeouts and six requests per minute
-bound the work. Limits are defined in `config/invoice-import.php`.
+rendered image dimensions, subprocess timeouts and six PDF previews per minute
+per user and company bound the work. Ordinary app requests do not consume that
+preview allowance. Extraction limits are defined in `config/invoice-import.php`.
 
 Working files live in a randomly named private directory under
 `storage/app/private/invoice-import`, which is removed after processing,

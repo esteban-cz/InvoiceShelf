@@ -3290,5 +3290,6 @@
   "invoice_import_invalid_pdf": "PDF je poškozené, zašifrované nebo nečitelné. Vyberte jiné PDF.",
   "invoice_import_too_many_pages": "Vyberte PDF s nejvýše 10 stranami.",
   "invoice_import_too_much_text": "PDF obsahuje příliš mnoho textu. Rozdělte ho na menší soubory.",
-  "invoice_import_extraction_failed": "PDF se nepodařilo zpracovat. Zkuste menší soubor nebo vyplňte fakturu ručně."
+  "invoice_import_extraction_failed": "PDF se nepodařilo zpracovat. Zkuste menší soubor nebo vyplňte fakturu ručně.",
+  "invoice_import_rate_limited": "Před dalším načtením PDF počkejte :seconds sekund. Za minutu lze načíst šest PDF."
 }

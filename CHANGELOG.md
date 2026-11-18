@@ -7,6 +7,18 @@ For upstream releases, the section beneath each `##` version heading is what CI 
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 1.0.16-[3.0.0-alpha.15] - 2026-11-18
+
+- Give PDF invoice previews a dedicated rate limit per user and company so
+  ordinary app requests no longer cause "Too Many Attempts" on the first PDF.
+- Preserve the six-previews-per-minute limit and show a localized message with
+  the remaining wait time when that allowance is exhausted.
+
+Upgrade: no new database migration. Redeploy the testing branch.
+
+Testing branch: `feat/pdf-invoice-import`.
+Source tag: `fork-v1.0.16-upstream-3.0.0-alpha.15`.
+
 ## 1.0.15-[3.0.0-alpha.15] - 2026-11-18
 
 - Import older invoice PDFs into the normal editable invoice form, primarily

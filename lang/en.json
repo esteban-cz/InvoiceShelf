@@ -3290,5 +3290,6 @@
   "invoice_import_invalid_pdf": "This PDF is damaged, encrypted or unreadable. Choose another PDF.",
   "invoice_import_too_many_pages": "Choose a PDF with no more than 10 pages.",
   "invoice_import_too_much_text": "This PDF contains too much text to import. Split it into smaller files.",
-  "invoice_import_extraction_failed": "The PDF could not be processed. Try a smaller file or enter the invoice manually."
+  "invoice_import_extraction_failed": "The PDF could not be processed. Try a smaller file or enter the invoice manually.",
+  "invoice_import_rate_limited": "Please wait :seconds seconds before reading another PDF. You can preview six PDFs per minute."
 }

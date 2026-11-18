@@ -1,5 +1,6 @@
 <?php
 
+use App\Domains\Accounts\Application\CompanyService;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Accounts\Models\User;
@@ -12,9 +13,12 @@ use App\Domains\Taxation\Models\TaxType;
 use Database\Seeders\DatabaseSeeder;
 use Database\Seeders\DemoSeeder;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Sanctum\Sanctum;
+use Silber\Bouncer\BouncerFacade;
 
 beforeEach(function () {
+    Cache::flush();
     $this->seed([DatabaseSeeder::class, DemoSeeder::class]);
     $this->user = User::findOrFail(1);
     $this->company_id = $this->user->companies()->first()->id;
@@ -30,6 +34,47 @@ function importPdfFile(): UploadedFile
 {
     return UploadedFile::fake()->createWithContent('old-invoice.pdf', "%PDF-1.4\n% Test upload; extraction is mocked.\n%%EOF");
 }
+
+test('opening the app does not consume the PDF import allowance', function () {
+    foreach (range(1, 12) as $_) {
+        $this->getJson('/api/v1/invoices')->assertOk();
+    }
+    $this->postJson('/api/v1/invoices/import/preview', ['file' => importPdfFile()])->assertOk();
+    $this->postJson('/api/v1/invoices/import/preview', ['file' => importPdfFile()])->assertOk();
+});
+
+test('only PDF previews count toward the import limit and it recovers after a minute', function () {
+    $this->user->setSettings(['language' => 'cs']);
+    foreach (range(1, 6) as $_) {
+        $this->postJson('/api/v1/invoices/import/preview', ['file' => importPdfFile()])->assertOk();
+    }
+    $response = $this->postJson('/api/v1/invoices/import/preview', ['file' => importPdfFile()])->assertStatus(429);
+    expect((int) $response->headers->get('Retry-After'))->toBeGreaterThan(0);
+    $response->assertJsonPath('message', __('invoice_import_rate_limited', ['seconds' => (int) $response->headers->get('Retry-After')], 'cs'));
+    $this->getJson('/api/v1/invoices')->assertOk();
+    $this->travel(61)->seconds();
+    $this->postJson('/api/v1/invoices/import/preview', ['file' => importPdfFile()])->assertOk();
+});
+
+test('PDF preview allowances belong to each user and company', function () {
+    foreach (range(1, 6) as $_) {
+        $this->postJson('/api/v1/invoices/import/preview', ['file' => importPdfFile()])->assertOk();
+    }
+    $company = $this->user->companies()->create(['name' => 'Another company', 'owner_id' => $this->user->id, 'slug' => 'another-company']);
+    app(CompanyService::class)->setupDefaults($company);
+    BouncerFacade::scope()->onceTo($company->id, fn () => $this->user->assign('owner'));
+    BouncerFacade::refresh();
+    $this->withHeaders(['company' => $company->id]);
+    $this->postJson('/api/v1/invoices/import/preview', ['file' => importPdfFile()])->assertOk();
+    $this->withHeaders(['company' => $this->company_id]);
+    $this->postJson('/api/v1/invoices/import/preview', ['file' => importPdfFile()])->assertStatus(429);
+    $another_user = User::factory()->create(['role' => 'super admin']);
+    $another_user->companies()->attach($this->company_id);
+    BouncerFacade::scope()->onceTo($this->company_id, fn () => $another_user->assign('owner'));
+    BouncerFacade::refresh();
+    Sanctum::actingAs($another_user);
+    $this->postJson('/api/v1/invoices/import/preview', ['file' => importPdfFile()])->assertOk();
+});
 
 test('upload previews an old invoice without writing invoices payments customers or settings', function () {
     $before = [Invoice::count(), Payment::count(), Customer::count(), CompanySetting::count()];

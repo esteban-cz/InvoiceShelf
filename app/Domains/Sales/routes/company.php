@@ -30,7 +30,7 @@ Route::put('/company/payment-reminders', [ReminderSettingsController::class, 'up
 // Keep collection-level endpoints ahead of the resource so their literal
 // segments cannot be read as an {invoice} key.
 Route::prefix('invoices')->group(function (): void {
-    Route::post('import/preview', InvoiceImportController::class)->middleware('throttle:6,1');
+    Route::post('import/preview', InvoiceImportController::class)->middleware('throttle:invoice-import');
     Route::post('delete', [InvoicesController::class, 'delete']);
     Route::get('templates', InvoiceTemplatesController::class);
     Route::get('bank-accounts', [InvoicesController::class, 'bankAccounts']);
