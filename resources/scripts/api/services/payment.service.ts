@@ -75,7 +75,7 @@ export const paymentService = {
     return data
   },
 
-  async getNextNumber(params?: { key?: string }): Promise<NextNumberResponse> {
+  async getNextNumber(params?: { date?: string; userId?: number | null; key?: string }): Promise<NextNumberResponse> {
     const { data } = await client.get(API.NEXT_NUMBER, { params: { key: 'payment', ...params } })
     return data
   },

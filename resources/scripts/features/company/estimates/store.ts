@@ -136,6 +136,7 @@ export interface EstimateState {
   totalEstimateCount: number
   isFetchingInitialSettings: boolean
   showExchangeRate: boolean
+  lastGeneratedNumber: string
   newEstimate: EstimateFormData
 }
 
@@ -148,6 +149,7 @@ export const useEstimateStore = defineStore('estimate', {
     totalEstimateCount: 0,
     isFetchingInitialSettings: false,
     showExchangeRate: false,
+    lastGeneratedNumber: '',
     newEstimate: createEstimateStub(),
   }),
 
@@ -225,6 +227,7 @@ export const useEstimateStore = defineStore('estimate', {
 
   actions: {
     resetCurrentEstimate(): void {
+      this.lastGeneratedNumber = ''
       this.newEstimate = createEstimateStub()
     },
 
@@ -245,8 +248,16 @@ export const useEstimateStore = defineStore('estimate', {
       params?: Record<string, unknown>,
       setState = false,
     ): Promise<{ data: { nextNumber: string } }> {
-      const response = await estimateService.getNextNumber(params as never)
-      if (setState) {
+      const requestedDate = this.newEstimate.estimate_date
+      const previousNumber = this.newEstimate.estimate_number
+      const response = await estimateService.getNextNumber({
+        date: requestedDate || undefined,
+        ...params,
+      })
+      const isCurrent = requestedDate === this.newEstimate.estimate_date
+        && previousNumber === this.newEstimate.estimate_number
+      if (isCurrent) this.lastGeneratedNumber = response.nextNumber
+      if (isCurrent && setState) {
         this.newEstimate.estimate_number = response.nextNumber
       }
       return { data: response }

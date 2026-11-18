@@ -46,6 +46,7 @@ export interface User {
   updated_at: string
   avatar: string | number
   is_owner: boolean
+  can_manage_company?: boolean
   is_super_admin: boolean
   roles: Role[]
   formatted_created_at: string

@@ -244,7 +244,7 @@ function openTaxModal(): void {
       </template>
     </BaseTable>
 
-    <div v-if="userStore.currentUser?.is_owner">
+    <div v-if="userStore.canManageCompany">
       <BaseDivider class="mt-8 mb-2" />
 
       <BaseSwitchSection

@@ -2480,7 +2480,12 @@
     "invoice_reminder_not_due": "Upomínky se odesílají pouze k odeslaným fakturám se zbývající částkou k úhradě.",
     "invoice_reminder_no_email": "Zákazník nemá e-mailovou adresu pro doručení upomínky.",
     "invoice_reminder_failed": "Upomínku se nepodařilo odeslat. Zkontrolujte nastavení e-mailu firmy a zkuste to znovu.",
-    "announcement_from_feed": "Sdělení od projektu InvoiceShelf lze pouze skrýt."
+    "announcement_from_feed": "Sdělení od projektu InvoiceShelf lze pouze skrýt.",
+    "network_error": "Zkontrolujte připojení k internetu nebo to zkuste znovu, až bude server dostupný.",
+    "unauthorized": "Pro pokračování se přihlaste.",
+    "too_many_attempts": "Příliš mnoho pokusů. Chvíli počkejte a zkuste to znovu.",
+    "session_expired": "Platnost formuláře vypršela. Obnovte stránku a zkuste to znovu.",
+    "server_error": "Na serveru došlo k chybě. Zkuste to prosím znovu."
   },
   "pdf_estimate_label": "Nabídka",
   "pdf_estimate_number": "Číslo nabídky",
@@ -3159,7 +3164,7 @@
     },
     "add_button": "Přidat"
   },
-  "powered_by": "Powered by",
+  "powered_by": "Provozuje",
   "invitation": {
     "loading": "Načítání pozvánky…",
     "invalid_title": "Neplatná pozvánka",
@@ -3292,5 +3297,75 @@
   "invoice_import_too_many_pages": "Vyberte PDF s nejvýše 10 stranami.",
   "invoice_import_too_much_text": "PDF obsahuje příliš mnoho textu. Rozdělte ho na menší soubory.",
   "invoice_import_extraction_failed": "PDF se nepodařilo zpracovat. Zkuste menší soubor nebo vyplňte fakturu ručně.",
-  "invoice_import_rate_limited": "Před dalším načtením PDF počkejte :seconds sekund. Za minutu lze načíst šest PDF."
+  "invoice_import_rate_limited": "Před dalším načtením PDF počkejte :seconds sekund. Za minutu lze načíst šest PDF.",
+  "auth_pages": {
+    "login": {
+      "heading": "Vítejte zpět",
+      "description": "Přihlaste se ke svému účtu."
+    },
+    "forgot_password": {
+      "heading": "Zapomenuté heslo",
+      "description": "Zadejte svůj e-mail a pošleme vám odkaz pro obnovení hesla."
+    },
+    "reset_password": {
+      "heading": "Nastavení nového hesla",
+      "description": "Zvolte silné heslo pro zabezpečení svého účtu."
+    },
+    "register": {
+      "heading": "Vytvoření účtu",
+      "description": "Dokončete registraci a začněte aplikaci používat."
+    }
+  },
+  "role_labels": {
+    "owner": "Majitel",
+    "manager": "Správce",
+    "read-only": "Pouze pro čtení",
+    "platform_administrator": "Administrátor"
+  },
+  "company_ownership": {
+    "make_me_owner": "Nastavit mě jako vlastníka",
+    "create_help": "Jinak zůstanete administrátorem a společnost bude bez vlastníka, dokud pozvaný Majitel nepřijme pozvánku.",
+    "transfer_help": "Role Majitel převede vlastnictví společnosti na tohoto uživatele. Administrátoři si zachovají přístup."
+  },
+  "invitation_errors": {
+    "pending_email": "Pro tento e-mail již čeká pozvánka.",
+    "already_member": "Tento uživatel už je členem společnosti.",
+    "invalid": "Pozvánka nebyla nalezena nebo její platnost vypršela.",
+    "wrong_recipient": "Pozvánka je určena pro jinou e-mailovou adresu."
+  },
+  "insert_fields": {
+    "shipping_address": "Doručovací adresa",
+    "address_name": "Název adresy",
+    "country": "Země",
+    "state": "Kraj",
+    "city": "Město",
+    "address_street_1": "Ulice a číslo",
+    "address_street_2": "Druhý řádek adresy",
+    "phone": "Telefon",
+    "zip_code": "PSČ",
+    "billing_address": "Fakturační adresa",
+    "customer": "Zákazník",
+    "display_name": "Zobrazované jméno",
+    "contact_name": "Kontaktní osoba",
+    "email": "E-mail",
+    "website": "Webová stránka",
+    "tax_id": "IČO",
+    "invoice": "Faktura",
+    "date": "Datum",
+    "due_date": "Datum splatnosti",
+    "number": "Číslo",
+    "ref_number": "Referenční číslo",
+    "total": "Celkem",
+    "amount_due": "K úhradě",
+    "amount_paid": "Uhrazeno",
+    "days_overdue": "Dnů po splatnosti",
+    "estimate": "Nabídka",
+    "expiry_date": "Platnost do",
+    "payment": "Platba",
+    "mode": "Způsob úhrady",
+    "amount": "Částka",
+    "company": "Společnost",
+    "company_name": "Název společnosti",
+    "vat_id": "DIČ"
+  }
 }

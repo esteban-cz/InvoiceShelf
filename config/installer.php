@@ -36,7 +36,7 @@ return [
         'company_name' => env('INSTALL_COMPANY_NAME', 'My Company'),
         'currency' => env('INSTALL_CURRENCY', 'USD'),
         'time_zone' => env('INSTALL_TIMEZONE', 'UTC'),
-        'language' => env('INSTALL_LANGUAGE', 'en'),
+        'language' => env('INSTALL_LANGUAGE', env('APP_LOCALE', 'cs')),
         'date_format' => env('INSTALL_DATE_FORMAT'),
         'fiscal_year' => env('INSTALL_FISCAL_YEAR'),
     ],

@@ -145,5 +145,5 @@ function currentUserIsSuperAdmin(
 function currentUserIsOwner(
   userStore: ReturnType<typeof useUserStore>
 ): boolean {
-  return userStore.currentUser?.is_owner ?? false
+  return userStore.canManageCompany
 }

@@ -34,6 +34,7 @@ export const useUserStore = defineStore('user', () => {
   const currentAbilitiesCount = computed<number>(() => currentAbilities.value.length)
 
   const isOwner = computed<boolean>(() => currentUser.value?.is_owner ?? false)
+  const canManageCompany = computed<boolean>(() => currentUser.value?.can_manage_company ?? currentUser.value?.is_owner ?? false)
 
   // Actions
   async function fetchCurrentUser(): Promise<ApiResponse<User>> {
@@ -153,6 +154,7 @@ export const useUserStore = defineStore('user', () => {
     userForm,
     currentAbilitiesCount,
     isOwner,
+    canManageCompany,
     fetchCurrentUser,
     updateCurrentUser,
     uploadAvatar,

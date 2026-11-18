@@ -113,6 +113,9 @@ async function submitInvitation(): Promise<void> {
             :searchable="true"
           />
         </BaseInputGroup>
+        <p v-if="roles.find(role => role.id === form.role_id)?.name === 'owner'" class="text-sm text-muted">
+          {{ $t('company_ownership.transfer_help') }}
+        </p>
       </div>
 
       <div class="flex justify-end p-4 border-t border-line-default">

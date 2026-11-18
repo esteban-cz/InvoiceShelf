@@ -206,6 +206,17 @@ paymentStore.fetchPaymentInitialData(
 if (route.params.id && !isEdit.value) void setInvoiceFromUrl()
 
 watch(
+  () => paymentStore.currentPayment.payment_date,
+  (date, previousDate) => {
+    if (!isEdit.value && !paymentStore.isFetchingInitialData
+      && date && previousDate && date !== previousDate
+      && paymentStore.currentPayment.payment_number === paymentStore.lastGeneratedNumber) {
+      void paymentStore.getNextNumber({ userId: paymentStore.currentPayment.customer_id }, true)
+    }
+  },
+)
+
+watch(
   () => paymentStore.currentPayment.customer_id,
   (customerId, previousCustomerId) => {
     if (!customerId) return

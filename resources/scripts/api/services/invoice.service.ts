@@ -136,7 +136,7 @@ export const invoiceService = {
     return data
   },
 
-  async getNextNumber(params?: { key?: string; include_sequence?: boolean; format?: string }): Promise<NextNumberResponse> {
+  async getNextNumber(params?: { date?: string; userId?: number | null; key?: string; include_sequence?: boolean; format?: string }): Promise<NextNumberResponse> {
     const { data } = await client.get(API.NEXT_NUMBER, { params: { key: 'invoice', ...params } })
     return data
   },

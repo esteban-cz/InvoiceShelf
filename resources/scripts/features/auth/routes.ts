@@ -20,7 +20,7 @@ export const authRoutes: RouteRecordRaw[] = [
         component: __INVOICESHELF_CLIENT__ ? ClientLoginView : LoginView,
         meta: {
           requiresAuth: false,
-          title: 'Login',
+          title: 'login.login',
         },
       },
       {
@@ -29,7 +29,7 @@ export const authRoutes: RouteRecordRaw[] = [
         component: ForgotPasswordView,
         meta: {
           requiresAuth: false,
-          title: 'Forgot Password',
+          title: 'login.forgot_password',
         },
       },
       {
@@ -38,7 +38,7 @@ export const authRoutes: RouteRecordRaw[] = [
         component: ResetPasswordView,
         meta: {
           requiresAuth: false,
-          title: 'Reset Password',
+          title: 'login.reset_password',
         },
       },
       {
@@ -47,7 +47,7 @@ export const authRoutes: RouteRecordRaw[] = [
         component: RegisterWithInvitationView,
         meta: {
           requiresAuth: false,
-          title: 'Register',
+          title: 'login.register',
         },
       },
     ],

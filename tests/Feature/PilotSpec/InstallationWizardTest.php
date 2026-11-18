@@ -30,7 +30,7 @@ it('caches the created-database probe for the lifetime of the process', function
 
     getJson('/api/v1/installation/wizard-step')
         ->assertOk()
-        ->assertJson(['profile_complete' => 0, 'profile_language' => 'en']);
+        ->assertJson(['profile_complete' => 0, 'profile_language' => config('app.locale')]);
 });
 
 it('stores a wizard step and echoes the stored value', function () {

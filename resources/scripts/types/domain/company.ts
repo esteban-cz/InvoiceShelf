@@ -11,12 +11,12 @@ export interface Company {
   logo: string | null
   logo_path: string | null
   unique_hash: string
-  owner_id: number
+  owner_id: number | null
   slug: string
   created_at: string
   updated_at: string
   address?: Address
-  owner?: User
+  owner?: User | null
   user_role?: string | null
   /** Answers to the company's own custom fields, when it has any. */
   fields?: CustomFieldValue[]

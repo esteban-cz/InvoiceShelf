@@ -2,6 +2,7 @@
 
 namespace App\Domains\Accounts\Http\Resources;
 
+use App\Domains\Accounts\Application\RoleTitles;
 use App\Domains\Accounts\Contracts\AbilityCatalog;
 use App\Domains\Accounts\Models\RolePreset;
 use Illuminate\Http\Request;
@@ -26,7 +27,7 @@ class RolePresetResource extends JsonResource
         return [
             'id' => $preset->id,
             'key' => $preset->key,
-            'title' => $preset->title,
+            'title' => app(RoleTitles::class)->display($preset->roleName(), $preset->title),
             'is_owner' => $preset->isOwner(),
             'role_name' => $preset->roleName(),
             'abilities' => $preset->isOwner()

@@ -2,6 +2,7 @@
 
 namespace App\Domains\Accounts\Policies;
 
+use App\Domains\Accounts\Application\CompanyAccess;
 use App\Domains\Accounts\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -22,6 +23,6 @@ class OwnerPolicy
      */
     public function managedByOwner(User $user)
     {
-        return $user->isOwner();
+        return app(CompanyAccess::class)->canManage($user);
     }
 }

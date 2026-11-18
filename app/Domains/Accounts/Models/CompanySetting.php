@@ -132,7 +132,7 @@ class CompanySetting extends Model
             return $settings;
         }
 
-        $locale = $settings->get('language') ?: self::getSetting('language', $companyId) ?: 'en';
+        $locale = $settings->get('language') ?: self::getSetting('language', $companyId) ?: config('app.locale', 'cs');
 
         return $settings->replace($stock->map(
             fn (string $value, string $key): string => SpaTranslations::get($locale, 'document_mail_defaults.'.$key)

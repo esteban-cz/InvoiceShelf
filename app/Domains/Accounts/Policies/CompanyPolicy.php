@@ -2,6 +2,7 @@
 
 namespace App\Domains\Accounts\Policies;
 
+use App\Domains\Accounts\Application\CompanyAccess;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -30,7 +31,7 @@ class CompanyPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isOwner();
+        return $user->isSuperAdmin() || $user->isOwner();
     }
 
     /**
@@ -38,7 +39,7 @@ class CompanyPolicy
      */
     public function delete(User $user, Company $company): bool
     {
-        return $this->ownsOutright($user, $company);
+        return $this->ownsOutright($user, $company) || ($user->isSuperAdmin() && $user->hasCompany((int) $company->id));
     }
 
     /**
@@ -48,7 +49,7 @@ class CompanyPolicy
      */
     public function transferOwnership(User $user, Company $company)
     {
-        return $this->ownsOutright($user, $company);
+        return app(CompanyAccess::class)->canManage($user, $company);
     }
 
     /**

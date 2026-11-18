@@ -226,6 +226,17 @@ estimateStore.fetchEstimateInitialSettings(
 )
 
 watch(
+  () => estimateStore.newEstimate.estimate_date,
+  (date, previousDate) => {
+    if (!isEdit.value && !estimateStore.isFetchingInitialSettings
+      && date && previousDate && date !== previousDate
+      && estimateStore.newEstimate.estimate_number === estimateStore.lastGeneratedNumber) {
+      void estimateStore.getNextNumber({ userId: estimateStore.newEstimate.customer_id }, true)
+    }
+  },
+)
+
+watch(
   () => estimateStore.newEstimate.customer,
   (newVal) => {
     if (newVal && (newVal as Record<string, unknown>).currency) {

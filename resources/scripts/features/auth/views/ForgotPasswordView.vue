@@ -90,7 +90,7 @@ async function onSubmit(): Promise<void> {
 
     notificationStore.showNotification({
       type: 'success',
-      message: 'Mail sent successfully',
+      message: 'general.send_mail_successfully',
     })
 
     isSent.value = true

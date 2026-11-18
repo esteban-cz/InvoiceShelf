@@ -7,6 +7,25 @@ For upstream releases, the section beneath each `##` version heading is what CI 
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 1.0.19-[3.0.0-alpha.15] - 2026-11-18
+
+- Make Czech the default language for new installs, users and companies, and
+  fill missing Czech translations across authentication, notifications, errors
+  and default role labels.
+- Separate platform administration from company ownership. Let administrators
+  create companies without an owner, retain company access and platform
+  administration, and transfer ownership when an invited Owner accepts. Give
+  company Owners access to company settings, including bank account settings,
+  without granting platform administration.
+- Set new companies' invoice, estimate and payment numbers to `INV-YYYYNN`,
+  `EST-YYYYNN` and `PAY-YYYYNN`, restarting each sequence at 01 per year.
+- Set a 14-day default invoice due date and use the requested Czech invoice
+  email body and company, billing and shipping address formats.
+
+Upgrade: no new database migration.
+
+Testing branch: `fix/czech-default-and-translations`.
+
 ## 1.0.18-[3.0.0-alpha.15] - 2026-11-18
 
 - Release PDF invoice import on the permanent deployment branch, including the

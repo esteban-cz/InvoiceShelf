@@ -25,6 +25,7 @@ beforeEach(function (): void {
 
     $this->user = User::findOrFail(1);
     $this->company = $this->user->companies()->firstOrFail();
+    CompanySetting::setSettings(['language' => 'en'], $this->company->id);
     $this->withHeaders(['company' => $this->company->id]);
     Sanctum::actingAs($this->user, ['*']);
 });

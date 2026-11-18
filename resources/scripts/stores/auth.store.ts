@@ -85,7 +85,7 @@ export const useAuthStore = defineStore('auth', () => {
 
       notificationStore.showNotification({
         type: 'success',
-        message: 'Logged out successfully.',
+        message: 'general.logged_out_successfully',
       })
 
       localStore.remove('auth.token')

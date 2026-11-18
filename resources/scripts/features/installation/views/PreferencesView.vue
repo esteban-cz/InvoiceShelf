@@ -125,6 +125,7 @@
 </template>
 
 <script setup lang="ts">
+import { defaultLocale } from '@/scripts/utils/locale'
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
@@ -181,7 +182,7 @@ const fiscalYears = ref<KeyValueOption[]>([])
 
 const currentPreferences = reactive<PreferencesData>({
   currency: null,
-  language: 'en',
+  language: defaultLocale(),
   carbon_date_format: 'd M Y',
   time_zone: 'UTC',
   fiscal_year: '1-12',

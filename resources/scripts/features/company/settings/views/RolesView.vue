@@ -100,7 +100,7 @@ function viewRole(row: { id: number; title?: string | null; name: string }): voi
     :title="$t('settings.roles.title')"
     :description="$t('settings.roles.description')"
   >
-    <template v-if="userStore.currentUser?.is_owner" #action>
+    <template v-if="userStore.canManageCompany" #action>
       <BaseButton variant="primary-outline" @click="openRoleModal">
         <template #left="slotProps">
           <BaseIcon name="PlusIcon" :class="slotProps.class" />
@@ -126,7 +126,7 @@ function viewRole(row: { id: number; title?: string | null; name: string }): voi
 
       <template #cell-actions="{ row }">
         <RoleDropdown
-          v-if="userStore.currentUser?.is_owner && !row.data.preset && row.data.name !== 'super admin'"
+          v-if="userStore.canManageCompany && !row.data.preset && row.data.name !== 'super admin'"
           :row="row.data"
           :table="table"
           :load-data="refreshTable"

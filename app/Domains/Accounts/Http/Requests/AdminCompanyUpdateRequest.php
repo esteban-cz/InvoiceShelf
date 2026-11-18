@@ -21,7 +21,7 @@ class AdminCompanyUpdateRequest extends FormRequest
                 Rule::unique('companies')->ignore($this->route('company')),
             ],
             'owner_id' => [
-                'required',
+                'nullable',
                 'exists:users,id',
             ],
             'vat_id' => [

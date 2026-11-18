@@ -20,6 +20,7 @@ focusInvalidAfterSubmit()
 
 declare global {
   interface Window {
+    app_locale?: string
     InvoiceShelf: InvoiceShelf
     loadLanguage?: (locale: string) => Promise<void>
     customer_logo?: string

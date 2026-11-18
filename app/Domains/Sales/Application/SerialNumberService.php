@@ -4,6 +4,10 @@ namespace App\Domains\Sales\Application;
 
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Contacts\Models\Customer;
+use App\Domains\Receivables\Models\Payment;
+use App\Domains\Sales\Models\Estimate;
+use App\Domains\Sales\Models\Invoice;
+use Carbon\CarbonImmutable;
 
 /**
  * Renders document numbers from a per-company format string.
@@ -45,6 +49,10 @@ class SerialNumberService
 
     private $sequenceScope = [];
 
+    private ?CarbonImmutable $documentDate = null;
+
+    private ?string $activeFormat = null;
+
     private bool $customerSequence = true;
 
     /**
@@ -65,6 +73,10 @@ class SerialNumberService
     public function setModel($model)
     {
         $this->model = $model;
+        $column = $this->dateColumn();
+        if (is_object($model) && $column && $model->getAttribute($column)) {
+            $this->setDate((string) $model->getAttribute($column));
+        }
 
         return $this;
     }
@@ -78,7 +90,10 @@ class SerialNumberService
      */
     public function setModelObject($id = null)
     {
-        $this->ob = $this->model::find($id);
+        $this->ob = $id ? $this->model::query()->where('company_id', $this->company)->find($id) : null;
+        if ($this->ob && ($column = $this->dateColumn())) {
+            $this->setDate((string) $this->ob->getAttribute($column));
+        }
 
         if ($this->ob && $this->ob->sequence_number) {
             $this->nextSequenceNumber = $this->ob->sequence_number;
@@ -88,6 +103,14 @@ class SerialNumberService
             && $this->ob->customer_id == $this->customer->id) {
             $this->nextCustomerSequenceNumber = $this->ob->customer_sequence_number;
         }
+
+        return $this;
+    }
+
+    /** Use the document's issue date for both the printed year and sequence. */
+    public function setDate(?string $date): self
+    {
+        $this->documentDate = $date ? CarbonImmutable::parse($date) : null;
 
         return $this;
     }
@@ -178,6 +201,7 @@ class SerialNumberService
             );
         }
 
+        $this->activeFormat = $format;
         $this->setNextNumbers();
 
         return $this->generateSerialNumber($format);
@@ -375,7 +399,7 @@ class SerialNumberService
         return match ($name) {
             'SEQUENCE' => str_pad($this->nextSequenceNumber, $value ?: 6, 0, STR_PAD_LEFT),
             'CUSTOMER_SEQUENCE' => str_pad($this->nextCustomerSequenceNumber, $value, 0, STR_PAD_LEFT),
-            'DATE_FORMAT' => date($value ?: 'Y'),
+            'DATE_FORMAT' => ($this->documentDate ?? CarbonImmutable::now())->format($value ?: 'Y'),
             'RANDOM_SEQUENCE' => substr(bin2hex(random_bytes($value ?: 6)), 0, $value ?: 6),
             'CUSTOMER_SERIES' => isset($this->customer) ? ($this->customer->prefix ?? 'CST') : 'CST',
             default => $value,
@@ -393,6 +417,27 @@ class SerialNumberService
             $query->where($column, $value);
         }
 
+        $column = $this->dateColumn();
+        $format = $this->activeFormat ?? CompanySetting::getSetting(
+            $this->settingKey ?: strtolower(class_basename($this->model)).'_number_format', $this->company
+        );
+        // A yearless format must never repeat its numbers at a year boundary.
+        $hasYear = self::getPlaceholders($format ?? '')->contains(fn (array $token): bool => $token['name'] === 'DATE_FORMAT'
+            && ($token['value'] === '' || strpbrk($token['value'], 'Yy') !== false));
+        if ($column && $hasYear && CompanySetting::getSetting('document_sequence_reset_yearly', $this->company) === 'YES') {
+            $query->whereYear($column, ($this->documentDate ?? CarbonImmutable::now())->year);
+        }
+
         return $query;
+    }
+
+    private function dateColumn(): ?string
+    {
+        return match (is_object($this->model) ? get_class($this->model) : $this->model) {
+            Invoice::class => 'invoice_date',
+            Estimate::class => 'estimate_date',
+            Payment::class => 'payment_date',
+            default => null,
+        };
     }
 }

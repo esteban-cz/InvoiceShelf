@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { defaultLocale } from '@/scripts/utils/locale'
 import { client } from '@/scripts/api/client'
 import type { Invoice } from '@/scripts/types/domain/invoice'
 import type { Estimate, EstimateStatus } from '@/scripts/types/domain/estimate'
@@ -283,7 +284,7 @@ export const useCustomerPortalStore = defineStore('customerPortal', {
       this.mainMenu = data.meta.menu ?? []
       this.currency = data.data.currency ?? data.meta.current_customer_currency ?? data.meta.current_company_currency ?? null
       this.enabledModules = data.meta.modules ?? []
-      this.currentCompanyLanguage = data.meta.current_company_language ?? 'en'
+      this.currentCompanyLanguage = data.meta.current_company_language ?? defaultLocale()
       this.userForm = hydrateUserForm(data.data)
       this.isAppLoaded = true
 

@@ -2,6 +2,7 @@
 
 namespace App\Domains\Accounts\Http\Resources;
 
+use App\Domains\Accounts\Application\RoleTitles;
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Accounts\Models\RolePreset;
 use Carbon\Carbon;
@@ -28,7 +29,7 @@ class RoleResource extends JsonResource
         return [
             'id' => $role->id,
             'name' => $role->name,
-            'title' => $role->title,
+            'title' => app(RoleTitles::class)->display($role->name, $role->title),
             'level' => $role->level,
             // The preset this role is a company's copy of, if any: read only here.
             'preset' => RolePreset::keyFromRoleName($role->name),

@@ -2,18 +2,12 @@
 
 namespace App\Domains\Accounts\Policies;
 
+use App\Domains\Accounts\Application\CompanyAccess;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-/**
- * Who may rewrite a company's own record and its settings.
- *
- * The question is positional and asked of the company being edited: is this
- * actor the account recorded against it as owner? Holding an ability, or being
- * the platform administrator, buys nothing here. The comparison is loose, so a
- * numeric string in the owner column still matches the id it names.
- */
+/** Company owners, the full-access Owner role and member platform admins manage settings. */
 class SettingsPolicy
 {
     use HandlesAuthorization;
@@ -25,6 +19,6 @@ class SettingsPolicy
      */
     public function manageCompany(User $user, Company $company)
     {
-        return $user->id == $company->owner_id;
+        return app(CompanyAccess::class)->canManage($user, $company);
     }
 }

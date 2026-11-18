@@ -186,7 +186,7 @@ class SalesDocumentComposer
             'customer_id' => $customer->id,
             'currency_id' => $currencyId,
             "{$kind}_date" => $date,
-            "{$kind}_number" => $intent['number'] ?? $existing?->{"{$kind}_number"} ?? $this->nextNumber($kind, $companyId, $customer->id),
+            "{$kind}_number" => $intent['number'] ?? $existing?->{"{$kind}_number"} ?? $this->nextNumber($kind, $companyId, $customer->id, $date),
             'reference_number' => array_key_exists('reference_number', $intent) ? $intent['reference_number'] : $existing?->reference_number,
             'template_name' => $template,
             'notes' => array_key_exists('notes', $intent) ? $intent['notes'] : $existing?->notes,
@@ -830,11 +830,12 @@ class SalesDocumentComposer
      * The number the form would show for a new document, counted for this
      * customer so a per-customer series comes out right.
      */
-    private function nextNumber(string $kind, int $companyId, int $customerId): ?string
+    private function nextNumber(string $kind, int $companyId, int $customerId, string $date): ?string
     {
         $serial = (new SerialNumberService)
             ->setCompany($companyId)
             ->setCustomer($customerId)
+            ->setDate($date)
             ->setModel($kind === 'invoice' ? new Invoice : new Estimate);
 
         if ($kind === 'invoice') {

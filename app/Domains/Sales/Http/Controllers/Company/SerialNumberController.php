@@ -4,6 +4,7 @@ namespace App\Domains\Sales\Http\Controllers\Company;
 
 use App\Domains\Receivables\Models\Payment;
 use App\Domains\Sales\Application\SerialNumberService;
+use App\Domains\Sales\Http\Requests\NextSerialNumberRequest;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\Invoice;
 use App\Platform\Http\Controller;
@@ -23,11 +24,12 @@ class SerialNumberController extends Controller
      * company's stored format so the settings screen can preview edits, and
      * `model_id` lets an existing document keep the numbers it already has.
      */
-    public function nextNumber(Request $request, Invoice $invoice, Estimate $estimate, Payment $payment): JsonResponse
+    public function nextNumber(NextSerialNumberRequest $request, Invoice $invoice, Estimate $estimate, Payment $payment): JsonResponse
     {
         $serial = (new SerialNumberService)
             ->setCompany($request->header('company'))
-            ->setCustomer($request->userId);
+            ->setCustomer($request->userId)
+            ->setDate($request->input('date'));
 
         // Invoices and credit notes live in one table, so each is pinned to its
         // own row type: the preview must never count the other kind's rows.

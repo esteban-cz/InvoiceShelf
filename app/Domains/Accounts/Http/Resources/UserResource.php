@@ -2,6 +2,8 @@
 
 namespace App\Domains\Accounts\Http\Resources;
 
+use App\Domains\Accounts\Application\CompanyAccess;
+use App\Domains\Accounts\Application\RoleTitles;
 use App\Domains\Metadata\Http\Resources\CustomFieldValueResource;
 use App\Domains\Money\Http\Resources\CurrencyResource;
 use Illuminate\Http\Request;
@@ -44,8 +46,9 @@ class UserResource extends JsonResource
             'updated_at' => $user->updated_at,
             'avatar' => $user->avatar,
             'is_owner' => $user->isOwner(),
+            'can_manage_company' => app(CompanyAccess::class)->canManage($user),
             'is_super_admin' => $user->isSuperAdmin(),
-            'roles' => $user->roles,
+            'roles' => $user->roles->map(fn ($role) => array_replace($role->toArray(), ['title' => app(RoleTitles::class)->display($role->name, $role->title)])),
             'formatted_created_at' => $user->formattedCreatedAt,
             'currency' => $this->when(
                 $user->currency()->exists(),

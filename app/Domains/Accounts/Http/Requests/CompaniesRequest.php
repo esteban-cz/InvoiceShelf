@@ -68,6 +68,9 @@ class CompaniesRequest extends FormRequest
             'currency' => [
                 'required',
             ],
+            'owner_id' => $this->user()->isSuperAdmin()
+                ? ['sometimes', 'nullable', 'integer', 'exists:users,id']
+                : ['sometimes', 'required', 'integer', Rule::in([$this->user()->id])],
         ];
 
         foreach (self::OPTIONAL_ADDRESS_FIELDS as $field) {
@@ -96,7 +99,7 @@ class CompaniesRequest extends FormRequest
         return array_merge(
             Arr::only($this->validated(), self::COMPANY_FIELDS),
             [
-                'owner_id' => $this->user()->id,
+                'owner_id' => $this->user()->isSuperAdmin() ? $this->validated('owner_id') : $this->user()->id,
                 'slug' => Str::slug($this->name),
             ]
         );

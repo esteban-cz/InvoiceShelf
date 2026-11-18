@@ -2,8 +2,10 @@
 
 namespace App\Domains\Accounts\Http\Resources;
 
+use App\Domains\Accounts\Application\RoleTitles;
 use App\Domains\Contacts\Http\Resources\AddressResource;
 use App\Domains\Metadata\Http\Resources\CustomFieldValueResource;
+use App\Support\SpaTranslations;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
@@ -44,7 +46,7 @@ class CompanyResource extends JsonResource
             ),
             'owner' => $this->when(
                 $company->relationLoaded('owner'),
-                fn () => new UserResource($company->owner)
+                fn () => $company->owner ? new UserResource($company->owner) : null
             ),
             'user_role' => $this->assignedRoleTitle(),
             'fields' => $this->when(
@@ -69,7 +71,10 @@ class CompanyResource extends JsonResource
             return null;
         }
 
-        return DB::query()
+        if ($viewer->isSuperAdmin() && (int) $this->owner_id !== (int) $viewer->id) {
+            return SpaTranslations::get(app()->getLocale(), 'role_labels.platform_administrator');
+        }
+        $role = DB::query()
             ->from('assigned_roles')
             ->join('roles', 'assigned_roles.role_id', '=', 'roles.id')
             ->where([
@@ -77,6 +82,8 @@ class CompanyResource extends JsonResource
                 ['assigned_roles.entity_id', '=', $viewer->id],
                 ['assigned_roles.scope', '=', $this->id],
             ])
-            ->value('roles.title');
+            ->select(['roles.name', 'roles.title'])->first();
+
+        return $role ? app(RoleTitles::class)->display($role->name, $role->title) : null;
     }
 }

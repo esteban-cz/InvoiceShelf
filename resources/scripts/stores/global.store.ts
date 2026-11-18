@@ -17,6 +17,7 @@ import { useInboxStore } from './inbox.store'
 import { useUserStore } from './user.store'
 import { useNotificationStore } from './notification.store'
 import { handleApiError } from '../utils/error-handling'
+import { defaultLocale } from '../utils/locale'
 import * as localStore from '../utils/local-storage'
 import type { Currency } from '@/scripts/types/domain/currency'
 import type { Country } from '@/scripts/types/domain/customer'
@@ -118,13 +119,13 @@ export const useGlobalStore = defineStore('global', () => {
 
       isAppLoaded.value = true
 
-      // Load UI language: user preference > company setting > English
+      // Load UI language: user preference > company setting > install default
       // 'default' means "use company language"
       const userLang = userStore.currentUserSettings.language
       const uiLanguage =
         (userLang && userLang !== 'default' ? userLang : '') ||
         (response.current_company_settings as Record<string, string>)?.language ||
-        'en'
+        defaultLocale()
       await window.loadLanguage?.(uiLanguage)
 
       emitBootstrapCompleted({

@@ -82,6 +82,7 @@
         @endif
 
         {{-- @json eats the line break after it, so these end in semicolons. --}}
+        window.app_locale = @json(config('app.locale', 'cs'));
         window.powered_by = @json(\App\Support\PoweredBy::clientState());
         window.source_url = @json(\App\Support\PoweredBy::sourceUrl());
         window.customer_portal_url = @json(\App\Support\Urls\CustomerUrl::portalUrl());

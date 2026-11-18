@@ -70,7 +70,7 @@ onMounted(() => {
 
   if (meta.ability && !userStore.hasAbilities(meta.ability)) {
     router.push({ name: 'settings.account' })
-  } else if (meta.isOwner && !userStore.isOwner) {
+  } else if (meta.isOwner && !userStore.canManageCompany) {
     router.push({ name: 'settings.account' })
   }
 })
