@@ -42,7 +42,7 @@ const userStore = useUserStore()
 const companyStore = useCompanyStore()
 const globalStore = useGlobalStore()
 const canManageAccounts = computed(() =>
-  !!userStore.currentUser && companyStore.selectedCompany?.owner_id === userStore.currentUser.id
+  userStore.canManageCompany
 )
 // Adding takes create or edit, changing edit; seeing the list only view.
 const canEdit = computed<boolean>(() => userStore.hasAbilities(ABILITIES.EDIT_PAYMENT))

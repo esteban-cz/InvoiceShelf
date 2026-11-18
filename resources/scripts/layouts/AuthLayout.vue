@@ -59,6 +59,7 @@
 <script setup lang="ts">
 import { computed, shallowRef } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import NotificationRoot from '@/scripts/components/notifications/NotificationRoot.vue'
 import MainLogo from '@/scripts/components/icons/MainLogo.vue'
 import PoweredBy from '@/scripts/components/layout/PoweredBy.vue'
@@ -73,6 +74,7 @@ declare global {
 }
 
 const route = useRoute()
+const { t } = useI18n()
 
 interface RouteCopy {
   heading: string
@@ -81,33 +83,33 @@ interface RouteCopy {
 
 const COPY: Record<string, RouteCopy> = {
   login: {
-    heading: 'Welcome back',
-    subheading: 'Sign in to continue to your account',
+    heading: 'auth_pages.login.heading',
+    subheading: 'auth_pages.login.description',
   },
   'forgot-password': {
-    heading: 'Forgot your password?',
-    subheading: 'Enter your email and we will send you a reset link',
+    heading: 'auth_pages.forgot_password.heading',
+    subheading: 'auth_pages.forgot_password.description',
   },
   'reset-password': {
-    heading: 'Set a new password',
-    subheading: 'Choose a strong password to secure your account',
+    heading: 'auth_pages.reset_password.heading',
+    subheading: 'auth_pages.reset_password.description',
   },
   'register-with-invitation': {
-    heading: 'Create your account',
-    subheading: 'Complete your registration to get started',
+    heading: 'auth_pages.register.heading',
+    subheading: 'auth_pages.register.description',
   },
 }
 
 const heading = computed<string>(() => {
   if (window.login_page_heading) return window.login_page_heading
   const name = route.name?.toString() ?? 'login'
-  return COPY[name]?.heading ?? COPY.login.heading
+  return t(COPY[name]?.heading ?? COPY.login.heading)
 })
 
 const subheading = computed<string>(() => {
   if (window.login_page_description) return window.login_page_description
   const name = route.name?.toString() ?? 'login'
-  return COPY[name]?.subheading ?? COPY.login.subheading
+  return t(COPY[name]?.subheading ?? COPY.login.subheading)
 })
 
 /**

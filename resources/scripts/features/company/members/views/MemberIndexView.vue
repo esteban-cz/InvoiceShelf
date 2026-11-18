@@ -227,7 +227,7 @@ function removeMultipleUsers(): void {
           </BaseButton>
 
           <BaseButton
-            v-if="userStore.currentUser?.is_owner"
+            v-if="userStore.canManageCompany"
             variant="primary-outline"
             @click="showAddModal = true"
           >
@@ -242,7 +242,7 @@ function removeMultipleUsers(): void {
           </BaseButton>
 
           <BaseButton
-            v-if="userStore.currentUser?.is_owner"
+            v-if="userStore.canManageCompany"
             @click="showInviteModal = true"
           >
             <template #left="slotProps">
@@ -299,7 +299,7 @@ function removeMultipleUsers(): void {
       :title="$t('members.no_users')"
       :description="$t('members.empty_description')"
     >
-      <template v-if="userStore.currentUser?.is_owner" #actions>
+      <template v-if="userStore.canManageCompany" #actions>
         <BaseButton variant="primary-outline" @click="showAddModal = true">
           <template #left="slotProps">
             <BaseIcon name="UserPlusIcon" :class="slotProps.class" aria-hidden="true" />
@@ -322,7 +322,7 @@ function removeMultipleUsers(): void {
         :data="fetchData"
         :columns="userTableColumns"
         :selected-count="
-          userStore.currentUser?.is_owner ? memberStore.selectedUsers.length : 0
+          userStore.canManageCompany ? memberStore.selectedUsers.length : 0
         "
       >
         <template #bulk-actions>
@@ -368,14 +368,14 @@ function removeMultipleUsers(): void {
         </template>
 
         <template #cell-role="{ row }">
-          <span>{{ row.data.roles?.length ? row.data.roles[0].title : '-' }}</span>
+          <span>{{ row.data.is_super_admin ? $t('role_labels.platform_administrator') : (row.data.roles?.length ? row.data.roles[0].title : '-') }}</span>
         </template>
 
         <template #cell-created_at="{ row }">
           <span>{{ row.data.formatted_created_at }}</span>
         </template>
 
-        <template v-if="userStore.currentUser?.is_owner" #cell-actions="{ row }">
+        <template v-if="userStore.canManageCompany" #cell-actions="{ row }">
           <MemberDropdown
             :row="row.data"
             :table="tableComponent"
@@ -387,7 +387,7 @@ function removeMultipleUsers(): void {
 
     <!-- Pending Invitations Section -->
     <div
-      v-if="userStore.currentUser?.is_owner && memberStore.pendingInvitations.length > 0"
+      v-if="userStore.canManageCompany && memberStore.pendingInvitations.length > 0"
     >
       <h3 class="text-lg font-medium text-heading mb-4">
         {{ $t('members.pending_invitations') }}

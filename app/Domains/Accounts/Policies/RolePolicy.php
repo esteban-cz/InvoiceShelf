@@ -2,6 +2,7 @@
 
 namespace App\Domains\Accounts\Policies;
 
+use App\Domains\Accounts\Application\CompanyAccess;
 use App\Domains\Accounts\Models\RolePreset;
 use App\Domains\Accounts\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -27,7 +28,7 @@ class RolePolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isOwner();
+        return app(CompanyAccess::class)->canManage($user);
     }
 
     /**
@@ -35,7 +36,7 @@ class RolePolicy
      */
     public function view(User $user, Role $role): bool
     {
-        return $user->isOwner() && $this->inActiveCompany($role);
+        return app(CompanyAccess::class)->canManage($user) && $this->inActiveCompany($role);
     }
 
     /**
@@ -43,7 +44,7 @@ class RolePolicy
      */
     public function create(User $user): bool
     {
-        return $user->isOwner();
+        return app(CompanyAccess::class)->canManage($user);
     }
 
     /**
@@ -81,7 +82,7 @@ class RolePolicy
 
     private function mayChange(User $user, Role $role): bool
     {
-        return $user->isOwner()
+        return app(CompanyAccess::class)->canManage($user)
             && $this->inActiveCompany($role)
             && RolePreset::keyFromRoleName($role->name) === null;
     }

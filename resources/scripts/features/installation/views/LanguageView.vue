@@ -42,6 +42,7 @@
 </template>
 
 <script setup lang="ts">
+import { defaultLocale } from '@/scripts/utils/locale'
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
@@ -77,7 +78,7 @@ const isSaving = ref<boolean>(false)
 const languages = ref<LanguageOption[]>([])
 
 const formData = reactive<{ language: string }>({
-  language: localStorage.getItem(STORAGE_KEY) ?? 'en',
+  language: localStorage.getItem(STORAGE_KEY) ?? defaultLocale(),
 })
 
 const rules = computed(() => ({

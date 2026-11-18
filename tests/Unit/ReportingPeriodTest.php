@@ -3,6 +3,8 @@
 use App\Support\ReportingPeriod;
 use Carbon\Carbon;
 
+beforeEach(fn () => app()->setLocale('en'));
+
 test('chart labels can be Czech without changing the original period or global locale', function () {
     $period = ReportingPeriod::fiscalYear('calendar_year', Carbon::parse('2026-06-15'));
     $localized = $period->localized('cs');

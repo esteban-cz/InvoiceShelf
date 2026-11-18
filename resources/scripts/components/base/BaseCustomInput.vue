@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { computed, ref, watch, onMounted, useId } from 'vue'
 import type { Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t, locale } = useI18n()
 
 interface CustomFieldOption {
   label: string
@@ -94,46 +97,46 @@ function getFields(): void {
 
   if (props.fields.includes('shipping')) {
     fieldList.value.push({
-      label: 'Shipping Address',
+      label: t('insert_fields.shipping_address'),
       fields: [
-        { label: 'Address name', value: 'SHIPPING_ADDRESS_NAME' },
-        { label: 'Country', value: 'SHIPPING_COUNTRY' },
-        { label: 'State', value: 'SHIPPING_STATE' },
-        { label: 'City', value: 'SHIPPING_CITY' },
-        { label: 'Address Street 1', value: 'SHIPPING_ADDRESS_STREET_1' },
-        { label: 'Address Street 2', value: 'SHIPPING_ADDRESS_STREET_2' },
-        { label: 'Phone', value: 'SHIPPING_PHONE' },
-        { label: 'Zip Code', value: 'SHIPPING_ZIP_CODE' },
+        { label: t('insert_fields.address_name'), value: 'SHIPPING_ADDRESS_NAME' },
+        { label: t('insert_fields.country'), value: 'SHIPPING_COUNTRY' },
+        { label: t('insert_fields.state'), value: 'SHIPPING_STATE' },
+        { label: t('insert_fields.city'), value: 'SHIPPING_CITY' },
+        { label: t('insert_fields.address_street_1'), value: 'SHIPPING_ADDRESS_STREET_1' },
+        { label: t('insert_fields.address_street_2'), value: 'SHIPPING_ADDRESS_STREET_2' },
+        { label: t('insert_fields.phone'), value: 'SHIPPING_PHONE' },
+        { label: t('insert_fields.zip_code'), value: 'SHIPPING_ZIP_CODE' },
       ],
     })
   }
 
   if (props.fields.includes('billing')) {
     fieldList.value.push({
-      label: 'Billing Address',
+      label: t('insert_fields.billing_address'),
       fields: [
-        { label: 'Address name', value: 'BILLING_ADDRESS_NAME' },
-        { label: 'Country', value: 'BILLING_COUNTRY' },
-        { label: 'State', value: 'BILLING_STATE' },
-        { label: 'City', value: 'BILLING_CITY' },
-        { label: 'Address Street 1', value: 'BILLING_ADDRESS_STREET_1' },
-        { label: 'Address Street 2', value: 'BILLING_ADDRESS_STREET_2' },
-        { label: 'Phone', value: 'BILLING_PHONE' },
-        { label: 'Zip Code', value: 'BILLING_ZIP_CODE' },
+        { label: t('insert_fields.address_name'), value: 'BILLING_ADDRESS_NAME' },
+        { label: t('insert_fields.country'), value: 'BILLING_COUNTRY' },
+        { label: t('insert_fields.state'), value: 'BILLING_STATE' },
+        { label: t('insert_fields.city'), value: 'BILLING_CITY' },
+        { label: t('insert_fields.address_street_1'), value: 'BILLING_ADDRESS_STREET_1' },
+        { label: t('insert_fields.address_street_2'), value: 'BILLING_ADDRESS_STREET_2' },
+        { label: t('insert_fields.phone'), value: 'BILLING_PHONE' },
+        { label: t('insert_fields.zip_code'), value: 'BILLING_ZIP_CODE' },
       ],
     })
   }
 
   if (props.fields.includes('customer')) {
     fieldList.value.push({
-      label: 'Customer',
+      label: t('insert_fields.customer'),
       fields: [
-        { label: 'Display Name', value: 'CONTACT_DISPLAY_NAME' },
-        { label: 'Contact Name', value: 'PRIMARY_CONTACT_NAME' },
-        { label: 'Email', value: 'CONTACT_EMAIL' },
-        { label: 'Phone', value: 'CONTACT_PHONE' },
-        { label: 'Website', value: 'CONTACT_WEBSITE' },
-        { label: 'Tax ID', value: 'CONTACT_TAX_ID' },
+        { label: t('insert_fields.display_name'), value: 'CONTACT_DISPLAY_NAME' },
+        { label: t('insert_fields.contact_name'), value: 'PRIMARY_CONTACT_NAME' },
+        { label: t('insert_fields.email'), value: 'CONTACT_EMAIL' },
+        { label: t('insert_fields.phone'), value: 'CONTACT_PHONE' },
+        { label: t('insert_fields.website'), value: 'CONTACT_WEBSITE' },
+        { label: t('insert_fields.tax_id'), value: 'CONTACT_TAX_ID' },
         ...customerFields.value.map((i) => ({
           label: i.label,
           value: i.slug,
@@ -144,16 +147,16 @@ function getFields(): void {
 
   if (props.fields.includes('invoice')) {
     fieldList.value.push({
-      label: 'Invoice',
+      label: t('insert_fields.invoice'),
       fields: [
-        { label: 'Date', value: 'INVOICE_DATE' },
-        { label: 'Due Date', value: 'INVOICE_DUE_DATE' },
-        { label: 'Number', value: 'INVOICE_NUMBER' },
-        { label: 'Ref Number', value: 'INVOICE_REF_NUMBER' },
-        { label: 'Total', value: 'INVOICE_TOTAL' },
-        { label: 'Amount Due', value: 'INVOICE_DUE_AMOUNT' },
-        { label: 'Amount Paid', value: 'INVOICE_PAID_AMOUNT' },
-        { label: 'Days Overdue', value: 'INVOICE_DAYS_OVERDUE' },
+        { label: t('insert_fields.date'), value: 'INVOICE_DATE' },
+        { label: t('insert_fields.due_date'), value: 'INVOICE_DUE_DATE' },
+        { label: t('insert_fields.number'), value: 'INVOICE_NUMBER' },
+        { label: t('insert_fields.ref_number'), value: 'INVOICE_REF_NUMBER' },
+        { label: t('insert_fields.total'), value: 'INVOICE_TOTAL' },
+        { label: t('insert_fields.amount_due'), value: 'INVOICE_DUE_AMOUNT' },
+        { label: t('insert_fields.amount_paid'), value: 'INVOICE_PAID_AMOUNT' },
+        { label: t('insert_fields.days_overdue'), value: 'INVOICE_DAYS_OVERDUE' },
         ...invoiceFields.value.map((i) => ({
           label: i.label,
           value: i.slug,
@@ -164,12 +167,12 @@ function getFields(): void {
 
   if (props.fields.includes('estimate')) {
     fieldList.value.push({
-      label: 'Estimate',
+      label: t('insert_fields.estimate'),
       fields: [
-        { label: 'Date', value: 'ESTIMATE_DATE' },
-        { label: 'Expiry Date', value: 'ESTIMATE_EXPIRY_DATE' },
-        { label: 'Number', value: 'ESTIMATE_NUMBER' },
-        { label: 'Ref Number', value: 'ESTIMATE_REF_NUMBER' },
+        { label: t('insert_fields.date'), value: 'ESTIMATE_DATE' },
+        { label: t('insert_fields.expiry_date'), value: 'ESTIMATE_EXPIRY_DATE' },
+        { label: t('insert_fields.number'), value: 'ESTIMATE_NUMBER' },
+        { label: t('insert_fields.ref_number'), value: 'ESTIMATE_REF_NUMBER' },
         ...estimateFields.value.map((i) => ({
           label: i.label,
           value: i.slug,
@@ -180,12 +183,12 @@ function getFields(): void {
 
   if (props.fields.includes('payment')) {
     fieldList.value.push({
-      label: 'Payment',
+      label: t('insert_fields.payment'),
       fields: [
-        { label: 'Date', value: 'PAYMENT_DATE' },
-        { label: 'Number', value: 'PAYMENT_NUMBER' },
-        { label: 'Mode', value: 'PAYMENT_MODE' },
-        { label: 'Amount', value: 'PAYMENT_AMOUNT' },
+        { label: t('insert_fields.date'), value: 'PAYMENT_DATE' },
+        { label: t('insert_fields.number'), value: 'PAYMENT_NUMBER' },
+        { label: t('insert_fields.mode'), value: 'PAYMENT_MODE' },
+        { label: t('insert_fields.amount'), value: 'PAYMENT_AMOUNT' },
         ...paymentFields.value.map((i) => ({
           label: i.label,
           value: i.slug,
@@ -196,23 +199,24 @@ function getFields(): void {
 
   if (props.fields.includes('company')) {
     fieldList.value.push({
-      label: 'Company',
+      label: t('insert_fields.company'),
       fields: [
-        { label: 'Company Name', value: 'COMPANY_NAME' },
-        { label: 'Country', value: 'COMPANY_COUNTRY' },
-        { label: 'State', value: 'COMPANY_STATE' },
-        { label: 'City', value: 'COMPANY_CITY' },
-        { label: 'Address Street 1', value: 'COMPANY_ADDRESS_STREET_1' },
-        { label: 'Address Street 2', value: 'COMPANY_ADDRESS_STREET_2' },
-        { label: 'Phone', value: 'COMPANY_PHONE' },
-        { label: 'Zip Code', value: 'COMPANY_ZIP_CODE' },
-        { label: 'Vat Id', value: 'COMPANY_VAT' },
-        { label: 'Tax Id', value: 'COMPANY_TAX' },
+        { label: t('insert_fields.company_name'), value: 'COMPANY_NAME' },
+        { label: t('insert_fields.country'), value: 'COMPANY_COUNTRY' },
+        { label: t('insert_fields.state'), value: 'COMPANY_STATE' },
+        { label: t('insert_fields.city'), value: 'COMPANY_CITY' },
+        { label: t('insert_fields.address_street_1'), value: 'COMPANY_ADDRESS_STREET_1' },
+        { label: t('insert_fields.address_street_2'), value: 'COMPANY_ADDRESS_STREET_2' },
+        { label: t('insert_fields.phone'), value: 'COMPANY_PHONE' },
+        { label: t('insert_fields.zip_code'), value: 'COMPANY_ZIP_CODE' },
+        { label: t('insert_fields.vat_id'), value: 'COMPANY_VAT' },
+        { label: t('insert_fields.tax_id'), value: 'COMPANY_TAX' },
       ],
     })
   }
 }
 
+watch(locale, getFields)
 getFields()
 
 const groupId = `insert-fields-${useId()}`

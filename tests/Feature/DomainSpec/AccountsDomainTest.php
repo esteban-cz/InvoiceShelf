@@ -31,9 +31,9 @@ it('provisions a new company with the documented defaults', function () {
     $settings = DB::table('company_settings')->where('company_id', $company['id'])
         ->pluck('value', 'option');
     expect($settings['time_zone'])->toBe('Asia/Kolkata');
-    expect($settings['language'])->toBe('en');
+    expect($settings['language'])->toBe('cs');
     expect($settings['fiscal_year'])->toBe('1-12');
-    expect($settings['invoice_number_format'])->toBe('{{SERIES:INV}}{{DELIMITER:-}}{{SEQUENCE:6}}');
+    expect($settings['invoice_number_format'])->toBe('{{SERIES:INV}}{{DELIMITER:-}}{{DATE_FORMAT:Y}}{{SEQUENCE:2}}');
     expect($settings['bulk_exchange_rate_configured'])->toBe('YES');
     expect((int) $settings['currency'])->toBe((int) $currency);
 
@@ -45,10 +45,10 @@ it('provisions a new company with the documented defaults', function () {
     expect($roleId)->not->toBeNull();
     expect(DB::table('permissions')->where('entity_id', $roleId)->count())
         ->toBe(count(app(AbilityCatalog::class)->all()));
-    expect((int) $company['owner_id'])->toBe($this->owner->id);
+    expect($company['owner_id'])->toBeNull();
 });
 
-it('flips owner-only authorization when ownership is transferred', function () {
+it('retains platform administrator access when ownership is transferred', function () {
     postJson('/api/v1/members', ['name' => 'Heir', 'email' => 'heir@x.test', 'password' => 'secret123',
         'companies' => [['id' => $this->companyId, 'role' => 'owner']]])->assertSuccessful();
     $heir = User::where('email', 'heir@x.test')->first();
@@ -59,7 +59,7 @@ it('flips owner-only authorization when ownership is transferred', function () {
 
     app('auth')->forgetGuards();
     Sanctum::actingAs($this->owner->fresh(), ['*']);
-    postJson('/api/v1/company/settings', ['settings' => ['language' => 'fr']])->assertForbidden();
+    postJson('/api/v1/company/settings', ['settings' => ['language' => 'fr']])->assertOk();
 
     app('auth')->forgetGuards();
     Sanctum::actingAs($heir, ['*']);

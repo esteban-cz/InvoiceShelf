@@ -3,6 +3,7 @@
 namespace App\Domains\Accounts\Http\Controllers\Admin;
 
 use App\Domains\Accounts\Application\CompanyService;
+use App\Domains\Accounts\Application\RoleTitles;
 use App\Domains\Accounts\Contracts\CompanyAddressWriter;
 use App\Domains\Accounts\Http\Requests\AdminCompanyUpdateRequest;
 use App\Domains\Accounts\Http\Requests\CompaniesRequest;
@@ -47,12 +48,7 @@ class CompaniesController extends Controller
 
     public function update(AdminCompanyUpdateRequest $request, Company $company)
     {
-        $company->update([
-            'name' => $request->name,
-            'vat_id' => $request->vat_id,
-            'tax_id' => $request->tax_id,
-            'owner_id' => $request->owner_id,
-        ]);
+        $this->companyService->updateCompany($company, $request->safe()->only(['name', 'vat_id', 'tax_id', 'owner_id']));
 
         if ($request->has('address')) {
             $this->companyAddressWriter->upsert($company, $request->validated('address'));
@@ -117,7 +113,7 @@ class CompaniesController extends Controller
             ->map(fn (Role $role) => [
                 'id' => $role->id,
                 'name' => $role->name,
-                'title' => $role->title ?? $role->name,
+                'title' => app(RoleTitles::class)->display($role->name, $role->title),
                 'preset' => RolePreset::keyFromRoleName($role->name),
             ])
             ->sortBy(fn (array $role) => [

@@ -184,6 +184,7 @@ function withTimeout<T>(work: Promise<T>, timeoutMs: number): Promise<T> {
  */
 function applyBranding(manifest: ClientManifest): void {
   const branding = manifest.branding ?? {}
+  window.app_locale = manifest.locale
 
   window.login_page_logo = branding.login_page_logo ?? undefined
   window.login_page_heading = branding.login_page_heading ?? undefined

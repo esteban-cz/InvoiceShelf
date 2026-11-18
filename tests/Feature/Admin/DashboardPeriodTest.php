@@ -1,5 +1,6 @@
 <?php
 
+use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Accounts\Models\User;
 use App\Domains\Purchases\Models\Expense;
 use App\Domains\Receivables\Models\Payment;
@@ -19,6 +20,7 @@ beforeEach(function () {
 
     $user = User::find(1);
     $this->companyId = $user->companies()->first()->id;
+    CompanySetting::setSettings(['language' => 'en'], $this->companyId);
     $this->withHeaders(['company' => $this->companyId]);
     Sanctum::actingAs($user, ['*']);
 });

@@ -64,7 +64,7 @@
       />
     </button>
 
-    <template v-if="userStore.currentUser?.is_owner">
+    <template v-if="userStore.canManageCompany">
       <div class="mx-3 my-1.5 border-t border-line-light" />
       <button type="button" :class="rowClass(false)" @click="emit('add')">
         <span

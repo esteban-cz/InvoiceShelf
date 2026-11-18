@@ -31,7 +31,7 @@ class PaymentFactory extends Factory
 
         return [
             'company_id' => User::find(1)->companies()->first()->id,
-            'payment_date' => $this->faker->date('Y-m-d', 'now'),
+            'payment_date' => now()->toDateString(),
             'notes' => $this->faker->text(80),
             'amount' => $this->faker->randomDigitNotNull(),
             'sequence_number' => $sequenceNumber->nextSequenceNumber,

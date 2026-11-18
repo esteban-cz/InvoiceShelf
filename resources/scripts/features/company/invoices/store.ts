@@ -151,6 +151,7 @@ export interface InvoiceState {
   isFetchingInvoice: boolean
   nextSequenceNumber: number | null
   preserveImportedNumber: boolean
+  lastGeneratedNumber: string
   newInvoice: InvoiceFormData
 }
 
@@ -166,6 +167,7 @@ export const useInvoiceStore = defineStore('invoice', {
     isFetchingInvoice: false,
     nextSequenceNumber: null,
     preserveImportedNumber: false,
+    lastGeneratedNumber: '',
     newInvoice: createInvoiceStub(),
   }),
 
@@ -249,6 +251,7 @@ export const useInvoiceStore = defineStore('invoice', {
 
   actions: {
     resetCurrentInvoice(): void {
+      this.lastGeneratedNumber = ''
       this.newInvoice = createInvoiceStub()
       this.nextSequenceNumber = null
       this.preserveImportedNumber = false
@@ -419,8 +422,17 @@ export const useInvoiceStore = defineStore('invoice', {
       params?: Record<string, unknown>,
       setState = false,
     ): Promise<{ data: NextNumberResponse }> {
-      const response = await invoiceService.getNextNumber(setState ? { ...params, include_sequence: true } : params)
-      if (setState && !this.preserveImportedNumber) {
+      const requestedDate = this.newInvoice.invoice_date
+      const previousNumber = this.newInvoice.invoice_number
+      const response = await invoiceService.getNextNumber({
+        date: requestedDate || undefined,
+        ...params,
+        ...(setState ? { include_sequence: true } : {}),
+      })
+      const isCurrent = requestedDate === this.newInvoice.invoice_date
+        && previousNumber === this.newInvoice.invoice_number
+      if (isCurrent) this.lastGeneratedNumber = response.nextNumber
+      if (isCurrent && setState && !this.preserveImportedNumber) {
         this.newInvoice.invoice_number = response.nextNumber
         this.nextSequenceNumber = response.nextSequenceNumber ?? null
       }

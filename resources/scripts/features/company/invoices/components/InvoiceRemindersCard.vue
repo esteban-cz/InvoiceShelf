@@ -21,7 +21,7 @@
       <p v-if="!reminders.enabled" class="text-muted">
         {{ $t('reminders.company_off') }}
         <router-link
-          v-if="userStore.currentUser?.is_owner"
+          v-if="userStore.canManageCompany"
           to="/admin/settings/payment-reminders"
           class="font-medium text-primary-600 hover:text-primary-700"
         >

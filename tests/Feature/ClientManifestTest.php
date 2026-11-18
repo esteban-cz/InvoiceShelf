@@ -2,6 +2,7 @@
 
 use App\Platform\Modules\Runtime\ModuleAssetVersion;
 use App\Platform\Operations\Models\Setting;
+use App\Support\PoweredBy;
 use Illuminate\Support\Facades\File;
 use InvoiceShelf\Modules\Registry;
 
@@ -30,7 +31,7 @@ test('the manifest is public and describes the running build', function () {
     $response = getJson('/api/v1/app/client-manifest')->assertOk();
 
     expect(array_keys($response->json()))->toEqualCanonicalizing([
-        'version', 'min_client_version', 'app_url', 'page_title', 'branding', 'modules', 'demo_mode', 'demo', 'managed_mode', 'managed', 'source_url', 'customer_portal_url',
+        'version', 'min_client_version', 'app_url', 'locale', 'page_title', 'branding', 'modules', 'demo_mode', 'demo', 'managed_mode', 'managed', 'source_url', 'customer_portal_url',
     ])
         ->and($response->json('version'))->toBe(trim(File::get(base_path('version.md'))))
         ->and($response->json('min_client_version'))->toBe(config('invoiceshelf.client.min_version'))
@@ -122,7 +123,7 @@ test('branding follows the instance settings and answers null when unset', funct
         'login_page_heading' => null,
         'login_page_description' => null,
         'copyright_text' => null,
-        'powered_by' => ['name' => 'InvoiceShelf', 'url' => 'https://invoiceshelf.com'],
+        'powered_by' => PoweredBy::clientState(),
     ]);
 
     Setting::setSettings([
@@ -139,7 +140,7 @@ test('branding follows the instance settings and answers null when unset', funct
         'login_page_heading' => 'Welcome back',
         'login_page_description' => 'Sign in to keep invoicing.',
         'copyright_text' => 'Acme Inc.',
-        'powered_by' => ['name' => 'InvoiceShelf', 'url' => 'https://invoiceshelf.com'],
+        'powered_by' => PoweredBy::clientState(),
     ]);
 });
 

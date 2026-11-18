@@ -3,8 +3,10 @@
 namespace App\Domains\Accounts\Application;
 
 use App\Domains\Accounts\Contracts\MemberReferencesCleaner;
+use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\User;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Silber\Bouncer\BouncerFacade;
 
 /**
@@ -26,6 +28,7 @@ class MemberService
     public function __construct(
         private readonly MemberReferencesCleaner $memberReferencesCleaner,
         private readonly AccessRevoker $accessRevoker,
+        private readonly CompanyOwnership $ownership,
     ) {}
 
     /**
@@ -40,17 +43,19 @@ class MemberService
      */
     public function create(array $attributes, iterable $companies): User
     {
-        $member = User::create($attributes);
+        return DB::transaction(function () use ($attributes, $companies): User {
+            $member = User::create($attributes);
 
-        $member->setSettings(['language' => 'default']);
+            $member->setSettings(['language' => 'default']);
 
-        $memberships = collect($companies);
+            $memberships = collect($companies);
 
-        $member->companies()->sync($memberships->pluck('id'));
+            $member->companies()->sync($memberships->pluck('id'));
 
-        $this->grantRoles($member, $memberships);
+            $this->grantRoles($member, $memberships);
 
-        return $member;
+            return $member;
+        });
     }
 
     /**
@@ -67,31 +72,37 @@ class MemberService
      */
     public function update(User $user, array $attributes, iterable $companies, array $managedCompanyIds): User
     {
-        $user->update($attributes);
+        return DB::transaction(function () use ($user, $attributes, $companies, $managedCompanyIds): User {
+            $user->update($attributes);
 
-        $memberships = collect($companies);
+            $memberships = collect($companies);
 
-        $elsewhere = $user->companies()
-            ->whereNotIn('companies.id', $managedCompanyIds)
-            ->pluck('companies.id');
+            $elsewhere = $user->companies()
+                ->whereNotIn('companies.id', $managedCompanyIds)
+                ->pluck('companies.id');
 
-        $changes = $user->companies()->sync($elsewhere->merge($memberships->pluck('id'))->unique()->values());
+            $changes = $user->companies()->sync($elsewhere->merge($memberships->pluck('id'))->unique()->values());
 
-        // Access granted to outside clients inside a company the account just
-        // left ends with the membership.
-        foreach ($changes['detached'] as $companyId) {
-            $this->accessRevoker->revokeCompany($user->id, (int) $companyId);
+            // Access granted to outside clients inside a company the account just
+            // left ends with the membership.
+            foreach ($changes['detached'] as $companyId) {
+                $company = Company::query()->findOrFail($companyId);
+                if ((int) $company->owner_id === (int) $user->id) {
+                    $this->ownership->assign($company, null);
+                }
+                $this->accessRevoker->revokeCompany($user->id, (int) $companyId);
 
-            // Or an invitation back into the company would restore the old
-            // role next to the new one.
-            BouncerFacade::scope()->onceTo((int) $companyId, function () use ($user): void {
-                BouncerFacade::sync($user)->roles([]);
-            });
-        }
+                // Or an invitation back into the company would restore the old
+                // role next to the new one.
+                BouncerFacade::scope()->onceTo((int) $companyId, function () use ($user): void {
+                    BouncerFacade::sync($user)->roles([]);
+                });
+            }
 
-        $this->grantRoles($user, $memberships);
+            $this->grantRoles($user, $memberships);
 
-        return $user;
+            return $user;
+        });
     }
 
     /**
@@ -137,6 +148,15 @@ class MemberService
     private function grantRoles(User $member, Collection $memberships): void
     {
         foreach ($memberships as $membership) {
+            $company = Company::query()->findOrFail($membership['id']);
+            if ($membership['role'] !== 'owner' && (int) $company->owner_id === (int) $member->id) {
+                $this->ownership->assign($company, null);
+            }
+            if ($membership['role'] === 'owner' && ! $member->isSuperAdmin()) {
+                $this->ownership->assign(Company::query()->findOrFail($membership['id']), $member);
+
+                continue;
+            }
             BouncerFacade::scope()->onceTo((int) $membership['id'], function () use ($member, $membership): void {
                 BouncerFacade::sync($member)->roles([$membership['role']]);
             });

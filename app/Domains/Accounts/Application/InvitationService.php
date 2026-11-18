@@ -7,9 +7,12 @@ use App\Domains\Accounts\Events\InvitationAnswered;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\CompanyInvitation;
 use App\Domains\Accounts\Models\User;
+use App\Support\SpaTranslations;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Silber\Bouncer\BouncerFacade;
@@ -19,6 +22,7 @@ class InvitationService
 {
     public function __construct(
         private readonly CompanyInvitationSender $companyInvitationSender,
+        private readonly CompanyOwnership $ownership,
     ) {}
 
     /**
@@ -26,6 +30,8 @@ class InvitationService
      */
     public function invite(Company $company, string $email, int $roleId, User $invitedBy): CompanyInvitation
     {
+        Role::query()->withoutGlobalScopes()->where('scope', $company->id)->findOrFail($roleId);
+
         // Check for existing pending invitation
         $existing = CompanyInvitation::where('company_id', $company->id)
             ->where('email', $email)
@@ -34,7 +40,7 @@ class InvitationService
 
         if ($existing) {
             throw ValidationException::withMessages([
-                'email' => ['An invitation is already pending for this email.'],
+                'email' => [SpaTranslations::get(app()->getLocale(), 'invitation_errors.pending_email')],
             ]);
         }
 
@@ -42,7 +48,7 @@ class InvitationService
         $existingUser = User::where('email', $email)->first();
         if ($existingUser && $existingUser->hasCompany($company->id)) {
             throw ValidationException::withMessages([
-                'email' => ['This user is already a member of this company.'],
+                'email' => [SpaTranslations::get(app()->getLocale(), 'invitation_errors.already_member')],
             ]);
         }
 
@@ -73,29 +79,48 @@ class InvitationService
      */
     public function accept(CompanyInvitation $invitation, User $user): void
     {
-        $this->assertAddressedTo($invitation, $user);
+        DB::transaction(function () use ($invitation, $user): void {
+            $locked = CompanyInvitation::query()->lockForUpdate()->findOrFail($invitation->id);
+            $this->assertAddressedTo($locked, $user);
+            $role = Role::query()->withoutGlobalScopes()->where('scope', $locked->company_id)->find($locked->role_id);
+            if (! $locked->isPending() || ! $role) {
+                throw ValidationException::withMessages([
+                    'invitation' => [SpaTranslations::get(app()->getLocale(), 'invitation_errors.invalid')],
+                ]);
+            }
+            if ($role->name === 'owner' && (! $locked->invitedBy || ! app(CompanyAccess::class)->canManage($locked->invitedBy, $locked->company))) {
+                throw new AuthorizationException;
+            }
 
-        if (! $invitation->isPending()) {
-            throw ValidationException::withMessages([
-                'invitation' => ['This invitation is no longer valid.'],
-            ]);
-        }
-
-        // Add user to company
-        $user->companies()->attach($invitation->company_id);
-
-        // Assign role scoped to the invitation's company
-        $role = Role::withoutGlobalScopes()->find($invitation->role_id);
-        BouncerFacade::scope()->to($invitation->company_id);
-        $user->assign($role->name);
-
-        // Update invitation
-        $invitation->update([
-            'status' => CompanyInvitation::STATUS_ACCEPTED,
-            'user_id' => $user->id,
-        ]);
-
+            $user->companies()->syncWithoutDetaching([$locked->company_id]);
+            BouncerFacade::scope()->onceTo((int) $locked->company_id, fn () => BouncerFacade::sync($user)->roles([$role->name]));
+            if ($role->name === 'owner') {
+                $this->ownership->assign($locked->company, $user, (int) $locked->id);
+            }
+            $locked->update(['status' => CompanyInvitation::STATUS_ACCEPTED, 'user_id' => $user->id]);
+            $invitation->setRawAttributes($locked->getAttributes(), true);
+        });
+        BouncerFacade::refresh();
         InvitationAnswered::dispatch((int) $invitation->id, (int) $invitation->company_id, CompanyInvitation::STATUS_ACCEPTED);
+    }
+
+    /** Register and accept atomically, so an invalid invitation never leaves a partial account. */
+    public function register(array $attributes): User
+    {
+        return DB::transaction(function () use ($attributes): User {
+            $invitation = CompanyInvitation::query()->where('token', $attributes['invitation_token'])->pending()->first();
+            if (! $invitation) {
+                throw ValidationException::withMessages(['invitation_token' => [SpaTranslations::get(app()->getLocale(), 'invitation_errors.invalid')]]);
+            }
+            if (strcasecmp($invitation->email, $attributes['email']) !== 0) {
+                throw ValidationException::withMessages(['email' => [SpaTranslations::get(app()->getLocale(), 'invitation_errors.wrong_recipient')]]);
+            }
+            $user = User::query()->create(Arr::only($attributes, ['name', 'email', 'password']));
+            $user->setSettings(['language' => 'default']);
+            $this->accept($invitation, $user);
+
+            return $user;
+        });
     }
 
     /**
@@ -107,7 +132,7 @@ class InvitationService
 
         if (! $invitation->isPending()) {
             throw ValidationException::withMessages([
-                'invitation' => ['This invitation is no longer valid.'],
+                'invitation' => [SpaTranslations::get(app()->getLocale(), 'invitation_errors.invalid')],
             ]);
         }
 
@@ -137,7 +162,7 @@ class InvitationService
     private function assertAddressedTo(CompanyInvitation $invitation, User $user): void
     {
         if (strcasecmp((string) $user->email, (string) $invitation->email) !== 0) {
-            throw new AuthorizationException('This invitation was sent to someone else.');
+            throw new AuthorizationException(SpaTranslations::get(app()->getLocale(), 'invitation_errors.wrong_recipient'));
         }
     }
 }

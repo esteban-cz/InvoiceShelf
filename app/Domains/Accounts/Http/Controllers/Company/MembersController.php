@@ -135,6 +135,8 @@ class MembersController extends Controller
         if ($submitted) {
             $targets = User::whereCompany()
                 ->whereIn('id', $submitted)
+                ->get()
+                ->filter(fn (User $target): bool => $request->user()->can('delete', $target))
                 ->pluck('id')
                 ->toArray();
 

@@ -314,7 +314,7 @@ async function fetchDocuments(
 }
 
 async function fetchContacts(): Promise<Pick<Record<string, RawItem[]>, 'customers' | 'users'>> {
-  if (!userStore.currentUser?.is_owner && !userStore.hasAbilities(ABILITIES.VIEW_CUSTOMER)) {
+  if (!userStore.canManageCompany && !userStore.hasAbilities(ABILITIES.VIEW_CUSTOMER)) {
     return { customers: [], users: [] }
   }
 

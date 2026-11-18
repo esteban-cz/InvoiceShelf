@@ -1,6 +1,7 @@
 <?php
 
 use App\Domains\Accounts\Models\Company;
+use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Accounts\Models\User;
 use App\Domains\Contacts\Http\Controllers\Company\CustomersController;
 use App\Domains\Contacts\Http\Requests\CustomerRequest;
@@ -21,6 +22,7 @@ beforeEach(function () {
     $this->withHeaders([
         'company' => $user->companies()->first()->id,
     ]);
+    CompanySetting::setSettings(['language' => 'en'], $user->companies()->first()->id);
     Sanctum::actingAs(
         $user,
         ['*']

@@ -246,6 +246,7 @@ class EstimateService implements EstimatePdfDataProvider
             ->setCompany($estimate->company_id)
             ->setCustomer($estimate->customer_id)
             ->setModel($estimate)
+            ->setDate($date->toDateString())
             ->setNextNumbers();
 
         $expiryDate = null;

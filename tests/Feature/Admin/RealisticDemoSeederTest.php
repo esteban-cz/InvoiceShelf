@@ -76,15 +76,15 @@ test('seeded documents maintain serial number sequences and next numbers', funct
 
     getJson('api/v1/next-number?key=invoice')
         ->assertOk()
-        ->assertJson(['nextNumber' => 'INV-000036']);
+        ->assertJson(['nextNumber' => 'INV-'.now()->format('Y').'36']);
 
     getJson('api/v1/next-number?key=estimate')
         ->assertOk()
-        ->assertJson(['nextNumber' => 'EST-000009']);
+        ->assertJson(['nextNumber' => 'EST-'.now()->format('Y').'09']);
 
     getJson('api/v1/next-number?key=payment')
         ->assertOk()
-        ->assertJson(['nextNumber' => 'PAY-000018']);
+        ->assertJson(['nextNumber' => 'PAY-'.now()->format('Y').'18']);
 });
 
 test('rerunning the realistic demo seeder remains idempotent', function () {

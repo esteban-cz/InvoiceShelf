@@ -158,7 +158,7 @@ test('lists the roles of one company, Owner and presets first', function () {
     $names = collect(getJson("api/v1/super-admin/companies/{$this->company->id}/roles")->assertOk()->json('data'))->pluck('name')->all();
 
     expect($names[0])->toBe('owner')
-        ->and(array_slice($names, 1, 2))->toBe(['preset:manager', 'preset:read-only'])
+        ->and(array_slice($names, 1, 2))->toBe(['preset:read-only', 'preset:manager'])
         ->and($names)->toContain('aardvark');
 });
 

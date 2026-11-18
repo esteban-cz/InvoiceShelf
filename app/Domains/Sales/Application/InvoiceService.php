@@ -416,6 +416,7 @@ class InvoiceService implements InvoicePdfDataProvider
             ->setCustomer($invoice->customer_id)
             ->setSequenceScope(['type' => Invoice::TYPE_INVOICE])
             ->setModel($invoice)
+            ->setDate($date->toDateString())
             ->setNextNumbers();
 
         $dueDate = null;

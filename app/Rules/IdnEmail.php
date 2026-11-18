@@ -22,7 +22,7 @@ class IdnEmail implements ValidationRule
         $parts = explode('@', $value);
 
         if (count($parts) !== 2) {
-            $fail('The :attribute must be a valid email address.');
+            $fail('validation.email')->translate();
 
             return;
         }
@@ -40,7 +40,7 @@ class IdnEmail implements ValidationRule
         $normalized = $local.'@'.$domain;
 
         if (! filter_var($normalized, FILTER_VALIDATE_EMAIL)) {
-            $fail('The :attribute must be a valid email address.');
+            $fail('validation.email')->translate();
         }
     }
 }

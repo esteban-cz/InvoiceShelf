@@ -35,6 +35,7 @@ class ClientManifestService
             // Media URLs are built from APP_URL, so a client whose server
             // address disagrees with this one is about to load broken images.
             'app_url' => config('app.url'),
+            'locale' => config('app.locale', 'cs'),
             // Never the customer-portal title: that one is per company and
             // this endpoint runs with no tenant in hand.
             'page_title' => get_page_title(null),

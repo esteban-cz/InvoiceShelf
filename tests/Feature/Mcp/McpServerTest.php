@@ -15,6 +15,7 @@ use Tests\Support\McpTesting;
 use Tests\Support\OAuthTesting;
 
 beforeEach(function () {
+    app()->setLocale('en');
     Artisan::call('db:seed', ['--class' => 'DatabaseSeeder', '--force' => true]);
     Artisan::call('db:seed', ['--class' => 'DemoSeeder', '--force' => true]);
 

@@ -2,6 +2,7 @@
 
 namespace App\Domains\Accounts\Models;
 
+use App\Domains\Accounts\Application\CompanyAccess;
 use App\Domains\Accounts\Notifications\MailResetPasswordNotification;
 use App\Domains\Catalog\Models\Item;
 use App\Domains\Contacts\Models\Address;
@@ -546,7 +547,7 @@ class User extends Authenticatable implements HasMedia
             return $this->isSuperAdmin();
         }
 
-        if ($this->isOwner()) {
+        if (app(CompanyAccess::class)->canManage($this)) {
             return true;
         }
 

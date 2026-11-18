@@ -75,6 +75,7 @@ export interface PaymentState {
   showExchangeRate: boolean
   paymentModes: PaymentMethod[]
   currentPaymentMode: { id: number | string; name: string | null }
+  lastGeneratedNumber: string
   currentPayment: PaymentFormData
   isFetchingInitialData: boolean
 }
@@ -89,6 +90,7 @@ export const usePaymentStore = defineStore('payment', {
     showExchangeRate: false,
     paymentModes: [],
     currentPaymentMode: { id: '', name: null },
+    lastGeneratedNumber: '',
     currentPayment: createPaymentStub(),
     isFetchingInitialData: false,
   }),
@@ -103,6 +105,7 @@ export const usePaymentStore = defineStore('payment', {
 
   actions: {
     resetCurrentPayment(): void {
+      this.lastGeneratedNumber = ''
       this.currentPayment = createPaymentStub()
     },
 
@@ -198,8 +201,16 @@ export const usePaymentStore = defineStore('payment', {
       params?: Record<string, unknown>,
       setState = false,
     ): Promise<{ data: { nextNumber: string } }> {
-      const response = await paymentService.getNextNumber(params as never)
-      if (setState) {
+      const requestedDate = this.currentPayment.payment_date
+      const previousNumber = this.currentPayment.payment_number
+      const response = await paymentService.getNextNumber({
+        date: requestedDate || undefined,
+        ...params,
+      })
+      const isCurrent = requestedDate === this.currentPayment.payment_date
+        && previousNumber === this.currentPayment.payment_number
+      if (isCurrent) this.lastGeneratedNumber = response.nextNumber
+      if (isCurrent && setState) {
         this.currentPayment.payment_number = response.nextNumber
       }
       return { data: response }

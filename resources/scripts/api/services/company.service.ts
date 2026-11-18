@@ -33,6 +33,7 @@ export interface CompanySignature {
 
 export interface CreateCompanyPayload {
   name: string
+  owner_id?: number | null
   currency?: number
   address?: Record<string, unknown>
 }

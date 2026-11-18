@@ -1,5 +1,6 @@
 <?php
 
+use App\Domains\Accounts\Http\Middleware\SetRequestLocale;
 use App\Platform\Operations\Http\HealthController;
 use Illuminate\Support\Facades\Route;
 
@@ -54,7 +55,7 @@ Route::prefix('/v1')->group(function () {
     // Super Admin
     // ----------------------------------
 
-    Route::middleware(['auth:sanctum', 'super-admin'])->prefix('super-admin')->group(function () {
+    Route::middleware(['auth:sanctum', 'super-admin', SetRequestLocale::class])->prefix('super-admin')->group(function () {
         require app_path('Platform/Operations/routes/admin.php');
         require app_path('Domains/Accounts/routes/admin.php');
         require app_path('Platform/Mcp/routes/admin.php');
@@ -67,11 +68,11 @@ Route::prefix('/v1')->group(function () {
     });
 
     // Stop impersonation - uses auth:sanctum only (the impersonated user's token, not super-admin)
-    Route::middleware(['auth:sanctum'])->prefix('super-admin')->group(function () {
+    Route::middleware(['auth:sanctum', SetRequestLocale::class])->prefix('super-admin')->group(function () {
         require app_path('Domains/Accounts/routes/impersonation.php');
     });
 
-    Route::middleware(['auth:sanctum', 'company'])->group(function () {
+    Route::middleware(['auth:sanctum', 'company', SetRequestLocale::class])->group(function () {
         Route::middleware(['bouncer'])->group(function () {
             require app_path('Domains/Accounts/routes/company.php');
             require app_path('Platform/Operations/routes/company.php');

@@ -74,8 +74,8 @@ class EstimateFactory extends Factory
             ->setNextNumbers();
 
         return [
-            'estimate_date' => $this->faker->date('Y-m-d', 'now'),
-            'expiry_date' => $this->faker->date('Y-m-d', 'now'),
+            'estimate_date' => now()->toDateString(),
+            'expiry_date' => now()->toDateString(),
             'estimate_number' => $sequenceNumber->getNextNumber(),
             'sequence_number' => $sequenceNumber->nextSequenceNumber,
             'customer_sequence_number' => $sequenceNumber->nextCustomerSequenceNumber,

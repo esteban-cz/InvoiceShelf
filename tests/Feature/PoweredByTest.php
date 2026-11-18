@@ -13,7 +13,7 @@ use function Pest\Laravel\getJson;
  */
 test('mail says powered by tomecka.com unless the host says otherwise', function () {
     expect(view('emails.partials.powered-by')->render())
-        ->toContain('Powered by')
+        ->toContain('Provozuje')
         ->toContain('href="https://www.tomecka.com"')
         ->toContain('>tomecka.com</a>');
 

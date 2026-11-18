@@ -28,6 +28,7 @@ beforeEach(function (): void {
 
     $user = User::query()->find(1);
     $companyId = $user->companies()->first()->getKey();
+    CompanySetting::setSettings(['language' => 'en'], $companyId);
     $this->withHeaders(['company' => $companyId]);
     Sanctum::actingAs($user, ['*']);
 });
@@ -1429,9 +1430,9 @@ describe('credit note numbering', function () {
         $first = creditableInvoice();
         $second = creditableInvoice();
 
-        expect($first->invoice_number)->toBe('INV-000001');
+        expect($first->invoice_number)->toBe('INV-'.now()->format('Y').'01');
         expect($first->sequence_number)->toBe(1);
-        expect($second->invoice_number)->toBe('INV-000002');
+        expect($second->invoice_number)->toBe('INV-'.now()->format('Y').'02');
         expect($second->sequence_number)->toBe(2);
 
         $firstCreditNote = Invoice::find(
@@ -1457,7 +1458,7 @@ describe('credit note numbering', function () {
         // next invoice is 3, not 5.
         $third = creditableInvoice();
 
-        expect($third->invoice_number)->toBe('INV-000003');
+        expect($third->invoice_number)->toBe('INV-'.now()->format('Y').'03');
         expect($third->sequence_number)->toBe(3);
     });
 

@@ -45,6 +45,7 @@ export interface ClientManifest {
   version: string
   min_client_version: string
   app_url: string
+  locale?: string
   page_title: string
   branding: ClientManifestBranding
   modules: ClientManifestModule[]

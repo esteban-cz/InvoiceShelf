@@ -2,6 +2,7 @@
 
 namespace App\Domains\Accounts\Http\Controllers\Company;
 
+use App\Domains\Accounts\Application\CompanyOwnership;
 use App\Domains\Accounts\Application\MemberVisibleSettings;
 use App\Domains\Accounts\Http\Requests\GetSettingsRequest;
 use App\Domains\Accounts\Http\Requests\UpdateSettingsRequest;
@@ -12,7 +13,6 @@ use App\Platform\Http\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Silber\Bouncer\BouncerFacade;
 
 /**
  * The preference store of the company named by the request header, plus the
@@ -114,10 +114,7 @@ class CompanySettingsController extends Controller
             ]);
         }
 
-        $company->update(['owner_id' => $user->id]);
-
-        BouncerFacade::scope()->to($company->id);
-        BouncerFacade::sync($user)->roles(['owner']);
+        app(CompanyOwnership::class)->assign($company, $user);
 
         return response()->json([
             'success' => true,

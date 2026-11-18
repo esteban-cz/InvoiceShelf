@@ -41,7 +41,7 @@ export interface FetchUsersParams {
 
 export interface UpdateCompanyData {
   name: string
-  owner_id: number
+  owner_id: number | null
   vat_id?: string
   tax_id?: string
   address?: {
@@ -132,7 +132,7 @@ export const useAdminStore = defineStore('admin', () => {
       const notificationStore = useNotificationStore()
       notificationStore.showNotification({
         type: 'success',
-        message: 'Company updated successfully.',
+        message: 'administration.companies.updated_message',
       })
     } catch (err: unknown) {
       handleApiError(err)
@@ -186,7 +186,7 @@ export const useAdminStore = defineStore('admin', () => {
       const notificationStore = useNotificationStore()
       notificationStore.showNotification({
         type: 'success',
-        message: 'User updated successfully.',
+        message: 'administration.users.updated_message',
       })
     } catch (err: unknown) {
       handleApiError(err)

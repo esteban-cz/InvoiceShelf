@@ -171,6 +171,9 @@ async function submit(): Promise<void> {
             :searchable="true"
           />
         </BaseInputGroup>
+        <p v-if="form.role === 'owner'" class="text-sm text-muted">
+          {{ $t('company_ownership.transfer_help') }}
+        </p>
       </div>
 
       <div class="flex justify-end p-4 border-t border-line-default">

@@ -5,6 +5,7 @@ import App_ from './App.vue'
 import router from './router'
 import { createAppI18n, mergeMessageObjects, setI18nLanguage } from './plugins/i18n'
 import type { AppI18n } from './plugins/i18n'
+import { DEFAULT_LOCALE, defaultLocale } from './utils/locale'
 import { createAppPinia } from './plugins/pinia'
 import { installTooltipDirective } from './plugins/tooltip'
 import { defineGlobalComponents } from './global-components'
@@ -113,16 +114,11 @@ export default class InvoiceShelf {
     // i18n
     this.i18n = createAppI18n(this.messages)
 
-    // If the install wizard's Language step set a locale before the DB
-    // existed, honor it now so the rest of the wizard renders in the right
-    // language. Falls through to 'en' silently on any failure.
-    const installLanguage = this.readInstallLanguage()
-    if (installLanguage && installLanguage !== 'en') {
-      try {
-        await setI18nLanguage(this.i18n, installLanguage)
-      } catch {
-        // Locale file missing or load failed — fall back to en, no-op.
-      }
+    // Establish the language before auth pages and validation messages mount.
+    try {
+      await setI18nLanguage(this.i18n, this.readInstallLanguage() || defaultLocale())
+    } catch {
+      await setI18nLanguage(this.i18n, DEFAULT_LOCALE)
     }
 
     // Install plugins

@@ -7,11 +7,14 @@ import { useVuelidate } from '@vuelidate/core'
 import { useModalStore } from '@/scripts/stores/modal.store'
 import { useCompanyStore } from '@/scripts/stores/company.store'
 import { useGlobalStore } from '@/scripts/stores/global.store'
+import { useUserStore } from '@/scripts/stores/user.store'
 
 const router = useRouter()
 const modalStore = useModalStore()
 const companyStore = useCompanyStore()
 const globalStore = useGlobalStore()
+const userStore = useUserStore()
+const ownCompany = ref(false)
 const { t } = useI18n()
 
 const isSaving = ref<boolean>(false)
@@ -59,6 +62,7 @@ const rules = computed(() => ({
 const v$ = useVuelidate(rules, { newCompanyForm })
 
 async function getInitials(): Promise<void> {
+  ownCompany.value = false
   isFetchingInitialData.value = true
   await globalStore.fetchCurrencies()
   await globalStore.fetchCountries()
@@ -90,7 +94,10 @@ async function submitCompanyData(): Promise<void> {
 
   isSaving.value = true
   try {
-    const res = await companyStore.addNewCompany(newCompanyForm as never)
+    const res = await companyStore.addNewCompany({
+      ...newCompanyForm,
+      ...(userStore.currentUser?.is_super_admin ? { owner_id: ownCompany.value ? userStore.currentUser.id : null } : {}),
+    } as never)
     if (res.data) {
       companyStore.setSelectedCompany(res.data)
 
@@ -156,6 +163,13 @@ function closeCompanyModal(): void {
               />
             </div>
           </BaseInputGroup>
+
+          <BaseCheckbox
+            v-if="userStore.currentUser?.is_super_admin"
+            v-model="ownCompany"
+            :label="$t('company_ownership.make_me_owner')"
+            :description="$t('company_ownership.create_help')"
+          />
 
           <BaseInputGroup
             :label="$t('settings.company_info.company_name')"

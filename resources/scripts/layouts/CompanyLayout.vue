@@ -168,7 +168,7 @@ async function initializeLayout(): Promise<void> {
     router.push({ name: 'settings.account' })
   } else if (meta.isSuperAdmin && !userStore.currentUser?.is_super_admin) {
     router.push({ name: 'dashboard' })
-  } else if (meta.isOwner && !userStore.currentUser?.is_owner) {
+  } else if (meta.isOwner && !userStore.canManageCompany) {
     router.push({ name: 'settings.account' })
   }
 
@@ -176,7 +176,7 @@ async function initializeLayout(): Promise<void> {
   // the backfill that a change leaves pending.
   if (
     companyStore.selectedCompanySettings.bulk_exchange_rate_configured === 'NO' &&
-    userStore.currentUser?.is_owner
+    userStore.canManageCompany
   ) {
     modalStore.openModal({
       componentName: 'ExchangeRateBulkUpdateModal',

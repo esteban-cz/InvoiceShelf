@@ -2,6 +2,7 @@
 
 namespace App\Domains\Accounts\Http\Requests;
 
+use App\Domains\Accounts\Application\CompanyAccess;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\User;
 use App\Rules\IdnEmail;
@@ -97,8 +98,8 @@ class MemberRequest extends FormRequest
      */
     public function managedCompanyIds(): array
     {
-        return Company::query()
-            ->where('owner_id', $this->user()->id)
+        return $this->user()->companies()->get()
+            ->filter(fn (Company $company) => app(CompanyAccess::class)->canManage($this->user(), $company))
             ->pluck('id')
             ->map(fn (mixed $id): int => (int) $id)
             ->all();

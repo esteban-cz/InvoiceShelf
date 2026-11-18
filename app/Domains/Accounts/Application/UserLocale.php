@@ -7,7 +7,7 @@ use App\Domains\Accounts\Models\User;
 
 /**
  * The language the SPA would speak to a user: their own, or their company's
- * when they left it at the default, or English.
+ * when they left it at the default, or the installation's default.
  */
 final class UserLocale
 {
@@ -19,6 +19,6 @@ final class UserLocale
             $language = CompanySetting::getSetting('language', $companyId);
         }
 
-        return is_string($language) && $language !== '' && $language !== 'default' ? $language : 'en';
+        return is_string($language) && $language !== '' && $language !== 'default' ? $language : config('app.locale', 'cs');
     }
 }

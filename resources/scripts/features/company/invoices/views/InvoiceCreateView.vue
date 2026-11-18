@@ -404,6 +404,18 @@ watch(isRecurring, (newVal) => {
 })
 
 watch(
+  () => invoiceStore.newInvoice.invoice_date,
+  (date, previousDate) => {
+    if (!isEdit.value && !invoiceStore.isFetchingInitialSettings
+      && date && previousDate && date !== previousDate
+      && invoiceStore.newInvoice.invoice_number === invoiceStore.lastGeneratedNumber
+      && !invoiceStore.preserveImportedNumber) {
+      void invoiceStore.getNextNumber({ userId: invoiceStore.newInvoice.customer_id }, true)
+    }
+  },
+)
+
+watch(
   () => invoiceStore.newInvoice.customer,
   (newVal) => {
     if (newVal && (newVal as Record<string, unknown>).currency) {

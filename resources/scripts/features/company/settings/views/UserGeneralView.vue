@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { defaultLocale } from '@/scripts/utils/locale'
 import { ref, computed, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { required, minLength, email, helpers } from '@vuelidate/validators'
@@ -82,7 +83,7 @@ async function updateGeneral(): Promise<void> {
       customFields: customFieldHolder.user.customFields,
     })
 
-    const effectiveLanguage = (language === 'default' ? '' : language) || companyStore.selectedCompanySettings?.language || 'en'
+    const effectiveLanguage = (language === 'default' ? '' : language) || companyStore.selectedCompanySettings?.language || defaultLocale()
     await (window as Record<string, unknown>).loadLanguage?.(effectiveLanguage)
   } finally {
     isSaving.value = false

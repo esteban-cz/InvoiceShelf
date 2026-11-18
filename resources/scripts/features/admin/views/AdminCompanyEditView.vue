@@ -33,7 +33,6 @@
           <BaseInputGroup
             :label="$t('administration.companies.owner')"
             :error="v$.owner_id.$error && v$.owner_id.$errors[0].$message"
-            required
           >
             <BaseMultiselect
               v-model="formData.owner_id"
@@ -41,8 +40,8 @@
               :invalid="v$.owner_id.$error"
               :options="searchUsers"
               value-prop="id"
-              :can-deselect="false"
-              :can-clear="false"
+              :can-deselect="true"
+              :can-clear="true"
               searchable
               :filter-results="false"
               :min-chars="0"
@@ -191,9 +190,7 @@ const rules = computed(() => ({
   name: {
     required: helpers.withMessage(t('validation.required'), required),
   },
-  owner_id: {
-    required: helpers.withMessage(t('validation.required'), required),
-  },
+  owner_id: {},
 }))
 
 const v$ = useVuelidate(
@@ -261,7 +258,7 @@ async function submitForm(): Promise<void> {
 
   await adminStore.updateCompany(route.params.id as string, {
     name: formData.name,
-    owner_id: formData.owner_id?.id ?? 0,
+    owner_id: formData.owner_id?.id ?? null,
     vat_id: formData.vat_id,
     tax_id: formData.tax_id,
     address: formData.address,

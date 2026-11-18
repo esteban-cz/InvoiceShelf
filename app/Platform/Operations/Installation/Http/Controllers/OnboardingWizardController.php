@@ -28,13 +28,13 @@ class OnboardingWizardController extends Controller
         if (! InstallationState::isDbCreated()) {
             return response()->json([
                 'profile_complete' => 0,
-                'profile_language' => 'en',
+                'profile_language' => config('app.locale', 'cs'),
             ]);
         }
 
         return response()->json([
             'profile_complete' => Setting::getSetting('profile_complete'),
-            'profile_language' => Setting::getSetting('profile_language'),
+            'profile_language' => Setting::getSetting('profile_language') ?: config('app.locale', 'cs'),
         ]);
     }
 

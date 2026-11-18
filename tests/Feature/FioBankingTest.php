@@ -198,7 +198,7 @@ test('Fio rejects XML entities and malformed money without advancing the cursor'
 test('Fio data is owner-only and company scoped', function () {
     $connection = fioConnection($this);
     $movement = fioMovement($this, $connection);
-    $stranger = User::factory()->create();
+    $stranger = User::factory()->create(['role' => 'general']);
     $this->company->users()->attach($stranger);
     Sanctum::actingAs($stranger);
     $this->getJson('/api/v1/fio/connections')->assertForbidden();

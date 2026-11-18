@@ -85,8 +85,8 @@ class InvoiceFactory extends Factory
             ->setNextNumbers();
 
         return [
-            'invoice_date' => $this->faker->date('Y-m-d', 'now'),
-            'due_date' => $this->faker->date('Y-m-d', 'now'),
+            'invoice_date' => now()->toDateString(),
+            'due_date' => now()->toDateString(),
             'invoice_number' => $sequenceNumber->getNextNumber(),
             'sequence_number' => $sequenceNumber->nextSequenceNumber,
             'customer_sequence_number' => $sequenceNumber->nextCustomerSequenceNumber,

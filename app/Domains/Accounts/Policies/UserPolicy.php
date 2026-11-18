@@ -2,6 +2,7 @@
 
 namespace App\Domains\Accounts\Policies;
 
+use App\Domains\Accounts\Application\CompanyAccess;
 use App\Domains\Accounts\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -27,7 +28,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isOwner();
+        return app(CompanyAccess::class)->canManage($user);
     }
 
     /**
@@ -46,7 +47,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isOwner();
+        return app(CompanyAccess::class)->canManage($user);
     }
 
     /**
@@ -54,7 +55,7 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        return $this->mayActOn($user, $model);
+        return (! $model->isSuperAdmin() || $user->isSuperAdmin()) && $this->mayActOn($user, $model);
     }
 
     /**
@@ -65,7 +66,7 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        return $this->mayActOn($user, $model);
+        return (! $model->isSuperAdmin() || $user->isSuperAdmin()) && $this->mayActOn($user, $model);
     }
 
     /**
@@ -76,7 +77,7 @@ class UserPolicy
      */
     public function restore(User $user, User $model): bool
     {
-        return $user->isOwner();
+        return app(CompanyAccess::class)->canManage($user);
     }
 
     /**
@@ -86,7 +87,7 @@ class UserPolicy
      */
     public function forceDelete(User $user, User $model): bool
     {
-        return $user->isOwner();
+        return app(CompanyAccess::class)->canManage($user);
     }
 
     /**
@@ -97,7 +98,7 @@ class UserPolicy
      */
     public function invite(User $user, User $model)
     {
-        return $user->isOwner();
+        return app(CompanyAccess::class)->canManage($user);
     }
 
     /**
@@ -109,7 +110,7 @@ class UserPolicy
      */
     public function deleteMultiple(User $user)
     {
-        return $user->isOwner();
+        return app(CompanyAccess::class)->canManage($user);
     }
 
     /**
@@ -117,7 +118,7 @@ class UserPolicy
      */
     private function mayActOn(User $user, User $target): bool
     {
-        return $user->isOwner() && $this->isMemberOfActiveCompany($target);
+        return app(CompanyAccess::class)->canManage($user) && $this->isMemberOfActiveCompany($target);
     }
 
     /**

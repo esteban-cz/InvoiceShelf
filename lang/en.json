@@ -2480,7 +2480,12 @@
     "invoice_reminder_not_due": "Reminders are only sent for invoices that were sent and are not paid yet.",
     "invoice_reminder_no_email": "This customer has no email address to send a reminder to.",
     "invoice_reminder_failed": "The reminder could not be sent. Check the company's mail settings and try again.",
-    "announcement_from_feed": "Announcements from the InvoiceShelf project can only be hidden."
+    "announcement_from_feed": "Announcements from the InvoiceShelf project can only be hidden.",
+    "network_error": "Check your internet connection or try again when the server is available.",
+    "unauthorized": "Please sign in to continue.",
+    "too_many_attempts": "Too many attempts. Please wait a moment and try again.",
+    "session_expired": "This form has expired. Refresh the page and try again.",
+    "server_error": "The server encountered an error. Please try again."
   },
   "pdf_estimate_label": "Estimate",
   "pdf_estimate_number": "Estimate Number",
@@ -3292,5 +3297,75 @@
   "invoice_import_too_many_pages": "Choose a PDF with no more than 10 pages.",
   "invoice_import_too_much_text": "This PDF contains too much text to import. Split it into smaller files.",
   "invoice_import_extraction_failed": "The PDF could not be processed. Try a smaller file or enter the invoice manually.",
-  "invoice_import_rate_limited": "Please wait :seconds seconds before reading another PDF. You can preview six PDFs per minute."
+  "invoice_import_rate_limited": "Please wait :seconds seconds before reading another PDF. You can preview six PDFs per minute.",
+  "auth_pages": {
+    "login": {
+      "heading": "Welcome back",
+      "description": "Sign in to continue to your account"
+    },
+    "forgot_password": {
+      "heading": "Forgot your password?",
+      "description": "Enter your email and we will send you a reset link"
+    },
+    "reset_password": {
+      "heading": "Set a new password",
+      "description": "Choose a strong password to secure your account"
+    },
+    "register": {
+      "heading": "Create your account",
+      "description": "Complete your registration to get started"
+    }
+  },
+  "role_labels": {
+    "owner": "Owner",
+    "manager": "Manager",
+    "read-only": "Read only",
+    "platform_administrator": "Administrator"
+  },
+  "company_ownership": {
+    "make_me_owner": "Make me the owner",
+    "create_help": "Otherwise you remain an administrator and the company has no owner until an invited Owner accepts.",
+    "transfer_help": "The Owner role transfers company ownership to this user. Administrators retain access."
+  },
+  "invitation_errors": {
+    "pending_email": "An invitation is already pending for this email.",
+    "already_member": "This user is already a member of this company.",
+    "invalid": "Invitation not found or expired.",
+    "wrong_recipient": "This invitation was sent to someone else."
+  },
+  "insert_fields": {
+    "shipping_address": "Shipping Address",
+    "address_name": "Address name",
+    "country": "Country",
+    "state": "State",
+    "city": "City",
+    "address_street_1": "Address Street 1",
+    "address_street_2": "Address Street 2",
+    "phone": "Phone",
+    "zip_code": "Zip Code",
+    "billing_address": "Billing Address",
+    "customer": "Customer",
+    "display_name": "Display Name",
+    "contact_name": "Contact Name",
+    "email": "Email",
+    "website": "Website",
+    "tax_id": "Tax Id",
+    "invoice": "Invoice",
+    "date": "Date",
+    "due_date": "Due Date",
+    "number": "Number",
+    "ref_number": "Ref Number",
+    "total": "Total",
+    "amount_due": "Amount Due",
+    "amount_paid": "Amount Paid",
+    "days_overdue": "Days Overdue",
+    "estimate": "Estimate",
+    "expiry_date": "Expiry Date",
+    "payment": "Payment",
+    "mode": "Mode",
+    "amount": "Amount",
+    "company": "Company",
+    "company_name": "Company Name",
+    "vat_id": "Vat Id"
+  }
 }

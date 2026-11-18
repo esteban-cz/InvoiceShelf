@@ -1,7 +1,9 @@
 import { createI18n } from 'vue-i18n'
 import type { I18n, I18nOptions } from 'vue-i18n'
 import en from '../../../lang/en.json'
+import cs from '../../../lang/cs.json'
 import { applyDirection } from '../utils/direction'
+import { defaultLocale } from '../utils/locale'
 
 /**
  * Locale-to-filename mapping for language files whose filename does
@@ -13,7 +15,7 @@ const LOCALE_FILE_MAP: Record<string, string> = {
 }
 
 /** Tracks which languages have already been loaded. */
-const loadedLanguages = new Set<string>(['en'])
+const loadedLanguages = new Set<string>(['en', 'cs'])
 
 /** In-memory cache of loaded message objects keyed by locale. */
 const languageCache = new Map<string, Record<string, unknown>>()
@@ -70,10 +72,10 @@ async function loadLanguageMessages(
     return languageCache.get(locale)!
   }
 
-  // English is already statically imported — no dynamic import needed
-  if (locale === 'en') {
-    const messages = en as unknown as Record<string, unknown>
-    languageCache.set('en', messages)
+  // The default and fallback languages are available before the first render.
+  if (locale === 'en' || locale === 'cs') {
+    const messages = (locale === 'cs' ? cs : en) as unknown as Record<string, unknown>
+    languageCache.set(locale, messages)
     return messages
   }
 
@@ -159,7 +161,7 @@ export type AppI18n = I18n<
 /**
  * Create and return the vue-i18n plugin instance.
  *
- * Only the English bundle is included synchronously; all other
+ * Czech and English are included synchronously; all other
  * languages are loaded on demand via `setI18nLanguage`.
  */
 export function createAppI18n(
@@ -179,10 +181,14 @@ export function createAppI18n(
     en as unknown as Record<string, unknown>,
     messages.en ?? {},
   )
+  messages.cs = mergeMessageObjects(
+    cs as unknown as Record<string, unknown>,
+    messages.cs ?? {},
+  )
 
   const options: I18nOptions = {
     legacy: false,
-    locale: 'en',
+    locale: defaultLocale(),
     fallbackLocale: 'en',
     globalInjection: true,
     pluralRules: {

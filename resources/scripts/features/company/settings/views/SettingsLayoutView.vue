@@ -23,7 +23,7 @@ const route = useRoute()
 const router = useRouter()
 
 const showDangerZone = computed<boolean>(() => {
-  return userStore.currentUser?.is_owner === true
+  return userStore.currentUser?.is_owner === true || userStore.currentUser?.is_super_admin === true
 })
 
 const currentSetting = ref<DropdownMenuItem | undefined>(undefined)
