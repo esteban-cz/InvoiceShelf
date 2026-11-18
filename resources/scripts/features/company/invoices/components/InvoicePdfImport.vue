@@ -11,7 +11,7 @@ import { useInvoiceStore } from '../store'
 import { prefillImportedInvoice, type InvoiceImportPreview } from '../import'
 import type { AxiosError } from 'axios'
 
-defineProps<{ initialOpen: boolean; disabled: boolean }>()
+defineProps<{ disabled: boolean }>()
 const { t } = useI18n()
 const invoices = useInvoiceStore()
 const customers = useCustomerStore()
@@ -25,7 +25,7 @@ const loading = ref(false)
 const applying = ref(false)
 const applied = ref(false)
 const error = ref('')
-const importPanel = ref<HTMLDetailsElement | null>(null)
+const importPanel = ref<HTMLElement | null>(null)
 const totalMismatch = computed(
   () =>
     applied.value &&
@@ -138,15 +138,16 @@ function createCustomer() {
 </script>
 
 <template>
-  <details
+  <section
+    id="invoice-pdf-import-panel"
     ref="importPanel"
-    :open="initialOpen"
+    aria-labelledby="invoice-pdf-import-title"
     tabindex="-1"
     class="mt-5 scroll-mt-24 rounded-xl border glass p-4 md:p-5"
   >
-    <summary class="cursor-pointer font-semibold text-heading">
+    <h2 id="invoice-pdf-import-title" class="font-semibold text-heading">
       {{ $t('invoices.import_pdf.button') }}
-    </summary>
+    </h2>
     <p class="mt-3 text-sm text-muted">{{ $t('invoices.import_pdf.help') }}</p>
     <div class="mt-4 flex flex-wrap items-end gap-3">
       <div class="min-w-0 flex-1">
@@ -287,5 +288,5 @@ function createCustomer() {
         >
       </details>
     </div>
-  </details>
+  </section>
 </template>

@@ -12,6 +12,8 @@
       </span>
     </div>
 
+    <slot name="before-save" />
+
     <BaseButton
       :loading="saving"
       :disabled="saving"

@@ -5,6 +5,12 @@ PDF, and choose **Read PDF**. Review the preview, then choose **Fill invoice
 form**. This opens the usual editable invoice fields with the original number
 and dates when they can be read. Save the invoice normally after reviewing it.
 
+The new invoice form normally hides the import panel. Use **Import PDF** beside
+**Save invoice** to show it; the same button becomes **Hide import** to close it.
+On phones it appears as an import/close icon beside Save in the bottom action
+bar. Hiding the panel keeps the selected file, preview and invoice edits for
+when it is reopened. The invoice list's **Import PDF** shortcut opens it directly.
+
 Uploading or applying a preview does not save an invoice, record a payment,
 advance a serial number, change company settings or create a customer. A unique
 customer with the same registration number, tax ID, or exact name can be

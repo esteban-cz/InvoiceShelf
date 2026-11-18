@@ -7,6 +7,19 @@ For upstream releases, the section beneath each `##` version heading is what CI 
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 1.0.17-[3.0.0-alpha.15] - 2026-11-18
+
+- Hide the PDF import panel on normal new invoices. Show it from an import
+  button beside Save, and use the same button to hide it again.
+- Keep the selected PDF, preview and invoice edits when hiding the panel.
+  Keep the invoice list's import shortcut opening the panel directly.
+- Add the same toggle beside Save in the phone action bar.
+
+Upgrade: no new database migration.
+
+Testing branch: `feat/pdf-invoice-import`.
+Source tag: `fork-v1.0.17-upstream-3.0.0-alpha.15`.
+
 ## 1.0.16-[3.0.0-alpha.15] - 2026-11-18
 
 - Give PDF invoice previews a dedicated rate limit per user and company so

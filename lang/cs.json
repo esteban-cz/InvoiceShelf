@@ -764,7 +764,8 @@
         "ocr_page_limit": "Rozpoznaly se jen první dvě naskenované stránky. Zkontrolujte zbývající stránky.",
         "ocr_failed": "Některé naskenované stránky se nepodařilo rozpoznat. Doplňte je ručně.",
         "total_missing": "Původní celkovou částku se nepodařilo přečíst. Před uložením porovnejte částku ve formuláři s PDF."
-      }
+      },
+      "hide": "Skrýt import"
     }
   },
   "recurring_invoices": {

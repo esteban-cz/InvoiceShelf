@@ -764,7 +764,8 @@
         "ocr_page_limit": "Only the first two image-only pages were recognized. Check any remaining pages.",
         "ocr_failed": "Some image-only pages could not be recognized. Enter their contents manually.",
         "total_missing": "The original total could not be read. Compare the form total with the PDF before saving."
-      }
+      },
+      "hide": "Hide import"
     }
   },
   "recurring_invoices": {

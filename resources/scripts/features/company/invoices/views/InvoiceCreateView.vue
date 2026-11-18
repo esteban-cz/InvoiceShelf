@@ -38,6 +38,21 @@
           </router-link>
 
           <BaseButton
+            v-if="!isEdit && !isRecurring"
+            type="button"
+            variant="primary-outline"
+            :aria-expanded="showPdfImport"
+            aria-controls="invoice-pdf-import-panel"
+            :disabled="isSaving"
+            @click="togglePdfImport"
+          >
+            <template #left="slotProps">
+              <BaseIcon :name="showPdfImport ? 'XMarkIcon' : 'ArrowUpTrayIcon'" :class="slotProps.class" />
+            </template>
+            {{ $t(showPdfImport ? 'invoices.import_pdf.hide' : 'invoices.import_pdf.button') }}
+          </BaseButton>
+
+          <BaseButton
             :loading="isSaving"
             :disabled="isSaving || signatureBusy"
             variant="primary"
@@ -62,7 +77,23 @@
         :saving="isSaving"
         :loading="isLoadingContent || signatureBusy"
         :pdf-url="isEdit ? `/invoices/pdf/${invoiceStore.newInvoice.unique_hash}` : null"
-      />
+      >
+        <template v-if="!isEdit && !isRecurring" #before-save>
+          <span data-bar-info>
+            <BaseButton
+              type="button"
+              variant="primary-outline"
+              :aria-label="$t(showPdfImport ? 'invoices.import_pdf.hide' : 'invoices.import_pdf.button')"
+              :aria-expanded="showPdfImport"
+              aria-controls="invoice-pdf-import-panel"
+              :disabled="isSaving"
+              @click="togglePdfImport"
+            >
+              <BaseIcon :name="showPdfImport ? 'XMarkIcon' : 'ArrowUpTrayIcon'" class="h-5 w-5" />
+            </BaseButton>
+          </span>
+        </template>
+      </DocumentFormActionBar>
 
       <!-- On phones, making it recurring is a setting of the document -->
       <label
@@ -83,7 +114,7 @@
       <!-- Select Customer & Basic Fields -->
       <InvoicePdfImport
         v-if="!isEdit && !isRecurring"
-        :initial-open="route.query.import === '1'"
+        v-show="showPdfImport"
         :disabled="isLoadingContent || signatureBusy || isSaving"
       />
 
@@ -160,7 +191,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import cloneDeep from 'lodash/cloneDeep'
@@ -214,6 +245,15 @@ const isSaving = ref<boolean>(false)
 const signatureBusy = ref(false)
 const isMarkAsDefault = ref<boolean>(false)
 const isRecurring = ref<boolean>(false)
+const showPdfImport = ref(route.query.import === '1')
+
+async function togglePdfImport(): Promise<void> {
+  showPdfImport.value = !showPdfImport.value
+  if (showPdfImport.value) {
+    await nextTick()
+    document.getElementById('invoice-pdf-import-panel')?.scrollIntoView({ block: 'start' })
+  }
+}
 
 // Auto-due-date bookkeeping: tracks whether the user has manually edited the
 // due date, so the invoice_date watcher can avoid clobbering a manual value.
