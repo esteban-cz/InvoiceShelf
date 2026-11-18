@@ -724,6 +724,47 @@
       "enable": "Podepsat doklad",
       "help": "Použije výchozí jméno a podpis firmy. Změny zde platí jen pro tuto fakturu. Jméno vystavitele se vytiskne i bez podpisu.",
       "use_company_default": "Obnovit výchozí údaje firmy"
+    },
+    "import_pdf": {
+      "button": "Importovat PDF",
+      "help": "Nahrajte starší fakturu a předvyplňte tento formulář. Pokud lze původní číslo a data přečíst, zůstanou zachována. Před uložením vše zkontrolujte; nahráním se faktura ani platba nevytvoří. PDF do 10 MB a 10 stran; rozpoznávání obrázků zpracuje nejvýše 2 naskenované stránky.",
+      "file": "Faktura v PDF",
+      "file_size": "Vyberte PDF menší než 10 MB.",
+      "extract": "Načíst PDF",
+      "extracting": "Načítám PDF…",
+      "failed": "PDF se nepodařilo přečíst. Zkuste jiný soubor nebo vyplňte fakturu ručně.",
+      "apply_failed": "Odpovídajícího zákazníka se nepodařilo načíst. Zkuste to znovu nebo ho vyberte ručně.",
+      "source_total": "Celkem v původním PDF",
+      "apply": "Vyplnit fakturu",
+      "applied": "Formulář je předvyplněný. Zkontrolujte zákazníka, data, položky, daně a celkovou částku a fakturu běžně uložte. Žádná platba nebyla zaznamenána.",
+      "choose_customer": "Níže vyberte stávajícího zákazníka, nebo zkontrolujte a uložte nového podle údajů z PDF.",
+      "create_customer": "Přidat zákazníka z PDF",
+      "total_mismatch": "Částka nebo měna ve formuláři se liší od původního PDF. Před uložením zkontrolujte ceny, množství, slevy, daně a měnu.",
+      "source_text": "Zobrazit načtený text PDF",
+      "warnings": {
+        "number_missing": "Číslo faktury se nepodařilo přečíst. Vyplňte ho ručně.",
+        "invoice_date_missing": "Datum vystavení se nepodařilo přečíst. Zkontrolujte datum ve formuláři.",
+        "due_date_missing": "Datum splatnosti se nepodařilo přečíst. Zkontrolujte datum ve formuláři.",
+        "currency_missing": "Měnu se nepodařilo přečíst. Zkontrolujte vybranou měnu.",
+        "currency_unavailable": "Měna z PDF není dostupná. Vyberte správnou měnu ručně.",
+        "customer_missing": "Odběratele se nepodařilo určit. Vyberte nebo přidejte zákazníka.",
+        "items_missing": "Položky se nepodařilo spolehlivě přečíst. Doplňte je ručně podle textu PDF.",
+        "generic_format": "Toto PDF má jiný formát. Zkontrolujte načtené údaje, ceny, slevy a daně.",
+        "items_uncertain": "Některé položky se nepodařilo spolehlivě přečíst. Zkontrolujte, zda žádná nechybí.",
+        "line_total_mismatch": "Částka položky neodpovídá množství × ceně. Zkontrolujte slevy, daň a zaokrouhlení.",
+        "items_truncated": "Načetlo se pouze prvních 200 položek. Zbývající doplňte ručně.",
+        "item_order_assumed": "Pořadí sloupců s množstvím a cenou nebylo jednoznačné. Zkontrolujte položky.",
+        "duplicate_number": "Faktura s tímto číslem již existuje. Před uložením ji zkontrolujte.",
+        "customer_ambiguous": "Údajům odpovídá více zákazníků. Vyberte správného ručně.",
+        "customer_currency_mismatch": "Odpovídající zákazník používá jinou měnu. Zkontrolujte zákazníka i měnu.",
+        "bank_details_unavailable": "Platný český účet příjemce se nepodařilo ověřit. Zkontrolujte platební údaje ručně.",
+        "taxes_need_review": "Některé sazby DPH neodpovídají vašemu nastavení. Vyberte správné daně ručně.",
+        "ocr_used": "Text byl rozpoznán z obrázku. Pečlivě zkontrolujte čísla, data a částky.",
+        "ocr_unavailable": "Rozpoznávání obrázků není na serveru dostupné. Údaje z naskenovaných stránek doplňte ručně.",
+        "ocr_page_limit": "Rozpoznaly se jen první dvě naskenované stránky. Zkontrolujte zbývající stránky.",
+        "ocr_failed": "Některé naskenované stránky se nepodařilo rozpoznat. Doplňte je ručně.",
+        "total_missing": "Původní celkovou částku se nepodařilo přečíst. Před uložením porovnejte částku ve formuláři s PDF."
+      }
     }
   },
   "recurring_invoices": {
@@ -3244,5 +3285,10 @@
   "fio_connection_required": "Před zaevidováním pohybů znovu připojte tento bankovní účet.",
   "fio_disabled": "Toto propojení s Fio je pozastavené.",
   "fio_account_changed": "Token patří k jinému účtu nebo měně. Přidejte ho jako nové propojení.",
-  "fio_account_exists": "Tento účet Fio je již připojený. Upravte jeho stávající propojení."
+  "fio_account_exists": "Tento účet Fio je již připojený. Upravte jeho stávající propojení.",
+  "invoice_import_tools_unavailable": "Nástroje pro import PDF nejsou dostupné. Nainstalujte na server Poppler (poppler-utils) nebo znovu sestavte Docker image.",
+  "invoice_import_invalid_pdf": "PDF je poškozené, zašifrované nebo nečitelné. Vyberte jiné PDF.",
+  "invoice_import_too_many_pages": "Vyberte PDF s nejvýše 10 stranami.",
+  "invoice_import_too_much_text": "PDF obsahuje příliš mnoho textu. Rozdělte ho na menší soubory.",
+  "invoice_import_extraction_failed": "PDF se nepodařilo zpracovat. Zkuste menší soubor nebo vyplňte fakturu ručně."
 }

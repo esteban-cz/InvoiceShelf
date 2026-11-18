@@ -1,0 +1,21 @@
+FAKTURA                                               číslo 202601
+dodavatel IČ 12345679 DIČ                              variabilní symbol 202601
+          Jan Novák                                   konstantní symbol 0000
+          Dlouhá 12                                   peněžní ústav Fio banka
+110 00    Praha 1                                     číslo účtu 2102589740/2010
+
+příjemce                                              odběratel IČ 87654321 DIČ CZ87654321
+                                                                     Ukázková společnost
+                                                                     s.r.o.
+                                                                     Krátká 45/2
+                                                         181 00      Praha 8
+platební podmínky
+datum vystavení dokladu 06.01.2026
+datum splatnosti       20.01.2026
+částka                 =7.000,00 Kč
+položka   (ceny v Kč)                         jednotková cena        množství        celková cena DPH
+Fakturuji Vám za dodané služby:
+Úprava webových stránek dle zadání                7000.00                1.0             7000.00 Kč -
+Celkem                                                                                 7000.00 Kč
+Vystavil: Jan Novák
+www.ucto2000.cz

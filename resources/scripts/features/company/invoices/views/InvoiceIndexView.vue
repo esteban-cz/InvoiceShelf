@@ -34,6 +34,19 @@
         </BaseButton>
 
         <router-link
+          v-if="canCreate && viewMode === 'one-time'"
+          to="/admin/invoices/create?import=1"
+          class="inline-flex rounded-lg"
+        >
+          <BaseButton tag="span" variant="primary-outline">
+            <template #left="slotProps">
+              <BaseIcon name="ArrowUpTrayIcon" :class="slotProps.class" />
+            </template>
+            {{ $t('invoices.import_pdf.button') }}
+          </BaseButton>
+        </router-link>
+
+        <router-link
           v-if="canCreate"
           :to="viewMode === 'recurring' ? 'invoices/create?recurring=1' : 'invoices/create'"
           class="inline-flex rounded-lg"

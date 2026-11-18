@@ -81,6 +81,12 @@
       </div>
 
       <!-- Select Customer & Basic Fields -->
+      <InvoicePdfImport
+        v-if="!isEdit && !isRecurring"
+        :initial-open="route.query.import === '1'"
+        :disabled="isLoadingContent || signatureBusy || isSaving"
+      />
+
       <InvoiceBasicFields
         :v="v$"
         :is-loading="isLoadingContent"
@@ -183,6 +189,7 @@ import { currencyCodeOf, entityFormContext } from '@/scripts/extensions/records'
 import { useEntitySaveHooks } from '@/scripts/composables/use-entity-save-hooks'
 import { previewInvoiceVariableSymbol } from '@/scripts/utils/invoice-variable-symbol'
 import InvoiceBasicFields from '../components/InvoiceBasicFields.vue'
+import InvoicePdfImport from '../components/InvoicePdfImport.vue'
 import InvoicePaymentQrFields from '../components/InvoicePaymentQrFields.vue'
 import {
   DocumentItemsTable,
@@ -390,7 +397,8 @@ watch(
   () => invoiceStore.newInvoice.invoice_date,
   (newInvoiceDate, oldInvoiceDate) => {
     if (
-      companyStore.selectedCompanySettings?.invoice_set_due_date_automatically !== 'YES'
+      invoiceStore.preserveImportedNumber
+      || companyStore.selectedCompanySettings?.invoice_set_due_date_automatically !== 'YES'
       || !newInvoiceDate
       || newInvoiceDate === oldInvoiceDate
       || oldInvoiceDate === undefined

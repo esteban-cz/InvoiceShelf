@@ -724,6 +724,47 @@
       "enable": "Sign document",
       "help": "Start with the company issuer and signature. Changes here apply only to this invoice; the issuer name prints even without signing.",
       "use_company_default": "Restore company defaults"
+    },
+    "import_pdf": {
+      "button": "Import PDF",
+      "help": "Upload an older invoice to prefill this form. Its original number and dates are kept when readable. Review all fields before saving; uploading does not create an invoice or record a payment. PDF up to 10 MB and 10 pages; image recognition covers up to 2 scanned pages.",
+      "file": "Invoice PDF",
+      "file_size": "Choose a PDF smaller than 10 MB.",
+      "extract": "Read PDF",
+      "extracting": "Reading PDF…",
+      "failed": "The PDF could not be read. Try another file or enter the invoice manually.",
+      "apply_failed": "The matching customer could not be loaded. Try again or select a customer manually.",
+      "source_total": "Total in original PDF",
+      "apply": "Fill invoice form",
+      "applied": "The form is prefilled. Review the customer, dates, items, taxes and total, then save as usual. No payment has been recorded.",
+      "choose_customer": "Choose an existing customer below, or review and save a new customer from the PDF details.",
+      "create_customer": "Add customer from PDF",
+      "total_mismatch": "The form total or currency differs from the original PDF. Check prices, quantities, discounts, taxes and currency before saving.",
+      "source_text": "Show extracted PDF text",
+      "warnings": {
+        "number_missing": "The invoice number could not be read. Enter it manually.",
+        "invoice_date_missing": "The issue date could not be read. Check the date in the form.",
+        "due_date_missing": "The due date could not be read. Check the date in the form.",
+        "currency_missing": "The currency could not be read. Check the selected currency.",
+        "currency_unavailable": "The PDF currency is not available. Select the correct currency manually.",
+        "customer_missing": "The customer could not be identified. Choose or create a customer.",
+        "items_missing": "No reliable line items were found. Add them manually using the extracted text.",
+        "generic_format": "This PDF uses another layout. Check the extracted fields, prices, discounts and taxes.",
+        "items_uncertain": "Some line items could not be read reliably. Check for missing rows.",
+        "line_total_mismatch": "A line total differs from quantity × price. Check discounts, tax and rounding.",
+        "items_truncated": "Only the first 200 items were read. Add any remaining items manually.",
+        "item_order_assumed": "The quantity and price columns were uncertain. Check each line item.",
+        "duplicate_number": "An invoice with this number already exists. Review it before saving.",
+        "customer_ambiguous": "Several customers match these details. Choose the correct customer manually.",
+        "customer_currency_mismatch": "The matching customer uses a different currency. Review the customer and currency.",
+        "bank_details_unavailable": "A valid Czech receiving account could not be confirmed. Check the payment details manually.",
+        "taxes_need_review": "Some VAT rates could not be matched to your settings. Select the correct taxes manually.",
+        "ocr_used": "Text was recognized from an image. Check numbers, dates and amounts carefully.",
+        "ocr_unavailable": "Image recognition is unavailable on this server. Image-only pages need manual entry.",
+        "ocr_page_limit": "Only the first two image-only pages were recognized. Check any remaining pages.",
+        "ocr_failed": "Some image-only pages could not be recognized. Enter their contents manually.",
+        "total_missing": "The original total could not be read. Compare the form total with the PDF before saving."
+      }
     }
   },
   "recurring_invoices": {
@@ -3244,5 +3285,10 @@
   "fio_connection_required": "Reconnect this bank account before recording its movements.",
   "fio_disabled": "This Fio connection is paused.",
   "fio_account_changed": "The token belongs to a different account or currency. Add it as a separate connection.",
-  "fio_account_exists": "This Fio account is already connected. Edit its existing connection."
+  "fio_account_exists": "This Fio account is already connected. Edit its existing connection.",
+  "invoice_import_tools_unavailable": "PDF import tools are unavailable. Install Poppler (poppler-utils) on the server or rebuild the Docker image.",
+  "invoice_import_invalid_pdf": "This PDF is damaged, encrypted or unreadable. Choose another PDF.",
+  "invoice_import_too_many_pages": "Choose a PDF with no more than 10 pages.",
+  "invoice_import_too_much_text": "This PDF contains too much text to import. Split it into smaller files.",
+  "invoice_import_extraction_failed": "The PDF could not be processed. Try a smaller file or enter the invoice manually."
 }

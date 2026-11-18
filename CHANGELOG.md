@@ -7,6 +7,27 @@ For upstream releases, the section beneath each `##` version heading is what CI 
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 1.0.15-[3.0.0-alpha.15] - 2026-11-18
+
+- Import older invoice PDFs into the normal editable invoice form, primarily
+  supporting the Czech Účto2000 layout. Preserve original invoice numbers and
+  dates, and suggest customer details, line items, notes and payment details.
+- Extract other Czech/English PDF layouts where possible, with local Poppler
+  text extraction and bounded Tesseract OCR for scanned pages. Include the PDF
+  and OCR tools in the production and development Docker images.
+- Preview extracted data before applying it, flag duplicate numbers and total
+  differences, and match existing customers only within the active company.
+  Review and save new customers separately; imports do not record payments.
+- Keep imported invoice numbers when selecting a customer and preserve the
+  imported currency when reviewing a new customer.
+
+Upgrade: no new database migration. Rebuild the Docker image to install the PDF
+and Czech/English OCR tools. Native installs require Poppler and, for scanned
+pages, Tesseract with Czech and English language data.
+
+Testing branch: `feat/pdf-invoice-import`.
+Source tag: `fork-v1.0.15-upstream-3.0.0-alpha.15`.
+
 ## 1.0.14-[3.0.0-alpha.15] - 2026-11-18
 
 - Temporarily disable Fio bank connections, hide the settings card, block bank
