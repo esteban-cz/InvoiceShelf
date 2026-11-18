@@ -7,6 +7,27 @@ For upstream releases, the section beneath each `##` version heading is what CI 
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 1.0.18-[3.0.0-alpha.15] - 2026-11-18
+
+- Release PDF invoice import on the permanent deployment branch, including the
+  changes tested in fork versions 1.0.15 through 1.0.17.
+- Prefill the normal editable invoice form from older Czech Účto2000 PDFs and
+  extract other layouts where possible. Keep original numbers and dates, review
+  customer matches and new customer details, and flag duplicates and total
+  differences before saving.
+- Keep import hidden behind a button beside Save on desktop and phones, retain
+  the selected file and preview when hidden, and isolate the preview rate limit
+  from ordinary app requests.
+- Include local Poppler extraction and Czech/English Tesseract OCR in the
+  production and development Docker images.
+
+Upgrade: no new database migration. Rebuild the Docker image for the PDF/OCR
+tools when upgrading from 1.0.14. Native installs require Poppler and, for
+scanned pages, Tesseract with Czech and English language data.
+
+Deployment branch: `1.x.x-3.0.0-alpha.15`.
+Source tag: `fork-v1.0.18-upstream-3.0.0-alpha.15`.
+
 ## 1.0.17-[3.0.0-alpha.15] - 2026-11-18
 
 - Hide the PDF import panel on normal new invoices. Show it from an import
