@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import CustomerAresLookup from './CustomerAresLookup.vue'
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -217,6 +218,9 @@ function closeCustomerModal(): void {
       {{ modalStore.title }}
     </template>
     <form action="" @submit.prevent="submitCustomerData">
+      <div class="px-4 pt-4">
+        <CustomerAresLookup :customer="customerStore.currentCustomer" :disabled="isFetchingInitialData" />
+      </div>
       <div class="px-6 pb-3 max-h-[calc(80vh-8rem)] overflow-y-auto">
         <BaseTabGroup>
           <BaseTab :title="$t('customers.basic_info')">

@@ -12,6 +12,7 @@ use App\Domains\Receivables\Contracts\PaymentPdfDataProvider;
 use App\Domains\Receivables\Jobs\GeneratePaymentPdfJob;
 use App\Domains\Sales\Models\Invoice;
 use App\Platform\Mail\Models\EmailLog;
+use App\Platform\Pdf\Application\DocumentAddressFormats;
 use App\Platform\Pdf\Concerns\GeneratesPdf;
 use App\Platform\Pdf\Rendering\PdfHtmlSanitizer;
 use App\Support\SafeOrderBy;
@@ -433,7 +434,7 @@ class Payment extends Model implements HasMedia
     {
         return $this->addressBlock(
             $this->company && (! $this->company->address()->exists()),
-            'payment_company_address_format'
+            'company'
         );
     }
 
@@ -445,7 +446,7 @@ class Payment extends Model implements HasMedia
     {
         return $this->addressBlock(
             $this->customer && (! $this->customer->billingAddress()->exists()),
-            'payment_from_customer_address_format'
+            'billing'
         );
     }
 
@@ -526,7 +527,7 @@ class Payment extends Model implements HasMedia
             return false;
         }
 
-        return $this->getFormattedString(CompanySetting::getSetting($setting, $this->company_id));
+        return $this->getFormattedString(app(DocumentAddressFormats::class)->format($setting, $this->company_id));
     }
 
     /**

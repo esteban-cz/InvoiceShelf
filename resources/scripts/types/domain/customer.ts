@@ -37,6 +37,7 @@ export interface Customer {
   account_balance?: number | null
   prefix: string | null
   tax_id: string | null
+  registration_number?: string | null
   billing?: Address
   shipping?: Address
   fields?: CustomFieldValue[]
@@ -46,6 +47,9 @@ export interface Customer {
 
 export interface CreateCustomerPayload {
   name: string
+  registration_number?: string | null
+  company_name?: string | null
+  tax_id?: string | null
   contact_name?: string
   email?: string
   phone?: string | null

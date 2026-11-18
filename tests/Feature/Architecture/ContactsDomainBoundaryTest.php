@@ -83,7 +83,7 @@ test('the contacts domain preserves public and company customer routes', functio
         ->filter(fn ($route): bool => preg_match('#^api/v1/customers(?:$|/)#', $route->uri()) === 1)
         ->reject(fn ($route): bool => str_contains($route->uri(), '/statement') || str_contains($route->uri(), '/credit-allocations'));
 
-    expect($companyRoutes)->toHaveCount(9);
+    expect($companyRoutes)->toHaveCount(10);
 
     foreach ($companyRoutes as $route) {
         expect($route->getActionName())

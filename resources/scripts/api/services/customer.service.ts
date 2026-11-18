@@ -85,6 +85,21 @@ export interface CustomerListParams extends ListParams {
   display_name?: string
 }
 
+export interface AresCompany {
+  registration_number: string
+  name: string
+  tax_id: string | null
+  billing: {
+    name: string
+    address_street_1: string
+    address_street_2: string | null
+    city: string
+    state: string | null
+    zip: string
+    country_id: number | null
+  }
+}
+
 export interface CustomerListMeta {
   current_page: number
   last_page: number
@@ -125,6 +140,10 @@ export interface CustomerStatsResponse {
 }
 
 export const customerService = {
+  async lookupAres(ico: string): Promise<AresCompany> {
+    const { data } = await client.get<ApiResponse<AresCompany>>(`${API.CUSTOMERS}/ares/${encodeURIComponent(ico)}`)
+    return data.data
+  },
   async list(params?: CustomerListParams): Promise<CustomerListResponse> {
     const { data } = await client.get(API.CUSTOMERS, { params })
     return data

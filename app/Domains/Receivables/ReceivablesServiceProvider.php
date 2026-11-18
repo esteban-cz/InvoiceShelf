@@ -8,6 +8,7 @@ use App\Adapters\Receivables\SalesInvoiceBalanceUpdater;
 use App\Adapters\Receivables\SalesPaymentNumberAssigner;
 use App\Domains\Receivables\Application\PaymentService;
 use App\Domains\Receivables\Console\RestoreLegacyPaymentLinks;
+use App\Domains\Receivables\Console\SyncFioConnections;
 use App\Domains\Receivables\Contracts\InvoiceBalanceUpdater;
 use App\Domains\Receivables\Contracts\PaymentEmailSender;
 use App\Domains\Receivables\Contracts\PaymentExchangeRateRecorder;
@@ -35,6 +36,7 @@ class ReceivablesServiceProvider extends ServiceProvider
     {
         $this->commands([
             RestoreLegacyPaymentLinks::class,
+            SyncFioConnections::class,
         ]);
 
         Gate::policy(Payment::class, PaymentPolicy::class);

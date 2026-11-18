@@ -5,6 +5,7 @@ namespace App\Platform\Pdf\Concerns;
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Contacts\Models\Address;
 use App\Platform\Operations\Models\Setting;
+use App\Platform\Pdf\Application\DocumentAddressFormats;
 use App\Platform\Pdf\Application\FontService;
 use App\Platform\Pdf\Rendering\PdfHtmlSanitizer;
 use App\Platform\Storage\Models\FileDisk;
@@ -78,6 +79,7 @@ trait GeneratesPdf
             $archive = $this->getMedia($collection_name)->last();
 
             if (! $archive || $archive->getCustomProperty('pdf_style_version') !== self::PDF_STYLE_VERSION
+                || $archive->getCustomProperty('document_address_format_fingerprint') !== app(DocumentAddressFormats::class)->fingerprint($this->company_id)
                 || ! $this->archivedPdfIsCurrent($archive->custom_properties)) {
                 return false;
             }
@@ -123,6 +125,7 @@ trait GeneratesPdf
         App::setLocale($language);
         app(FontService::class)->ensureFontsForLocale($language);
 
+        $addressFormatFingerprint = app(DocumentAddressFormats::class)->fingerprint($this->company_id);
         $pdf = $this->getPDFData();
 
         $temp_directory = 'temp/'.$collection_name.'/'.$this->id;
@@ -144,7 +147,8 @@ trait GeneratesPdf
 
         try {
             $this->addMedia($temp_path)
-                ->withCustomProperties(['file_disk_id' => $default_disk->id, 'pdf_style_version' => self::PDF_STYLE_VERSION, ...$this->archivedPdfProperties()])
+                ->withCustomProperties(['file_disk_id' => $default_disk->id, 'pdf_style_version' => self::PDF_STYLE_VERSION,
+                    'document_address_format_fingerprint' => $addressFormatFingerprint, ...$this->archivedPdfProperties()])
                 ->usingFileName($file_name.'.pdf')
                 ->toMediaCollection($collection_name, config('filesystems.default'));
 

@@ -18,6 +18,9 @@ use App\Domains\Sales\Models\Invoice;
 use App\Domains\Taxation\Models\TaxType;
 
 return [
+    // Retained for later testing; hide the Fio UI and stop all bank imports.
+    'fio_enabled' => false,
+
     /*
     * Minimum php version.
     */

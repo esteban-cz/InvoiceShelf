@@ -40,6 +40,8 @@ export interface CustomerForm {
   website: string | null
   prefix?: string | null
   tax_id?: string | null
+  registration_number?: string | null
+  company_name?: string | null
   billing: CustomerFormAddress
   shipping: CustomerFormAddress
   customFields: unknown[]
@@ -69,6 +71,7 @@ function createCustomerStub(): CustomerForm {
   return {
     name: '',
     contact_name: '',
+    registration_number: null,
     email: '',
     phone: null,
     password: '',

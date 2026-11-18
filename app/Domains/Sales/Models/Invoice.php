@@ -15,6 +15,7 @@ use App\Domains\Sales\Contracts\InvoicePdfAttachments;
 use App\Domains\Sales\Contracts\InvoicePdfDataProvider;
 use App\Domains\Taxation\Models\Tax;
 use App\Platform\Mail\Models\EmailLog;
+use App\Platform\Pdf\Application\DocumentAddressFormats;
 use App\Platform\Pdf\Concerns\GeneratesPdf;
 use App\Platform\Pdf\Rendering\PdfHtmlSanitizer;
 use App\Platform\Pdf\Rendering\PdfTemplateUtils;
@@ -712,7 +713,7 @@ class Invoice extends Model implements HasMedia
     {
         return $this->addressBlock(
             $this->company && (! $this->company->address()->exists()),
-            'invoice_company_address_format'
+            'company'
         );
     }
 
@@ -724,7 +725,7 @@ class Invoice extends Model implements HasMedia
     {
         return $this->addressBlock(
             $this->customer && (! $this->customer->shippingAddress()->exists()),
-            'invoice_shipping_address_format'
+            'shipping'
         );
     }
 
@@ -736,7 +737,7 @@ class Invoice extends Model implements HasMedia
     {
         return $this->addressBlock(
             $this->customer && (! $this->customer->billingAddress()->exists()),
-            'invoice_billing_address_format'
+            'billing'
         );
     }
 
@@ -908,7 +909,7 @@ class Invoice extends Model implements HasMedia
             return false;
         }
 
-        return $this->getFormattedString(CompanySetting::getSetting($setting, $this->company_id));
+        return $this->getFormattedString(app(DocumentAddressFormats::class)->format($setting, $this->company_id));
     }
 
     /**

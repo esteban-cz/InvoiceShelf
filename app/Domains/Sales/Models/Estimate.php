@@ -11,6 +11,7 @@ use App\Domains\Money\Models\Currency;
 use App\Domains\Sales\Contracts\EstimatePdfDataProvider;
 use App\Domains\Taxation\Models\Tax;
 use App\Platform\Mail\Models\EmailLog;
+use App\Platform\Pdf\Application\DocumentAddressFormats;
 use App\Platform\Pdf\Concerns\GeneratesPdf;
 use App\Platform\Pdf\Rendering\PdfHtmlSanitizer;
 use App\Platform\Pdf\Rendering\PdfTemplateUtils;
@@ -389,7 +390,7 @@ class Estimate extends Model implements HasMedia
             return false;
         }
 
-        return $this->renderAddress('estimate_company_address_format');
+        return $this->renderAddress('company');
     }
 
     /**
@@ -402,7 +403,7 @@ class Estimate extends Model implements HasMedia
             return false;
         }
 
-        return $this->renderAddress('estimate_shipping_address_format');
+        return $this->renderAddress('shipping');
     }
 
     /**
@@ -415,7 +416,7 @@ class Estimate extends Model implements HasMedia
             return false;
         }
 
-        return $this->renderAddress('estimate_billing_address_format');
+        return $this->renderAddress('billing');
     }
 
     /**
@@ -519,7 +520,7 @@ class Estimate extends Model implements HasMedia
      */
     private function renderAddress(string $setting): string
     {
-        $layout = CompanySetting::getSetting($setting, $this->company_id);
+        $layout = app(DocumentAddressFormats::class)->format($setting, $this->company_id);
 
         return $this->getFormattedString($layout);
     }

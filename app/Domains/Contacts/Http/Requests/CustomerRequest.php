@@ -36,6 +36,7 @@ class CustomerRequest extends FormRequest
         'phone',
         'prefix',
         'tax_id',
+        'registration_number',
         'company_name',
         'contact_name',
         'website',
@@ -99,6 +100,7 @@ class CustomerRequest extends FormRequest
         $rules['enable_portal'] = ['boolean'];
         $rules['reminders_paused'] = ['sometimes', 'boolean'];
         $rules['currency_id'] = ['nullable'];
+        $rules['registration_number'] = ['sometimes', 'nullable', 'string', 'max:32'];
 
         foreach (['billing', 'shipping'] as $block) {
             foreach (self::ADDRESS_FIELDS as $field) {

@@ -5,11 +5,13 @@ import { useModalStore } from '../../../../stores/modal.store'
 import { paymentService } from '../../../../api/services/payment.service'
 import { useUserStore } from '@/scripts/stores/user.store'
 import { useCompanyStore } from '@/scripts/stores/company.store'
+import { useGlobalStore } from '@/scripts/stores/global.store'
 import { ABILITIES } from '@/scripts/config/abilities'
 import PaymentModeModal from '@/scripts/features/company/settings/components/PaymentModeModal.vue'
 import PaymentModeDropdown from '@/scripts/features/company/settings/components/PaymentModeDropdown.vue'
 import ReceivingAccountsCard from '@/scripts/features/company/settings/components/ReceivingAccountsCard.vue'
 import DefaultPaymentMethodCard from '@/scripts/features/company/settings/components/DefaultPaymentMethodCard.vue'
+import FioBankingCard from '@/scripts/features/company/settings/components/FioBankingCard.vue'
 
 interface TableColumn {
   key: string
@@ -38,6 +40,7 @@ interface FetchResult {
 const modalStore = useModalStore()
 const userStore = useUserStore()
 const companyStore = useCompanyStore()
+const globalStore = useGlobalStore()
 const canManageAccounts = computed(() =>
   !!userStore.currentUser && companyStore.selectedCompany?.owner_id === userStore.currentUser.id
 )
@@ -138,4 +141,5 @@ function addPaymentMode(): void {
 
   <DefaultPaymentMethodCard v-if="canManageAccounts" :key="'default-' + companyStore.selectedCompany?.id" class="mt-5" />
   <ReceivingAccountsCard v-if="canManageAccounts" :key="companyStore.selectedCompany?.id" class="mt-5" />
+  <FioBankingCard v-if="canManageAccounts && globalStore.config?.fio_enabled === true" :key="'fio-' + companyStore.selectedCompany?.id" class="mt-5" />
 </template>
