@@ -1,34 +1,17 @@
 <script setup lang="ts">
-import { ref, reactive, inject } from 'vue'
+import { ref, reactive } from 'vue'
 import { useCompanyStore } from '@/scripts/stores/company.store'
 
-interface Utils {
-  mergeSettings: (target: Record<string, unknown>, source: Record<string, unknown>) => void
-}
-
 const companyStore = useCompanyStore()
-const utils = inject<Utils>('utils')!
 
 const mailFields = ref(['customer', 'company', 'payment'])
-const companyFields = ref(['company'])
-const customerAddressFields = ref(['billing', 'customer'])
 
 const isSaving = ref(false)
 
-const formatSettings = reactive<{
-  payment_mail_body: string | null
-  payment_company_address_format: string | null
-  payment_from_customer_address_format: string | null
-}>({
-  payment_mail_body: null,
-  payment_company_address_format: null,
-  payment_from_customer_address_format: null,
+const formatSettings = reactive({
+  payment_mail_body:
+    companyStore.selectedCompanySettings.payment_mail_body ?? '',
 })
-
-utils.mergeSettings(
-  formatSettings as unknown as Record<string, unknown>,
-  { ...companyStore.selectedCompanySettings }
-)
 
 async function submitForm() {
   isSaving.value = true
@@ -69,27 +52,9 @@ async function submitForm() {
       />
     </BaseInputGroup>
 
-    <BaseInputGroup
-      :label="$t('settings.customization.payments.company_address_format')"
-      class="mt-6 mb-4"
-    >
-      <BaseCustomInput
-        v-model="formatSettings.payment_company_address_format"
-        :fields="companyFields"
-      />
-    </BaseInputGroup>
-
-    <BaseInputGroup
-      :label="
-        $t('settings.customization.payments.from_customer_address_format')
-      "
-      class="mt-6 mb-4"
-    >
-      <BaseCustomInput
-        v-model="formatSettings.payment_from_customer_address_format"
-        :fields="customerAddressFields"
-      />
-    </BaseInputGroup>
+    <p class="my-4 text-sm text-muted">
+      {{ $t('settings.customization.shared_address_formats') }}
+    </p>
 
     <BaseButton
       :loading="isSaving"
@@ -99,7 +64,11 @@ async function submitForm() {
       class="mt-4"
     >
       <template #left="slotProps">
-        <BaseIcon v-if="!isSaving" :class="slotProps.class" name="ArrowDownOnSquareIcon" />
+        <BaseIcon
+          v-if="!isSaving"
+          :class="slotProps.class"
+          name="ArrowDownOnSquareIcon"
+        />
       </template>
       {{ $t('settings.customization.save') }}
     </BaseButton>

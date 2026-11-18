@@ -1763,7 +1763,8 @@
         "empty_title": "No notes yet",
         "empty_description": "Save text you use often, like payment terms, and insert it into any document."
       },
-      "reorder_component": "Move {name}, {position} of {count}. Use the up and down arrow keys"
+      "reorder_component": "Move {name}, {position} of {count}. Use the up and down arrow keys",
+      "shared_address_formats": "Address formats on the Invoices tab apply to all invoices, estimates and payment receipts."
     },
     "account_settings": {
       "profile_picture": "Profile Photo",

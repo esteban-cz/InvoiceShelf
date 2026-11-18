@@ -48,6 +48,7 @@ async function submitForm(): Promise<void> {
         $t('settings.customization.invoices.default_formats_description')
       "
     >
+      <p class="mt-4 text-sm text-muted">{{ $t('settings.customization.shared_address_formats') }}</p>
       <BaseInputGroup
         :label="
           $t('settings.customization.invoices.default_invoice_email_body')

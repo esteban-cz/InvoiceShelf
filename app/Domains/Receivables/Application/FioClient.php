@@ -12,6 +12,7 @@ class FioClient
 
     public function statement(#[\SensitiveParameter] string $token, string $from, string $to): array
     {
+        abort_unless(config('invoiceshelf.fio_enabled', false), 404);
         abort_unless(preg_match('/\A[a-zA-Z0-9]{64}\z/', $token), 422, __('fio_invalid_token'));
         abort_unless(Cache::add('fio:request:'.hash('sha256', $token), true, 35), 429, __('fio_throttled'));
         // Fio requires the token in its path. Never throw/log a transport exception containing this URL.

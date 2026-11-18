@@ -2,6 +2,9 @@
 
 ## Connect Fio
 
+Fio is temporarily disabled and hidden from settings. Its code and stored
+connections are retained; the instructions below apply when it is enabled again.
+
 Open **Settings → Payment modes → Fio bank connection** as the company owner.
 Create a token in Fio Internetbanking with **Sledování účtu** (read-only) access,
 wait approximately five minutes for activation, then enter it in the connection

@@ -16,6 +16,7 @@ use App\Domains\Receivables\Models\Payment;
 use App\Domains\Sales\Models\Invoice;
 use Database\Seeders\DatabaseSeeder;
 use Database\Seeders\DemoSeeder;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -23,8 +24,10 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Queue;
 use Laravel\Sanctum\Sanctum;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 beforeEach(function () {
+    config(['invoiceshelf.fio_enabled' => true]);
     $this->seed([DatabaseSeeder::class, DemoSeeder::class]);
     $this->user = User::findOrFail(1);
     $this->company = $this->user->companies()->first();
@@ -332,4 +335,32 @@ test('Fio refuses invoices referencing a customer from another company', functio
 test('Fio resource IDs are constrained to numbers', function () {
     $this->postJson('/api/v1/fio/connections/not-a-number/sync')->assertNotFound();
     $this->getJson('/api/v1/fio/transactions/not-a-number/candidates')->assertNotFound();
+});
+
+test('disabling Fio hides it in bootstrap and blocks every bank API without changing data', function () {
+    config(['invoiceshelf.fio_enabled' => false]);
+    $connection = fioConnection($this);
+    $row = fioMovement($this, $connection);
+    $this->getJson('/api/v1/bootstrap')->assertOk()->assertJsonPath('config.fio_enabled', false);
+    $this->getJson('/api/v1/fio/connections')->assertNotFound();
+    $this->getJson('/api/v1/fio/transactions')->assertNotFound();
+    $this->getJson('/api/v1/fio/transactions/'.$row->id.'/candidates')->assertNotFound();
+    $this->postJson('/api/v1/fio/connections', [])->assertNotFound();
+    $this->patchJson('/api/v1/fio/connections/'.$connection->id, [])->assertNotFound();
+    $this->deleteJson('/api/v1/fio/connections/'.$connection->id)->assertNotFound();
+    $this->postJson('/api/v1/fio/connections/'.$connection->id.'/sync')->assertNotFound();
+    $this->patchJson('/api/v1/fio/transactions/'.$row->id, ['action' => 'ignore'])->assertNotFound();
+    expect($connection->fresh()->enabled)->toBeTrue()->and($row->fresh()->status)->toBe('pending')->and(Payment::count())->toBe(0);
+    Http::assertNothingSent();
+});
+
+test('disabled Fio skips manual and scheduled synchronization without contacting the bank', function () {
+    config(['invoiceshelf.fio_enabled' => false]);
+    $connection = fioConnection($this);
+    $this->artisan('fio:sync')->expectsOutput('Fio integration is disabled.')->assertSuccessful();
+    expect(fn () => app(FioSyncService::class)->sync($connection))->toThrow(HttpException::class);
+    expect($connection->fresh()->last_attempt_at)->toBeNull()->and(Payment::count())->toBe(0);
+    Http::assertNothingSent();
+    $event = collect(app(Schedule::class)->events())->first(fn ($event) => str_contains($event->command ?? '', 'fio:sync'));
+    expect($event)->not->toBeNull()->and($event->filtersPass(app()))->toBeFalse();
 });

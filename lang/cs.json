@@ -1763,7 +1763,8 @@
         "empty_title": "Zatím žádné poznámky",
         "empty_description": "Uložte si často používané texty, například platební podmínky, a vkládejte je do dokladů."
       },
-      "reorder_component": "Přesunout prvek {name} na pozici {position} z {count}. Použijte šipky nahoru a dolů"
+      "reorder_component": "Přesunout prvek {name} na pozici {position} z {count}. Použijte šipky nahoru a dolů",
+      "shared_address_formats": "Formáty adres na kartě Faktury se používají pro všechny faktury, nabídky a potvrzení o platbě."
     },
     "account_settings": {
       "profile_picture": "Profilová fotka",

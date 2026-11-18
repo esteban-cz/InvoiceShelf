@@ -7,6 +7,20 @@ For upstream releases, the section beneath each `##` version heading is what CI 
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 1.0.14-[3.0.0-alpha.15] - 2026-11-18
+
+- Temporarily disable Fio bank connections, hide the settings card, block bank
+  endpoints and stop scheduled and manual imports while retaining the code.
+- Use the invoice company, billing and shipping address formats for invoices,
+  estimates and payment receipts. Manage the shared formats on the Invoices tab
+  and refresh archived PDFs when those formats change.
+
+Upgrade: no new migration beyond 1.0.13. When upgrading from 1.0.12, apply the
+included Fio/customer-registration migration; Fio remains disabled.
+
+Deployment branch: `1.x.x-3.0.0-alpha.15`.
+Source tag: `fork-v1.0.14-upstream-3.0.0-alpha.15`.
+
 ## 1.0.13-[3.0.0-alpha.15] - 2026-11-18
 
 - Add owner-managed Fio bank connections with encrypted API tokens, token

@@ -20,7 +20,8 @@ if (DemoMode::enabled()) {
 // happens when the scheduler runs, not when this file loads.
 $installed = fn (): bool => (bool) InstallationState::isDbCreated();
 
-Schedule::command('fio:sync')->everyFifteenMinutes()->withoutOverlapping()->when($installed);
+Schedule::command('fio:sync')->everyFifteenMinutes()->withoutOverlapping()
+    ->when(fn (): bool => (bool) config('invoiceshelf.fio_enabled', false) && $installed());
 
 // The daily status sweeps (overdue invoices, expired estimates). Asked for
 // every hour and kept to once a day by invoiceshelf:catch-up, so an install

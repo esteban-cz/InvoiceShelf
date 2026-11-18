@@ -14,6 +14,11 @@ class SyncFioConnections extends Command
 {
     public function handle(FioSyncService $sync): int
     {
+        if (! config('invoiceshelf.fio_enabled', false)) {
+            $this->info('Fio integration is disabled.');
+
+            return self::SUCCESS;
+        }
         $failed = false;
         FioConnection::query()->where('enabled', true)->eachById(function (FioConnection $connection) use ($sync, &$failed): void {
             try {

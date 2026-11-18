@@ -5,9 +5,10 @@ use App\Domains\Receivables\Http\Controllers\Company\FioConnectionsController;
 use App\Domains\Receivables\Http\Controllers\Company\FioTransactionsController;
 use App\Domains\Receivables\Http\Controllers\Company\PaymentMethodsController;
 use App\Domains\Receivables\Http\Controllers\Company\PaymentsController;
+use App\Domains\Receivables\Http\Middleware\EnsureFioEnabled;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('fio')->where(['connection' => '[0-9]+', 'transaction' => '[0-9]+'])->group(function (): void {
+Route::prefix('fio')->middleware(EnsureFioEnabled::class)->where(['connection' => '[0-9]+', 'transaction' => '[0-9]+'])->group(function (): void {
     Route::get('connections', [FioConnectionsController::class, 'index']);
     Route::post('connections', [FioConnectionsController::class, 'store']);
     Route::patch('connections/{connection}', [FioConnectionsController::class, 'update']);

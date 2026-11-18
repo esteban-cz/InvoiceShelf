@@ -14,6 +14,7 @@ class FioSyncService
 
     public function sync(FioConnection $connection): FioConnection
     {
+        abort_unless(config('invoiceshelf.fio_enabled', false), 404);
         $lock = Cache::lock('fio:sync:'.$connection->id, 120);
         abort_unless($lock->get(), 429, __('fio_throttled'));
         try {
@@ -41,6 +42,7 @@ class FioSyncService
 
     public function import(FioConnection $connection, array $statement, string $through): void
     {
+        abort_unless(config('invoiceshelf.fio_enabled', false), 404);
         // Commit bank rows and cursor together. A crash during matching leaves reviewable rows, never a lost movement.
         $created = DB::transaction(function () use ($connection, $statement, $through): array {
             $ids = [];

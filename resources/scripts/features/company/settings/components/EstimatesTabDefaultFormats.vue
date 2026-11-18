@@ -1,37 +1,17 @@
 <script setup lang="ts">
-import { ref, reactive, inject } from 'vue'
+import { ref, reactive } from 'vue'
 import { useCompanyStore } from '@/scripts/stores/company.store'
 
-interface Utils {
-  mergeSettings: (target: Record<string, unknown>, source: Record<string, unknown>) => void
-}
-
 const companyStore = useCompanyStore()
-const utils = inject<Utils>('utils')!
 
 const estimateMailFields = ref(['customer', 'company', 'estimate'])
-const companyFields = ref(['company'])
-const shippingFields = ref(['shipping', 'customer'])
-const billingFields = ref(['billing', 'customer'])
 
 const isSaving = ref(false)
 
-const formatSettings = reactive<{
-  estimate_mail_body: string | null
-  estimate_company_address_format: string | null
-  estimate_shipping_address_format: string | null
-  estimate_billing_address_format: string | null
-}>({
-  estimate_mail_body: null,
-  estimate_company_address_format: null,
-  estimate_shipping_address_format: null,
-  estimate_billing_address_format: null,
+const formatSettings = reactive({
+  estimate_mail_body:
+    companyStore.selectedCompanySettings.estimate_mail_body ?? '',
 })
-
-utils.mergeSettings(
-  formatSettings as unknown as Record<string, unknown>,
-  { ...companyStore.selectedCompanySettings }
-)
 
 async function submitForm() {
   isSaving.value = true
@@ -74,35 +54,9 @@ async function submitForm() {
       />
     </BaseInputGroup>
 
-    <BaseInputGroup
-      :label="$t('settings.customization.estimates.company_address_format')"
-      class="mt-6 mb-4"
-    >
-      <BaseCustomInput
-        v-model="formatSettings.estimate_company_address_format"
-        :fields="companyFields"
-      />
-    </BaseInputGroup>
-
-    <BaseInputGroup
-      :label="$t('settings.customization.estimates.shipping_address_format')"
-      class="mt-6 mb-4"
-    >
-      <BaseCustomInput
-        v-model="formatSettings.estimate_shipping_address_format"
-        :fields="shippingFields"
-      />
-    </BaseInputGroup>
-
-    <BaseInputGroup
-      :label="$t('settings.customization.estimates.billing_address_format')"
-      class="mt-6 mb-4"
-    >
-      <BaseCustomInput
-        v-model="formatSettings.estimate_billing_address_format"
-        :fields="billingFields"
-      />
-    </BaseInputGroup>
+    <p class="my-4 text-sm text-muted">
+      {{ $t('settings.customization.shared_address_formats') }}
+    </p>
 
     <BaseButton
       :loading="isSaving"
@@ -112,7 +66,11 @@ async function submitForm() {
       class="mt-4"
     >
       <template #left="slotProps">
-        <BaseIcon v-if="!isSaving" :class="slotProps.class" name="ArrowDownOnSquareIcon" />
+        <BaseIcon
+          v-if="!isSaving"
+          :class="slotProps.class"
+          name="ArrowDownOnSquareIcon"
+        />
       </template>
       {{ $t('settings.customization.save') }}
     </BaseButton>
