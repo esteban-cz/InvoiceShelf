@@ -18,6 +18,7 @@ use App\Platform\Mail\Contracts\MailConfigurator;
 use App\Platform\Pdf\Facades\Pdf;
 use App\Platform\Pdf\Rendering\PdfMetadata;
 use App\Platform\Pdf\Rendering\PdfTemplateUtils;
+use App\Platform\Pdf\Rendering\QrCode;
 use App\Support\MoneyConversion;
 use App\Support\PublicToken;
 use Carbon\Carbon;
@@ -46,6 +47,7 @@ class InvoiceService implements InvoicePdfDataProvider
         private readonly InvoicePdfAttachments $pdfAttachments,
         private readonly InvoicePaymentQr $paymentQr,
         private readonly InvoiceSignatureService $signatures,
+        private readonly InvoicePaymentLinks $paymentLinks,
     ) {}
 
     /**
@@ -262,6 +264,7 @@ class InvoiceService implements InvoicePdfDataProvider
 
         return $this->withLocale($locale, function () use ($invoice, $data, $locale): array {
             $data['locale'] = $locale;
+            $data['payment_link'] = $this->paymentLinks->forInvoice($invoice);
             $data['invoice'] = $invoice->toArray();
             $data['customer'] = $invoice->customer->toArray();
             $data['company'] = Company::find($invoice->company_id);
@@ -358,6 +361,8 @@ class InvoiceService implements InvoicePdfDataProvider
         // Absent for a company that never uploaded one; the templates cope.
         $logo = $company->logo_path;
 
+        $paymentLink = $this->paymentLinks->forInvoice($invoice);
+
         View::share([
             'invoice' => $invoice,
             'customFields' => $customFields,
@@ -370,6 +375,10 @@ class InvoiceService implements InvoicePdfDataProvider
             'taxes' => $taxes,
             'paymentQrImage' => $this->paymentQr->image($invoice),
             'paymentAccount' => $this->paymentQr->domesticAccount($invoice->payment_qr['iban'] ?? ''),
+            'payment_link' => $paymentLink === null ? null : [
+                'url' => $paymentLink,
+                'qr' => $this->paymentLinks->printsQrCode($invoice->company_id) ? QrCode::svgDataUri($paymentLink) : null,
+            ],
         ]);
 
         $templatePath = PdfTemplateUtils::resolveView('invoice', $invoiceTemplate, 'invoice1');
@@ -431,6 +440,8 @@ class InvoiceService implements InvoicePdfDataProvider
 
         // Columns the copy inherits unchanged. Everything outside this list is
         // either dated today, renumbered, or derived from the exchange rate.
+        // The invoice's own payment link stays behind: it was made for that
+        // invoice, and on the copy it would collect for the wrong one.
         $carriedOver = $invoice->only([
             'reference_number',
             'customer_id',

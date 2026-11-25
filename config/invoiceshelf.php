@@ -87,10 +87,15 @@ return [
     | `min_version` is the oldest client build this server will talk to; the
     | client reads it from the manifest and tells the user to update.
     |
+    | `app_link` is where sign-in with SSO sends the system browser back to the
+    | app: the URL scheme mobile/android and mobile/ios register. Only an app
+    | built with another scheme needs it changed.
+    |
     */
     'client' => [
         'hostname' => env('INVOICESHELF_CLIENT_HOSTNAME', 'app.invoiceshelf.internal'),
         'min_version' => env('INVOICESHELF_CLIENT_MIN_VERSION', '3.0.0-alpha.4'),
+        'app_link' => env('INVOICESHELF_CLIENT_APP_LINK', 'com.invoiceshelf.app:/sso'),
     ],
 
     /*
@@ -107,7 +112,7 @@ return [
     */
     'marketplace' => [
         'channel' => env('MARKETPLACE_CHANNEL', 'stable'),
-        'module_api_version' => (string) env('MARKETPLACE_MODULE_API_VERSION', '1.5.0'),
+        'module_api_version' => (string) env('MARKETPLACE_MODULE_API_VERSION', '1.6.0'),
         // JSON object: {"key-id":"base64-ed25519-public-key"}. Keys add to
         // (or replace values in) the built-in pinned map. Key identity is part
         // of the signed release and must match this trusted map.

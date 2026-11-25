@@ -575,7 +575,8 @@
       "select_an_item": "Type or click to select an item",
       "type_item_description": "Type Item Description (optional)"
     },
-    "mark_as_default_estimate_template_description": "If enabled, the selected template will be automatically selected for new estimates."
+    "mark_as_default_estimate_template_description": "If enabled, the selected template will be automatically selected for new estimates.",
+    "allocated_payments": "Allocated Payments"
   },
   "invoices": {
     "allocated_payments": "Allocated Payments",
@@ -766,7 +767,9 @@
         "total_missing": "The original total could not be read. Compare the form total with the PDF before saving."
       },
       "hide": "Hide import"
-    }
+    },
+    "payment_link": "Payment Link",
+    "payment_link_help": "Optional. Leave empty to use the default payment link from your invoice settings."
   },
   "recurring_invoices": {
     "title": "Recurring Invoices",
@@ -1040,7 +1043,16 @@
     "password_reset_successfully": "Password Reset Successfully",
     "enter_email": "Enter email",
     "enter_password": "Enter Password",
-    "retype_password": "Retype Password"
+    "retype_password": "Retype Password",
+    "sign_in_with_sso": "Sign in with SSO",
+    "sso_failed": "Signing in with SSO did not work. Please try again.",
+    "sso_no_account": "Your SSO account does not match a user here. Ask an administrator to add a user with your email address.",
+    "sso_cancelled": "Signing in with SSO was cancelled.",
+    "sso_email_unverified": "Your identity provider has not confirmed your email address, so it cannot be matched to a user here. Ask your administrator to verify it there, then try again.",
+    "sso_app_title": "Sign in to the InvoiceShelf app on {device}?",
+    "sso_app_notice": "Continue only if you just started this sign-in in the InvoiceShelf app yourself. If someone sent you this link, cancel: continuing would sign their device in to your account.",
+    "sso_app_continue": "Continue",
+    "sso_app_cancel": "Cancel"
   },
   "client": {
     "connect_heading": "Connect to your server",
@@ -1688,7 +1700,14 @@
           "upload_help": "PNG or JPEG, up to 256 KB and 2400 × 1200 pixels. A PNG with a transparent background works best.",
           "saved": "Issuer and signature saved.",
           "load_failed": "Signature settings could not be loaded. Please reload this page."
-        }
+        },
+        "payment_link": "Payment Link",
+        "payment_link_description": "A link where customers can pay, such as a Stripe, PayPal, Wise or Payoneer payment link. It is printed on unpaid invoices, added to invoice emails and opened by the Pay Invoice button in the customer portal. Payments made through it are not recorded automatically.",
+        "payment_link_url": "Default payment link",
+        "payment_link_placeholders": "Placeholders filled in for each invoice:",
+        "payment_link_invalid": "Enter a full web address starting with https:// or http://.",
+        "payment_link_qr": "Print a QR code",
+        "payment_link_qr_description": "Adds a QR code of the link to the invoice PDF, so a printed invoice can be paid from a phone."
       },
       "credit_notes": {
         "title": "Credit Notes",
@@ -2108,10 +2127,10 @@
       "select_disk": "Select Disk",
       "action": "Action",
       "deleted_message": "Backup deleted successfully",
-      "created_message": "Backup created successfully",
       "invalid_disk_credentials": "Invalid credential of selected disk",
       "empty_title": "No backups yet",
-      "empty_description": "Create a backup to keep a copy of your data and files."
+      "empty_description": "Create a backup to keep a copy of your data and files.",
+      "started_message": "Backup started. It will appear in the list once it finishes."
     },
     "disk": {
       "title": "File Disks | File Disks",
@@ -3367,5 +3386,9 @@
     "company": "Company",
     "company_name": "Company Name",
     "vat_id": "Vat Id"
-  }
+  },
+  "pdf_pay_online": "Pay Online",
+  "pdf_pay_online_description": "Scan the code or open the link to pay this invoice online.",
+  "pdf_pay_online_link_description": "Open the link to pay this invoice online.",
+  "mail_pay_online": "Pay Online"
 }

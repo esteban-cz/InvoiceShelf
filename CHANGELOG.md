@@ -7,6 +7,26 @@ For upstream releases, the section beneath each `##` version heading is what CI 
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 1.0.20-[3.0.0-alpha.17] - 2026-11-25
+
+- Merge the official `3.0.0-alpha.17` release, including alpha.16 fixes, into
+  the fork while preserving Czech bank QR payments, signature overrides,
+  document layouts, compact Tomecka emails, PDF import and company defaults.
+- Keep company ownership separate from platform administration and apply the
+  upstream fixes for permissions and exchange-rate updates across companies.
+- Add optional online payment links alongside the existing Czech bank QR
+  payment card, using the fork's layout and Czech translations. Retain QR
+  payments on paid invoices and the default signing and QR behavior. Refresh
+  archived PDFs when online payment details change.
+- Include the upstream country corrections, tax-copying and customer chart
+  fixes, optional OpenID Connect sign-in and backup notification fixes.
+
+Upgrade: three upstream migrations add invoice payment links, correct country
+records and add SSO identities. Single sign-on stays disabled until configured.
+
+Testing branch: `upgrade/upstream-3.0.0-alpha17`. The permanent Coolify branch
+remains `1.x.x-3.0.0-alpha.15` until the upgrade is approved for deployment.
+
 ## 1.0.19-[3.0.0-alpha.15] - 2026-11-18
 
 - Make Czech the default language for new installs, users and companies, and
@@ -222,6 +242,72 @@ assigned retroactively.
 
 Deployment branch: `1.x.x-3.0.0-alpha.15`.
 Source tag: `fork-v1.0.8-upstream-3.0.0-alpha.15`.
+## 3.0.0-alpha.17 - 2026-11-22
+
+Seventeenth public alpha of InvoiceShelf 3.0. Existing users can sign in through an OpenID Connect identity provider, on the web and in the mobile app, and two security issues are fixed for installs that hold more than one company.
+
+⚠️ **Pre-release, not for production.** Back up your database before upgrading and use this release for evaluation and testing only.
+
+### Highlights
+
+- **Single sign-on with OpenID Connect.** An installation can let its users sign in through one identity provider. Set `OIDC_ISSUER`, `OIDC_CLIENT_ID` and `OIDC_CLIENT_SECRET`, register `/auth/oidc/callback` at the provider, and a **Sign in with SSO** button appears next to **Login**, on the web and in the mobile app. The email and password form keeps working and the customer portal doesn't change. Single sign-on never creates users: the first sign-in links an existing user by email address, and by default only when the provider says it has verified that address (`OIDC_REQUIRE_VERIFIED_EMAIL`). Run end to end against Keycloak, Authentik, Authelia, Zitadel, Dex, Logto, Casdoor and Pocket ID. The setup guide, with a note for each of those providers, is in `docs/features/single-sign-on.md`. The sign-in in the mobile app has not been run on a device yet. (#996, closes #124)
+
+### Security
+
+- A user who belongs to two companies could use the role they hold in one on the records of the other, by acting in the first company while addressing a record of the second. Someone with read-only access to a company could, for example, change the status of its invoices. Roles now apply only inside the company that granted them. Installs with a single company, or where every user has one company, were not affected. (#992, #994)
+- The one-time exchange-rate update for documents created before documents carried an exchange rate changed every company's documents in the chosen currency, not only the active company's, and also documents that already had a rate. The owner of any company could start it again through company settings. It now changes only the active company's documents that have no rate, and company settings can no longer start it again. Only amounts in the company's currency were affected (dashboard, reports, customer statements), never document totals. (#1000)
+
+### Improvements and fixes
+
+- A backup no longer reports an error when the mail server is down or not set up. After each backup the backup library emailed a placeholder address, and a failed email failed the whole run even though the zip had been written. Those emails are off; a failed backup still reaches staff as a notification. The message after starting a backup now says it has started, since it runs in the background. (#917)
+- Translations are up to date with Crowdin. (#997)
+
+### Upgrade notes
+
+- **One migration.** It adds the `sso_identities` table. Nothing else changes until single sign-on is configured.
+- **Authentik:** its stock email mapping reports every address as unverified, so a first sign-in is refused until the mapping is changed or `OIDC_REQUIRE_VERIFIED_EMAIL=false` is set. The guide covers both.
+
+### Thanks
+
+- @AleytiaFairlight for the first implementation of single sign-on (#989), and @nedlane for asking for it (#124).
+- @cornelisonc for the backup fix (#917).
+
+Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.17` or `ghcr.io/invoiceshelf/invoiceshelf:3.0.0-alpha.17` (also `:next`).
+
+## 3.0.0-alpha.16 - 2026-11-21
+
+Sixteenth public alpha of InvoiceShelf 3.0. Invoices can carry a payment link and a QR code that send the customer to a payment page you already have, the country list follows ISO 3166-1, and per-item taxes and the "Disable after invoice is sent" setting get four fixes.
+
+⚠️ **Pre-release, not for production.** Back up your database before upgrading and use this release for evaluation and testing only.
+
+### Highlights
+
+- **Payment links and QR codes on invoices.** A company can point customers at a payment link it already has, such as a Stripe or PayPal payment link or a Wise or Payoneer request. Set a default under Settings → Customization → Invoices, with `{INVOICE_NUMBER}`, `{INVOICE_DUE_AMOUNT}` and `{INVOICE_CURRENCY}` filled in for each invoice, or give one invoice its own link on the invoice form. While something is left to pay, the invoice PDF prints a Pay Online block with a QR code on all three templates (the QR code can be switched off), invoice and reminder emails get a Pay Online button, and the Pay Invoice button on the public page and in the customer portal opens the link. Only http and https links are accepted, and payments made through the link are not recorded automatically. A cloned invoice does not keep its own link; recurring invoices use the default. (#965)
+- **Country list on ISO 3166-1.** The Isle of Man, Jersey, Guernsey and Timor-Leste were filed under made-up codes (XM, XJ, XU, TP), so documents printed names like "Man (Isle of)" and an e-invoice could not name them. They now carry their ISO codes. Montenegro, Curaçao, Sint Maarten, the Åland Islands, St. Barthélemy, St. Martin and the Caribbean Netherlands are added, old spellings such as "Korea South" and "Bahamas The" become the current English names, and the country list is sorted by name with accents folded. (#967, closes #957)
+
+### Improvements and fixes
+
+- "Disable after invoice is sent" (Settings → Customization → Invoices → Retrospective Edits) now locks an invoice once it is sent, viewed or completed. Until now it locked only after a payment was recorded, so sent, unpaid invoices stayed editable. Drafts stay editable and the other modes are unchanged. (#971, fixes #952)
+- Converting an estimate to an invoice no longer leaves the estimate showing each per-item tax two or three times, with totals to match. The copied tax rows kept the estimate's keys and so belonged to both documents. (#968)
+- With per-item taxes on, a line that has no tax can be given one when an estimate or invoice is edited. The tax selector was missing on such lines. (#969)
+- The item form shows the Taxes field whenever the company uses per-item taxes. An item created while the company used document-level taxes could never be given a tax. (#970)
+- Opening a customer no longer leaves the cash flow chart empty; its first load failed with a script error. (#966)
+- Translations are up to date with Crowdin. (#986)
+- The iOS release job signs its archive correctly, and a release that changes nothing in the apps no longer pushes identical builds to TestFlight and the store tracks.
+
+### Upgrade notes
+
+- **Two migrations.** One adds `invoices.payment_link`. The other corrects the country list in place: addresses keep their country, and a country name you corrected by hand is kept.
+- **"Disable after invoice is sent" is stricter.** Companies that use this mode will find sent, unpaid invoices locked. The default mode, Allow, is unaffected.
+- **Estimates converted before this release** keep their duplicated tax rows. This release stops new ones.
+- **Module API 1.6.0.** It adds `QrCodeGenerator` (SDK 3.7.0). Modules that declare `^1.3.0`, `^1.4.0` or `^1.5.0` keep working. An install that pins `MARKETPLACE_MODULE_API_VERSION` to an older value cannot install modules that need 1.6.
+
+### Thanks
+
+- @iebl for the three per-item tax fixes (#968, #969, #970).
+- @pathmaka for the sent-invoice lock (#971), and @FEmser for reporting it (#952).
+
+Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.16` or `ghcr.io/invoiceshelf/invoiceshelf:3.0.0-alpha.16` (also `:next`).
 
 ## 3.0.0-alpha.15 - 2026-10-26
 

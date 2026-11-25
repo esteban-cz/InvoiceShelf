@@ -205,3 +205,61 @@ test('the default payment method is company-scoped and used only when a new paym
         ->assertUnprocessable()->assertInvalid('settings.default_payment_method_id');
     $this->postJson('/api/v1/company/settings', ['settings' => ['default_payment_method_id' => 'none']])->assertOk();
 });
+
+test('the upstream payment link preserves the Czech QR signature and two-column footer', function (string $template) {
+    $this->post('/api/v1/company/signature', [
+        'issuer_name' => 'Výchozí vystavitel', 'signature' => UploadedFile::fake()->image('company.png', 400, 120),
+    ])->assertOk();
+    $defaultSignature = $this->getJson('/api/v1/company/signature')->assertOk()->json('data');
+    $invoiceId = $this->postJson('/api/v1/invoices', presentationInvoiceInput($this->customer, [
+        'template_name' => $template,
+        'payment_link' => 'https://pay.example.test/tomecka-invoice',
+        'payment_qr' => ['iban' => '123457/0710', 'variable_symbol' => '0202501', 'bank_name' => 'Česká národní banka'],
+        'notes' => '<p>Jedinečná poznámka k faktuře.</p>',
+    ]))->assertOk()->json('data.id');
+    $invoice = Invoice::query()->findOrFail($invoiceId);
+    $html = $this->get('/invoices/pdf/'.$invoice->unique_hash.'?preview')->assertOk()->getContent();
+    $dom = new DOMDocument;
+    $previous = libxml_use_internal_errors(true);
+    $dom->loadHTML('<?xml encoding="UTF-8">'.$html, LIBXML_NONET);
+    libxml_clear_errors();
+    libxml_use_internal_errors($previous);
+    $xpath = new DOMXPath($dom);
+    $columns = $xpath->query('//div[@class="total-display-container"]/table/tr[2]/td');
+    expect($columns)->toHaveCount(2);
+    $left = $columns->item(0);
+    $right = $columns->item(1);
+    expect($left->textContent)->toContain('QR Platba', '123457/0710', '0202501', 'Jedinečná poznámka', 'Zaplatit online')
+        ->and($right->textContent)->toContain('Celkem', 'Vystavil:', 'Výchozí vystavitel', 'Podpis:')
+        ->and($xpath->query('.//div[contains(concat(" ", normalize-space(@class), " "), " pdf-card ")]', $left)->length)->toBe(2)
+        ->and($xpath->query('.//img', $left)->length)->toBe(2)
+        ->and($xpath->query('.//img', $right)->item(0)->getAttribute('src'))->toBe($defaultSignature['image'])
+        ->and(substr_count($html, 'Jedinečná poznámka k faktuře.'))->toBe(1)
+        ->and(app(InvoicePaymentQr::class)->payload($invoice))->toBe('SPD*1.0*ACC:CZ4907100000000000123457*AM:34990.00*CC:CZK*X-VS:0202501');
+
+    $invoice->update(['due_amount' => 0, 'paid_status' => Invoice::STATUS_PAID]);
+    $this->get('/invoices/pdf/'.$invoice->unique_hash.'?preview')->assertOk()
+        ->assertSee('QR Platba')->assertSee('Výchozí vystavitel')->assertSee($defaultSignature['image'], false)
+        ->assertDontSee('https://pay.example.test/tomecka-invoice', false);
+    $this->getJson('/api/v1/company/signature')->assertOk()->assertJsonPath('data', $defaultSignature);
+})->with(['invoice1', 'invoice2', 'invoice3']);
+
+test('archived PDFs refresh when the optional payment link or its QR setting changes', function () {
+    $id = $this->postJson('/api/v1/invoices', presentationInvoiceInput($this->customer))->assertOk()->json('data.id');
+    $invoice = Invoice::query()->findOrFail($id);
+    $properties = new ReflectionMethod($invoice, 'archivedPdfProperties');
+    $current = new ReflectionMethod($invoice, 'archivedPdfIsCurrent');
+    $beforeLink = $properties->invoke($invoice);
+    expect($current->invoke($invoice, $beforeLink))->toBeTrue();
+
+    CompanySetting::setSettings(['invoice_payment_link' => 'https://pay.example.test/new'], $this->company->id);
+    expect($current->invoke($invoice, $beforeLink))->toBeFalse();
+    $beforeQrChange = $properties->invoke($invoice);
+    expect($current->invoke($invoice, $beforeQrChange))->toBeTrue();
+    CompanySetting::setSettings(['invoice_payment_link_qr' => 'NO'], $this->company->id);
+    expect($current->invoke($invoice, $beforeQrChange))->toBeFalse();
+
+    $beforePayment = $properties->invoke($invoice);
+    $invoice->update(['due_amount' => 0, 'paid_status' => Invoice::STATUS_PAID]);
+    expect($current->invoke($invoice, $beforePayment))->toBeFalse();
+});

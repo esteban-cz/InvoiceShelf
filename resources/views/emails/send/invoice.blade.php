@@ -36,6 +36,12 @@
 <p class="sub">@lang('mail_invoice_attached')</p>
 @endif
 
+@if(!empty($data['payment_link']))
+@component('mail::button', ['url' => $data['payment_link'], 'color' => 'success'])
+@lang('mail_pay_online')
+@endcomponent
+@endif
+
 @slot('footer')
 @component('mail::footer')
 @include('emails.partials.powered-by')

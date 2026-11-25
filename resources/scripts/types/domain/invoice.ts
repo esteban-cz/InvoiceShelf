@@ -155,6 +155,10 @@ export interface Invoice {
   formatted_due_date: string
   allow_edit: boolean
   payment_module_enabled: boolean
+  /** The invoice's own payment link, as stored; null uses the company's. */
+  payment_link: string | null
+  /** Customer portal only: the link that pays the invoice now, filled in. */
+  payment_link_url?: string | null
   sales_tax_type: string | null
   sales_tax_address_type: string | null
   overdue: boolean | null
@@ -179,6 +183,7 @@ export interface CreateInvoicePayload {
   customer_id: number
   template_name?: string | null
   notes?: string | null
+  payment_link?: string | null
   discount_type?: DiscountType
   discount?: number
   discount_val?: number

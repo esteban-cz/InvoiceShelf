@@ -11,6 +11,7 @@ use App\Domains\Money\Models\Currency;
 use App\Domains\Receivables\Models\Payment;
 use App\Domains\Receivables\Models\PaymentAllocation;
 use App\Domains\Receivables\Models\Transaction;
+use App\Domains\Sales\Application\InvoicePaymentLinks;
 use App\Domains\Sales\Contracts\InvoicePdfAttachments;
 use App\Domains\Sales\Contracts\InvoicePdfDataProvider;
 use App\Domains\Taxation\Models\Tax;
@@ -322,7 +323,7 @@ class Invoice extends Model implements HasMedia
      * A credited invoice is immutable: its line item ids anchor the lines of
      * every credit note that reverses it. Past that, the company's
      * retrospective-edits setting decides, tightening in three steps from
-     * "sent and part paid" through "part paid" to "paid".
+     * "sent" (or any payment) through "part paid" to "paid".
      */
     public function getAllowEditAttribute()
     {
@@ -335,15 +336,14 @@ class Invoice extends Model implements HasMedia
         $collected = $this->paid_status === self::STATUS_PARTIALLY_PAID
             || $this->paid_status === self::STATUS_PAID;
 
-        $undelivered = [
-            self::STATUS_DRAFT,
-            self::STATUS_SENT,
-            self::STATUS_VIEWED,
-            self::STATUS_COMPLETED,
-        ];
-
         if ($mode == 'disable_on_invoice_sent') {
-            return ! (in_array($this->status, $undelivered) && $collected);
+            $delivered = in_array($this->status, [
+                self::STATUS_SENT,
+                self::STATUS_VIEWED,
+                self::STATUS_COMPLETED,
+            ], true);
+
+            return ! ($delivered || $collected);
         }
 
         if ($mode == 'disable_on_invoice_partial_paid') {
@@ -683,7 +683,11 @@ class Invoice extends Model implements HasMedia
 
     private function documentFooterFingerprint(): string
     {
-        return hash('sha256', json_encode([3, $this->sign_document, $this->document_signature]));
+        $links = app(InvoicePaymentLinks::class);
+        $url = $links->forInvoice($this);
+
+        return hash('sha256', json_encode([4, $this->sign_document, $this->document_signature,
+            $url, $url !== null && $links->printsQrCode($this->company_id)]));
     }
 
     private function paymentQrFingerprint(): ?string

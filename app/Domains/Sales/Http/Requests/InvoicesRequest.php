@@ -6,9 +6,11 @@ use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Contacts\Models\Customer;
 use App\Domains\Metadata\Http\Requests\Concerns\ValidatesCustomFields;
 use App\Domains\Sales\Application\Composition\InvoiceAttributes;
+use App\Domains\Sales\Application\InvoicePaymentLinks;
 use App\Domains\Sales\Models\Invoice;
 use App\Domains\Sales\Rules\SignatureImage;
 use App\Platform\Pdf\Rules\PdfTemplateExists;
+use App\Rules\PaymentLink;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Unique;
@@ -57,6 +59,7 @@ class InvoicesRequest extends FormRequest
             'signature' => ['sometimes', 'nullable', 'array:issuer_name,image'],
             'signature.issuer_name' => ['required_with:signature', 'string', 'max:255'],
             'signature.image' => ['bail', 'sometimes', 'nullable', 'string', 'max:350000', new SignatureImage],
+            'payment_link' => ['nullable', 'string', 'max:'.InvoicePaymentLinks::MAX_LENGTH, new PaymentLink],
             'items' => 'required|array',
             'items.*' => 'required|max:255',
             'items.*.description' => 'nullable',

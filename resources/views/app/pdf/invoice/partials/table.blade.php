@@ -190,6 +190,7 @@
                         {!! $notes !!}
                     </div>
                 @endif
+                @include('app.pdf.partials.payment-link')
             </td>
             <td style="width: 40%; vertical-align: top;">
                 <table width="100%" cellspacing="0px" border="0" class="total-display-table @if(count($invoice->items) > 12) page-break @endif">

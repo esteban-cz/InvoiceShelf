@@ -575,7 +575,8 @@
       "select_an_item": "Pište nebo klikněte pro výběr položky",
       "type_item_description": "Zadejte popis položky (volitelné)"
     },
-    "mark_as_default_estimate_template_description": "Je-li povoleno, bude vybraná šablona automaticky vybrána pro nové nabídky."
+    "mark_as_default_estimate_template_description": "Je-li povoleno, bude vybraná šablona automaticky vybrána pro nové nabídky.",
+    "allocated_payments": "Přiřazené platby"
   },
   "invoices": {
     "allocated_payments": "Přiřazené platby",
@@ -766,7 +767,9 @@
         "total_missing": "Původní celkovou částku se nepodařilo přečíst. Před uložením porovnejte částku ve formuláři s PDF."
       },
       "hide": "Skrýt import"
-    }
+    },
+    "payment_link": "Odkaz pro online platbu",
+    "payment_link_help": "Volitelné. Pokud pole necháte prázdné, použije se výchozí odkaz z nastavení faktur."
   },
   "recurring_invoices": {
     "title": "Opakované faktury",
@@ -1040,7 +1043,16 @@
     "password_reset_successfully": "Obnovení hesla proběhlo úspěšně",
     "enter_email": "Zadejte e-mail",
     "enter_password": "Zadejte heslo",
-    "retype_password": "Zadejte heslo znovu"
+    "retype_password": "Zadejte heslo znovu",
+    "sign_in_with_sso": "Přihlásit se přes SSO",
+    "sso_failed": "Přihlášení přes SSO se nezdařilo. Zkuste to prosím znovu.",
+    "sso_no_account": "K vašemu účtu SSO zde nebyl nalezen uživatel. Požádejte administrátora o vytvoření uživatele s vaší e-mailovou adresou.",
+    "sso_cancelled": "Přihlášení přes SSO bylo zrušeno.",
+    "sso_email_unverified": "Poskytovatel přihlášení nepotvrdil vaši e-mailovou adresu. Požádejte administrátora o její ověření a zkuste to znovu.",
+    "sso_app_title": "Přihlásit se do aplikace InvoiceShelf na zařízení {device}?",
+    "sso_app_notice": "Pokračujte jen v případě, že jste toto přihlášení sami zahájili v aplikaci InvoiceShelf. Pokud vám odkaz někdo poslal, přihlášení zrušte: pokračováním byste přihlásili jeho zařízení ke svému účtu.",
+    "sso_app_continue": "Pokračovat",
+    "sso_app_cancel": "Zrušit"
   },
   "client": {
     "connect_heading": "Připojení k serveru",
@@ -1688,7 +1700,14 @@
           "upload_help": "PNG nebo JPEG, nejvýše 256 KB a 2400 × 1200 pixelů. Nejlépe vypadá PNG s průhledným pozadím.",
           "saved": "Vystavitel a podpis byly uloženy.",
           "load_failed": "Nastavení podpisu se nepodařilo načíst. Obnovte prosím stránku."
-        }
+        },
+        "payment_link": "Odkaz pro online platbu",
+        "payment_link_description": "Odkaz, přes který mohou zákazníci zaplatit, například přes Stripe, PayPal, Wise nebo Payoneer. Zobrazí se na neuhrazených fakturách, v e-mailech a pod tlačítkem pro úhradu v zákaznickém portálu. Platby provedené přes odkaz je nutné zaevidovat ručně.",
+        "payment_link_url": "Výchozí odkaz pro platbu",
+        "payment_link_placeholders": "Zástupné údaje doplněné podle faktury:",
+        "payment_link_invalid": "Zadejte úplnou webovou adresu začínající https:// nebo http://.",
+        "payment_link_qr": "Vytisknout QR kód odkazu",
+        "payment_link_qr_description": "Přidá do PDF faktury QR kód platebního odkazu, aby zákazník mohl otevřít platební stránku v telefonu."
       },
       "credit_notes": {
         "title": "Dobropisy",
@@ -2108,10 +2127,10 @@
       "select_disk": "Vyberte disk",
       "action": "Akce",
       "deleted_message": "Záloha byla smazána.",
-      "created_message": "Záloha byla úspěšně vytvořena",
       "invalid_disk_credentials": "Nesprávné přihlašovací údaje pro vybraný disk",
       "empty_title": "Zatím žádné zálohy",
-      "empty_description": "Vytvořte zálohu dat a souborů."
+      "empty_description": "Vytvořte zálohu dat a souborů.",
+      "started_message": "Zálohování bylo spuštěno. Po dokončení se záloha zobrazí v seznamu."
     },
     "disk": {
       "title": "Souborový disk | Souborové disky",
@@ -3367,5 +3386,9 @@
     "company": "Společnost",
     "company_name": "Název společnosti",
     "vat_id": "DIČ"
-  }
+  },
+  "pdf_pay_online": "Zaplatit online",
+  "pdf_pay_online_description": "Naskenujte kód nebo otevřete odkaz a zaplaťte fakturu online.",
+  "pdf_pay_online_link_description": "Otevřete odkaz a zaplaťte fakturu online.",
+  "mail_pay_online": "Zaplatit online"
 }

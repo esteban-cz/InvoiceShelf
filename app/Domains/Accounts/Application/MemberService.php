@@ -111,8 +111,8 @@ class MemberService
      * An id naming nobody is skipped rather than reported. Everything the
      * account authored outlives it: invoices, estimates, contacts, recurring
      * invoices, expenses, payments and catalog entries are left standing with
-     * no author against them, and only the preferences rows and the account
-     * itself actually go.
+     * no author against them, and only the preferences rows, the single
+     * sign-on links and the account itself actually go.
      *
      * @param  array<int, int|string>  $ids
      */
@@ -132,6 +132,9 @@ class MemberService
             if ($member->settings()->exists()) {
                 $member->settings()->delete();
             }
+
+            // No database constraint does this: single sign-on links go with their user.
+            $member->ssoIdentities()->delete();
 
             $member->delete();
         }
