@@ -24,8 +24,8 @@ GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 Upgrade: three upstream migrations add invoice payment links, correct country
 records and add SSO identities. Single sign-on stays disabled until configured.
 
-Testing branch: `upgrade/upstream-3.0.0-alpha17`. The permanent Coolify branch
-remains `1.x.x-3.0.0-alpha.15` until the upgrade is approved for deployment.
+Tested on `upgrade/upstream-3.0.0-alpha17` and approved for deployment.
+Deployment branch: `1.x.x-3.0.0-alpha17`, the fork's new default branch.
 
 ## 1.0.19-[3.0.0-alpha.15] - 2026-11-18
 

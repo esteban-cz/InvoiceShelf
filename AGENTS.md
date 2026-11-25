@@ -225,7 +225,8 @@ InvoiceShelf follows TDD development style:
 For this personal fork, the workflow below takes precedence over the upstream
 release instructions that follow:
 
-- Coolify tracks the permanent deployment branch `1.x.x-3.0.0-alpha.15`.
+- The GitHub default and permanent Coolify deployment branch is
+  `1.x.x-3.0.0-alpha17`.
 - Start new work on a feature or fix branch based on that deployment branch.
   Merge the tested result back when the release is ready; keep Coolify on the
   same branch.
