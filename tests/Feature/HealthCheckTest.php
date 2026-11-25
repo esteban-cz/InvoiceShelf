@@ -2,6 +2,7 @@
 
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 beforeEach(function () {
     $this->database_connection = config('database.default');
@@ -37,7 +38,7 @@ test('an unavailable database returns 503 while still checking uploads', functio
     if ($configured) {
         config(['database.connections.unavailable_health_database' => [
             'driver' => 'sqlite',
-            'database' => storage_path('framework/testing/health-missing-'.Illuminate\Support\Str::uuid().'.sqlite'),
+            'database' => storage_path('framework/testing/health-missing-'.Str::uuid().'.sqlite'),
         ]]);
     }
 
